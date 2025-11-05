@@ -93,7 +93,11 @@ class VoiceSatellite(
 
             is VoiceAssistantAnnounceRequest -> {
                 continueConversation = message.startConversation
-                ttsPlayer.playAnnouncement(message.mediaId, ::ttsFinishedCallback)
+                ttsPlayer.playAnnouncement(
+                    message.mediaId,
+                    message.preannounceMediaId,
+                    ::ttsFinishedCallback
+                )
             }
 
             is VoiceAssistantEventResponse -> handleVoiceAssistantMessage(message)
@@ -106,7 +110,7 @@ class VoiceSatellite(
         when (voiceEvent.eventType) {
             VoiceAssistantEvent.VOICE_ASSISTANT_RUN_START -> {
                 val ttsUrl = voiceEvent.dataList.firstOrNull { data -> data.name == "url" }?.value
-                ttsPlayer.runStart(ttsUrl, ::ttsFinishedCallback)
+                ttsPlayer.runStart(ttsUrl)
                 audioInput.isStreaming = true
                 continueConversation = false
             }
@@ -117,7 +121,7 @@ class VoiceSatellite(
 
             VoiceAssistantEvent.VOICE_ASSISTANT_INTENT_PROGRESS -> {
                 if (voiceEvent.dataList.firstOrNull { data -> data.name == "tts_start_streaming" }?.value == "1") {
-                    ttsPlayer.startStreaming()
+                    ttsPlayer.streamTts(::ttsFinishedCallback)
                 }
             }
 
@@ -128,10 +132,10 @@ class VoiceSatellite(
             }
 
             VoiceAssistantEvent.VOICE_ASSISTANT_TTS_END -> {
-                if (!ttsPlayer.played) {
+                if (!ttsPlayer.ttsPlayed) {
                     val ttsUrl =
                         voiceEvent.dataList.firstOrNull { data -> data.name == "url" }?.value
-                    ttsPlayer.play(ttsUrl)
+                    ttsPlayer.playTts(ttsUrl, ::ttsFinishedCallback)
                 }
             }
 

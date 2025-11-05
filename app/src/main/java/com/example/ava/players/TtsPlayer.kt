@@ -6,29 +6,28 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.util.EventLogger
-import java.io.IOException
 import kotlin.apply
-import kotlin.let
 
 class TtsPlayer(context: Context) : MediaPlayer, AutoCloseable {
-    private val player = ExoPlayer.Builder(context).build().apply {
+    private val player: ExoPlayer = ExoPlayer.Builder(context).build().apply {
         addAnalyticsListener(EventLogger())
         addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 Log.d(TAG, "Playback state changed to $playbackState")
                 // If there's a playback error then the player state will return to idle
                 if (playbackState == Player.STATE_ENDED || playbackState == Player.STATE_IDLE) {
-                    onCompletion?.invoke()
+                    fireAndRemoveCompletionHandler()
                 }
             }
         })
     }
 
-    private var ttsUrl: String? = null
+    private var ttsStreamUrl: String? = null
+    private var _ttsPlayed: Boolean = false
+    val ttsPlayed: Boolean
+        get() = _ttsPlayed
+
     private var onCompletion: (() -> Unit)? = null
-    private var _played: Boolean = false
-    val played: Boolean
-        get() = _played
 
     val isPlaying get() = player.isPlaying
 
@@ -38,54 +37,67 @@ class TtsPlayer(context: Context) : MediaPlayer, AutoCloseable {
             player.volume = value
         }
 
-    fun runStart(streamUrl: String?, onCompletion: () -> Unit){
-        ttsUrl = streamUrl
-        this.onCompletion = onCompletion
-        _played = false
+    fun runStart(ttsStreamUrl: String?) {
+        this.ttsStreamUrl = ttsStreamUrl
+        _ttsPlayed = false
+        onCompletion = null
     }
 
     fun runEnd() {
-        if (!_played)
-            onCompletion?.invoke()
-        _played = false
-        ttsUrl = null
+        // Manually fire the completion handler only
+        // if tts playback was not started, else it
+        // will (or was) fired when the playback ended
+        if (!_ttsPlayed)
+            fireAndRemoveCompletionHandler()
+        _ttsPlayed = false
+        ttsStreamUrl = null
     }
 
     fun runStopped() {
-        this.onCompletion = null
+        onCompletion = null
+        _ttsPlayed = false
+        ttsStreamUrl = null
         player.stop()
     }
 
-    fun startStreaming() {
-        play()
+    fun streamTts(onCompletion: () -> Unit) {
+        playTts(ttsStreamUrl, onCompletion)
     }
 
-    fun play(url: String?){
-        ttsUrl = url
-        play()
-    }
-
-    fun playAnnouncement(url: String?, onCompletion: () -> Unit) {
-        ttsUrl = url
-        this.onCompletion = onCompletion
-        _played = false
-        play()
-    }
-
-    private fun play() {
-        if (_played)
-            return
-        ttsUrl?.let {
-            _played = true
-            try {
-                player.playWhenReady = true
-                val mediaItem = MediaItem.fromUri(it)
-                player.setMediaItem(mediaItem)
-                player.prepare()
-            } catch (e: IOException) {
-                Log.e(TAG, "Error playing media $it", e)
-            }
+    fun playTts(ttsUrl: String?, onCompletion: () -> Unit) {
+        if (!ttsUrl.isNullOrBlank()) {
+            this.onCompletion = onCompletion
+            _ttsPlayed = true
+            play(ttsUrl, null)
+        } else {
+            Log.w(TAG, "TTS URL is null or blank")
         }
+    }
+
+    fun playAnnouncement(mediaUrl: String?, preannounceUrl: String?, onCompletion: () -> Unit) {
+        if (!mediaUrl.isNullOrBlank()) {
+            this.onCompletion = onCompletion
+            play(mediaUrl, preannounceUrl)
+        }
+    }
+
+    private fun play(mediaUrl: String, preannounceUrl: String?) {
+        runCatching {
+            player.clearMediaItems()
+            if (!preannounceUrl.isNullOrBlank())
+                player.addMediaItem(MediaItem.fromUri(preannounceUrl))
+            player.addMediaItem(MediaItem.fromUri(mediaUrl))
+            player.playWhenReady = true
+            player.prepare()
+        }.onFailure {
+            Log.e(TAG, "Error playing media $mediaUrl", it)
+        }
+    }
+
+    private fun fireAndRemoveCompletionHandler() {
+        val completion = onCompletion
+        onCompletion = null
+        completion?.invoke()
     }
 
     override fun addListener(listener: Player.Listener) {
