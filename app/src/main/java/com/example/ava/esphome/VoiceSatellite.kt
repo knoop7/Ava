@@ -180,22 +180,29 @@ class VoiceSatellite(
     @OptIn(ExperimentalCoroutinesApi::class)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     private fun startAudioInput() = server.isConnected
-            .flatMapLatest { isConnected ->
-                if (isConnected) {
-                    audioInput.start()
-                } else {
-                    emptyFlow()
-                }
+        .flatMapLatest { isConnected ->
+            if (isConnected) {
+                audioInput.start()
+            } else {
+                emptyFlow()
             }
-            .flowOn(Dispatchers.IO)
-            .onEach {
-                when (it) {
-                    is VoiceSatelliteAudioInput.AudioResult.Audio -> sendMessage(voiceAssistantAudio { data = it.audio })
-                    is VoiceSatelliteAudioInput.AudioResult.WakeDetected -> if (!audioInput.isStreaming) wakeSatellite(it.wakeWord)
-                    is VoiceSatelliteAudioInput.AudioResult.StopDetected -> if (ttsPlayer.isPlaying) stopSatellite()
-                }
+        }
+        .flowOn(Dispatchers.IO)
+        .onEach {
+            when (it) {
+                is VoiceSatelliteAudioInput.AudioResult.Audio ->
+                    sendMessage(voiceAssistantAudio { data = it.audio })
+
+                is VoiceSatelliteAudioInput.AudioResult.WakeDetected ->
+                    if (!audioInput.isStreaming)
+                        wakeSatellite(it.wakeWord)
+
+                is VoiceSatelliteAudioInput.AudioResult.StopDetected ->
+                    if (ttsPlayer.isPlaying)
+                        stopSatellite()
             }
-            .launchIn(scope)
+        }
+        .launchIn(scope)
 
     private suspend fun wakeSatellite(wakeWordPhrase: String = "") {
         Log.d(TAG, "Wake satellite")
