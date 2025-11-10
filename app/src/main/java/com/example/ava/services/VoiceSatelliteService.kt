@@ -11,16 +11,20 @@ import androidx.lifecycle.lifecycleScope
 import com.example.ava.esphome.VoiceSatellite
 import com.example.ava.microwakeword.AssetWakeWordProvider
 import com.example.ava.notifications.createVoiceSatelliteServiceNotification
+import com.example.ava.nsd.NsdRegistration
+import com.example.ava.nsd.registerVoiceSatelliteNsd
 import com.example.ava.players.TtsPlayer
 import com.example.ava.preferences.VoiceAssistantPreferencesStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicReference
 
 class VoiceSatelliteService() : LifecycleService() {
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var settingsStore: VoiceAssistantPreferencesStore
+    private var voiceSatelliteNsd = AtomicReference<NsdRegistration?>(null)
     private val _voiceSatelliteStateFlow = MutableStateFlow<VoiceSatellite?>(null)
     val voiceSatelliteStateFlow = _voiceSatelliteStateFlow.asStateFlow()
 
@@ -35,6 +39,7 @@ class VoiceSatelliteService() : LifecycleService() {
             Log.d(TAG, "Stopping voice satellite")
             wakeLock.release()
             satellite.close()
+            voiceSatelliteNsd.getAndSet(null)?.unregister(this)
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }
@@ -79,6 +84,14 @@ class VoiceSatelliteService() : LifecycleService() {
                 )
                 _voiceSatelliteStateFlow.value = satellite
                 satellite.start()
+                voiceSatelliteNsd.set(
+                    registerVoiceSatelliteNsd(
+                        context = this@VoiceSatelliteService,
+                        name = settings.name,
+                        port = settings.serverPort,
+                        macAddress = settings.macAddress
+                    )
+                )
             }
         }
         return super.onStartCommand(intent, flags, startId)
@@ -86,6 +99,7 @@ class VoiceSatelliteService() : LifecycleService() {
 
     override fun onDestroy() {
         _voiceSatelliteStateFlow.getAndUpdate { null }?.close()
+        voiceSatelliteNsd.getAndSet(null)?.unregister(this)
         if (wakeLock.isHeld)
             wakeLock.release()
         super.onDestroy()
