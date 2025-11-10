@@ -23,6 +23,8 @@ import com.example.esphomeproto.voiceAssistantWakeWord
 import com.google.protobuf.GeneratedMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
@@ -30,6 +32,15 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+
+sealed class VoiceSatelliteState {
+    class Stopped() : VoiceSatelliteState()
+    class Disconnected() : VoiceSatelliteState()
+    class Idle() : VoiceSatelliteState()
+    class Listening() : VoiceSatelliteState()
+    class Processing() : VoiceSatelliteState()
+    class Responding() : VoiceSatelliteState()
+}
 
 class VoiceSatellite(
     coroutineContext: CoroutineContext,
@@ -53,6 +64,15 @@ class VoiceSatellite(
 
     private var continueConversation = false
 
+    private val _satelliteState = MutableStateFlow<VoiceSatelliteState>(VoiceSatelliteState.Disconnected())
+    val satelliteState = combine(_satelliteState, server.isConnected) { state, isConnected ->
+        if (!isConnected) {
+            VoiceSatelliteState.Disconnected()
+        } else {
+            state
+        }
+    }
+
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     override fun start() {
         super.start()
@@ -61,6 +81,7 @@ class VoiceSatellite(
 
     override suspend fun onConnected() {
         super.onConnected()
+        _satelliteState.value = VoiceSatelliteState.Idle()
         audioInput.isStreaming = false
         ttsPlayer.runStopped()
     }
@@ -93,6 +114,7 @@ class VoiceSatellite(
 
             is VoiceAssistantAnnounceRequest -> {
                 continueConversation = message.startConversation
+                _satelliteState.value = VoiceSatelliteState.Responding()
                 ttsPlayer.playAnnouncement(
                     message.mediaId,
                     message.preannounceMediaId,
@@ -117,6 +139,7 @@ class VoiceSatellite(
 
             VoiceAssistantEvent.VOICE_ASSISTANT_STT_VAD_END, VoiceAssistantEvent.VOICE_ASSISTANT_STT_END -> {
                 audioInput.isStreaming = false
+                _satelliteState.value = VoiceSatelliteState.Processing()
             }
 
             VoiceAssistantEvent.VOICE_ASSISTANT_INTENT_PROGRESS -> {
@@ -129,6 +152,10 @@ class VoiceSatellite(
                 if (voiceEvent.dataList.firstOrNull { data -> data.name == "continue_conversation" }?.value == "1") {
                     continueConversation = true
                 }
+            }
+
+            VoiceAssistantEvent.VOICE_ASSISTANT_TTS_START -> {
+                _satelliteState.value = VoiceSatelliteState.Responding()
             }
 
             VoiceAssistantEvent.VOICE_ASSISTANT_TTS_END -> {
@@ -173,6 +200,7 @@ class VoiceSatellite(
     private suspend fun wakeSatellite(wakeWordPhrase: String = "") {
         Log.d(TAG, "Wake satellite")
         audioInput.isStreaming = true
+        _satelliteState.value = VoiceSatelliteState.Listening()
         sendMessage(
             voiceAssistantRequest
             {
@@ -199,6 +227,8 @@ class VoiceSatellite(
         if (continueConversation) {
             Log.d(TAG, "Continuing conversation")
             wakeSatellite()
+        } else {
+            _satelliteState.value = VoiceSatelliteState.Idle()
         }
     }
 

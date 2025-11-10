@@ -9,14 +9,17 @@ import android.util.Log
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.example.ava.esphome.VoiceSatellite
+import com.example.ava.esphome.VoiceSatelliteState
 import com.example.ava.microwakeword.AssetWakeWordProvider
 import com.example.ava.notifications.createVoiceSatelliteServiceNotification
 import com.example.ava.nsd.NsdRegistration
 import com.example.ava.nsd.registerVoiceSatelliteNsd
 import com.example.ava.players.TtsPlayer
 import com.example.ava.preferences.VoiceAssistantPreferencesStore
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
@@ -25,8 +28,16 @@ class VoiceSatelliteService() : LifecycleService() {
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var settingsStore: VoiceAssistantPreferencesStore
     private var voiceSatelliteNsd = AtomicReference<NsdRegistration?>(null)
-    private val _voiceSatelliteStateFlow = MutableStateFlow<VoiceSatellite?>(null)
-    val voiceSatelliteStateFlow = _voiceSatelliteStateFlow.asStateFlow()
+    private val _voiceSatellite = MutableStateFlow<VoiceSatellite?>(null)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val voiceSatelliteState = _voiceSatellite.flatMapLatest {
+        if (it != null) {
+            it.satelliteState
+        } else {
+            flowOf(VoiceSatelliteState.Stopped())
+        }
+    }
 
     fun startVoiceSatellite() {
         val serviceIntent = Intent(this, this::class.java)
@@ -34,7 +45,7 @@ class VoiceSatelliteService() : LifecycleService() {
     }
 
     fun stopVoiceSatellite() {
-        val satellite = _voiceSatelliteStateFlow.getAndUpdate { null }
+        val satellite = _voiceSatellite.getAndUpdate { null }
         if (satellite != null) {
             Log.d(TAG, "Stopping voice satellite")
             wakeLock.release()
@@ -63,7 +74,7 @@ class VoiceSatelliteService() : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         lifecycleScope.launch {
             // already started?
-            if (_voiceSatelliteStateFlow.value == null) {
+            if (_voiceSatellite.value == null) {
                 Log.d(TAG, "Starting voice satellite")
                 startForeground(
                     2,
@@ -82,7 +93,7 @@ class VoiceSatelliteService() : LifecycleService() {
                     stopWordProvider,
                     ttsPlayer
                 )
-                _voiceSatelliteStateFlow.value = satellite
+                _voiceSatellite.value = satellite
                 satellite.start()
                 voiceSatelliteNsd.set(
                     registerVoiceSatelliteNsd(
@@ -98,7 +109,7 @@ class VoiceSatelliteService() : LifecycleService() {
     }
 
     override fun onDestroy() {
-        _voiceSatelliteStateFlow.getAndUpdate { null }?.close()
+        _voiceSatellite.getAndUpdate { null }?.close()
         voiceSatelliteNsd.getAndSet(null)?.unregister(this)
         if (wakeLock.isHeld)
             wakeLock.release()

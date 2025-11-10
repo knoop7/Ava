@@ -12,4 +12,10 @@
     <string name="validation_voice_satellite_name_empty">Name cannot be empty</string>
     <string name="validation_voice_satellite_port_invalid">Port must be between 1 and 65535</string>
     <string name="validation_voice_satellite_wake_word_invalid">Wake word not found</string>
+    <string name="satellite_state_stopped">Stopped</string>
+    <string name="satellite_state_disconnected">Disconnected</string>
+    <string name="satellite_state_idle">Idle</string>
+    <string name="satellite_state_listening">Listening</string>
+    <string name="satellite_state_processing">Processing</string>
+    <string name="satellite_state_responding">Responding</string>
 </resources>
