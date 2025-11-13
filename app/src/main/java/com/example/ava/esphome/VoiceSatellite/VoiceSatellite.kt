@@ -52,9 +52,7 @@ class VoiceSatellite(
 ) {
     private val audioInput = VoiceSatelliteAudioInput(wakeWordProvider, stopWordProvider).apply {
         activeWakeWords = listOf(settings.wakeWord)
-        activeStopWords = stopWordProvider.getWakeWords()
-            .take(1)
-            .map { it.id }
+        activeStopWords = listOf(settings.stopWord)
     }
 
     private var continueConversation = false

@@ -25,6 +25,7 @@ data class VoiceSatelliteSettings(
     val serverPort: Int,
     val macAddress: String,
     val wakeWord: String,
+    val stopWord: String,
     val playWakeSound: Boolean,
     val wakeSound: String,
     val timerFinishedSound: String
@@ -35,6 +36,7 @@ object VoiceSatellitePreferenceKeys{
     val SERVER_PORT = intPreferencesKey("server_port")
     val MAC_ADDRESS = stringPreferencesKey("mac_address")
     val WAKE_WORD = stringPreferencesKey("wake_word")
+    val STOP_WORD = stringPreferencesKey("stop_word")
     val PLAY_WAKE_SOUND = booleanPreferencesKey("play_wake_sound")
     val WAKE_SOUND = stringPreferencesKey("wake_sound")
     val TIMER_FINISHED_SOUND = stringPreferencesKey("timer_finished_sound")
@@ -62,7 +64,10 @@ class VoiceAssistantPreferencesStore(context: Context) {
             && currentPreferences[VoiceSatellitePreferenceKeys.SERVER_PORT] != null
             && currentPreferences[VoiceSatellitePreferenceKeys.MAC_ADDRESS] != null
             && currentPreferences[VoiceSatellitePreferenceKeys.WAKE_WORD] != null
+            && currentPreferences[VoiceSatellitePreferenceKeys.STOP_WORD] != null
             && currentPreferences[VoiceSatellitePreferenceKeys.PLAY_WAKE_SOUND] != null
+            && currentPreferences[VoiceSatellitePreferenceKeys.WAKE_SOUND] != null
+            && currentPreferences[VoiceSatellitePreferenceKeys.TIMER_FINISHED_SOUND] != null
         ) return true
 
         save(createSettingsOrDefault(currentPreferences))
@@ -74,6 +79,7 @@ class VoiceAssistantPreferencesStore(context: Context) {
         serverPort = preferences[VoiceSatellitePreferenceKeys.SERVER_PORT] ?: DEFAULT_SERVER_PORT,
         macAddress = preferences[VoiceSatellitePreferenceKeys.MAC_ADDRESS] ?: DEFAULT_MAC_ADDRESS,
         wakeWord = preferences[VoiceSatellitePreferenceKeys.WAKE_WORD] ?: DEFAULT_WAKE_WORD,
+        stopWord = preferences[VoiceSatellitePreferenceKeys.STOP_WORD] ?: DEFAULT_STOP_WORD,
         playWakeSound = preferences[VoiceSatellitePreferenceKeys.PLAY_WAKE_SOUND]
             ?: DEFAULT_PLAY_WAKE_SOUND,
         wakeSound = preferences[VoiceSatellitePreferenceKeys.WAKE_SOUND] ?: DEFAULT_WAKE_SOUND,
@@ -92,10 +98,14 @@ class VoiceAssistantPreferencesStore(context: Context) {
                     voiceSatelliteSettings.macAddress
                 preferences[VoiceSatellitePreferenceKeys.WAKE_WORD] =
                     voiceSatelliteSettings.wakeWord
+                preferences[VoiceSatellitePreferenceKeys.STOP_WORD] =
+                    voiceSatelliteSettings.stopWord
                 preferences[VoiceSatellitePreferenceKeys.PLAY_WAKE_SOUND] =
                     voiceSatelliteSettings.playWakeSound
                 preferences[VoiceSatellitePreferenceKeys.WAKE_SOUND] =
                     voiceSatelliteSettings.wakeSound
+                preferences[VoiceSatellitePreferenceKeys.TIMER_FINISHED_SOUND] =
+                    voiceSatelliteSettings.timerFinishedSound
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error saving preferences", e)
@@ -130,6 +140,7 @@ class VoiceAssistantPreferencesStore(context: Context) {
         private const val DEFAULT_SERVER_PORT = 6053
         private val DEFAULT_MAC_ADDRESS = getRandomMacAddressString()
         private const val DEFAULT_WAKE_WORD = "okay_nabu"
+        private const val DEFAULT_STOP_WORD = "stop"
         private const val DEFAULT_PLAY_WAKE_SOUND = true
         private const val DEFAULT_WAKE_SOUND = "asset:///sounds/wake_word_triggered.flac"
         private const val DEFAULT_TIMER_FINISHED_SOUND = "asset:///sounds/timer_finished.flac"
