@@ -26,6 +26,7 @@ class MediaPlayerEntity(
 
     private val mediaPlayerState = AtomicReference(MediaPlayerState.MEDIA_PLAYER_STATE_IDLE)
     private val muted = AtomicBoolean(false)
+    private val volume = AtomicReference(1.0f)
 
     private val _state = MutableSharedFlow<GeneratedMessage>(
         extraBufferCapacity = 1,
@@ -42,6 +43,7 @@ class MediaPlayerEntity(
 
     init {
         ttsPlayer.addListener(playerListener)
+        ttsPlayer.volume = volume.get()
     }
 
     override suspend fun handleMessage(message: GeneratedMessage) = sequence {
@@ -61,6 +63,10 @@ class MediaPlayerEntity(
                         setMediaPlayerState(MediaPlayerState.MEDIA_PLAYER_STATE_PAUSED)
                     } else if (message.command == MediaPlayerCommand.MEDIA_PLAYER_COMMAND_PLAY) {
                         setMediaPlayerState(MediaPlayerState.MEDIA_PLAYER_STATE_PLAYING)
+                    } else if (message.command == MediaPlayerCommand.MEDIA_PLAYER_COMMAND_MUTE) {
+                        setIsMuted(true)
+                    } else if (message.command == MediaPlayerCommand.MEDIA_PLAYER_COMMAND_UNMUTE) {
+                        setIsMuted(false)
                     }
                 } else if (message.hasVolume) {
                     setVolume(message.volume)
@@ -79,7 +85,15 @@ class MediaPlayerEntity(
     }
 
     private fun setVolume(volume: Float) {
-        ttsPlayer.volume = volume
+        this.volume.set(volume)
+        if (!muted.get())
+            ttsPlayer.volume = volume
+        stateChanged()
+    }
+
+    private fun setIsMuted(isMuted: Boolean) {
+        this.muted.set(isMuted)
+        ttsPlayer.volume = if (isMuted) 0.0f else this.volume.get()
         stateChanged()
     }
 
@@ -91,7 +105,7 @@ class MediaPlayerEntity(
         return mediaPlayerStateResponse {
             key = this@MediaPlayerEntity.key
             state = this@MediaPlayerEntity.mediaPlayerState.get()
-            volume = ttsPlayer.volume
+            volume = this@MediaPlayerEntity.volume.get()
             muted = this@MediaPlayerEntity.muted.get()
         }
     }
