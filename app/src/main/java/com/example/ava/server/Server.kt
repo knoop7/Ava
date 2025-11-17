@@ -41,6 +41,10 @@ class Server(private val dispatcher: CoroutineDispatcher = Dispatchers.IO) : Aut
         }
         .flowOn(dispatcher)
 
+    fun disconnectCurrentClient() {
+        connection.value?.let { disconnectClient(it) }
+    }
+
     private fun acceptClients(port: Int) = flow {
         var server: AsynchronousServerSocketChannel? = null
         try {

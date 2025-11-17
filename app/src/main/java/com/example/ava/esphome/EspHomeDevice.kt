@@ -108,14 +108,11 @@ open class EspHomeDevice(
                 apiVersionMinor = 10
             })
 
-            is ConnectRequest -> {
-                sendMessage(connectResponse { })
-                onConnected()
-            }
+            is ConnectRequest -> sendMessage(connectResponse { })
 
             is DisconnectRequest -> {
                 sendMessage(disconnectResponse { })
-                onDisconnected()
+                server.disconnectCurrentClient()
             }
 
             is DeviceInfoRequest -> sendMessage(deviceInfo)

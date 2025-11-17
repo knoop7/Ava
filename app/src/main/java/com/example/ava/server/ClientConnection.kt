@@ -42,8 +42,8 @@ class ClientConnection(socket: AsynchronousSocketChannel) : AutoCloseable {
     }
 
     override fun close() {
-        isClosed.set(true)
-        channel.close()
+        if (isClosed.compareAndSet(false, true))
+            channel.close()
     }
 
     companion object {
