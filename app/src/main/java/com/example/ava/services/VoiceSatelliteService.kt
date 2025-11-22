@@ -15,8 +15,9 @@ import com.example.ava.nsd.NsdRegistration
 import com.example.ava.nsd.registerVoiceSatelliteNsd
 import com.example.ava.players.MediaPlayer
 import com.example.ava.players.TtsPlayer
-import com.example.ava.preferences.VoiceSatellitePreferencesStore
-import com.example.ava.preferences.VoiceSatelliteSettings
+import com.example.ava.settings.VoiceSatelliteSettings
+import com.example.ava.settings.VoiceSatelliteSettingsStore
+import com.example.ava.settings.voiceSatelliteSettingsStore
 import com.example.ava.wakelocks.WifiWakeLock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 class VoiceSatelliteService() : LifecycleService() {
     private val wifiWakeLock = WifiWakeLock()
-    private lateinit var settingsStore: VoiceSatellitePreferencesStore
+    private lateinit var settingsStore: VoiceSatelliteSettingsStore
     private var voiceSatelliteNsd = AtomicReference<NsdRegistration?>(null)
     private val _voiceSatellite = MutableStateFlow<VoiceSatellite?>(null)
 
@@ -57,7 +58,7 @@ class VoiceSatelliteService() : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         wifiWakeLock.create(applicationContext, TAG)
-        settingsStore = VoiceSatellitePreferencesStore(applicationContext)
+        settingsStore = VoiceSatelliteSettingsStore(applicationContext.voiceSatelliteSettingsStore)
     }
 
     class VoiceSatelliteBinder(val service: VoiceSatelliteService) : Binder()
@@ -77,7 +78,8 @@ class VoiceSatelliteService() : LifecycleService() {
                     2,
                     createVoiceSatelliteServiceNotification(this@VoiceSatelliteService)
                 )
-                val settings = settingsStore.getSettings()
+                settingsStore.ensureMacAddressIsSet()
+                val settings = settingsStore.get()
                 _voiceSatellite.value = createVoiceSatellite(settings).apply { start() }
                 voiceSatelliteNsd.set(registerVoiceSatelliteNsd(settings))
                 wifiWakeLock.acquire()

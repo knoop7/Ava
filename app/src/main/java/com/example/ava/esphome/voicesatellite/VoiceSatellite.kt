@@ -11,7 +11,7 @@ import com.example.ava.esphome.entities.MediaPlayerEntity
 import com.example.ava.microwakeword.WakeWordProvider
 import com.example.ava.players.MediaPlayer
 import com.example.ava.players.TtsPlayer
-import com.example.ava.preferences.VoiceSatellitePreferencesStore
+import com.example.ava.settings.VoiceSatelliteSettingsStore
 import com.example.esphomeproto.api.DeviceInfoResponse
 import com.example.esphomeproto.api.VoiceAssistantAnnounceRequest
 import com.example.esphomeproto.api.VoiceAssistantConfigurationRequest
@@ -51,7 +51,7 @@ class VoiceSatellite(
     wakeWordProvider: WakeWordProvider,
     stopWordProvider: WakeWordProvider,
     val mediaPlayerEntity: MediaPlayerEntity,
-    val settingsStore: VoiceSatellitePreferencesStore
+    val settingsStore: VoiceSatelliteSettingsStore
 ) : EspHomeDevice(
     coroutineContext,
     name,
@@ -76,7 +76,7 @@ class VoiceSatellite(
         }
         .flowOn(Dispatchers.IO)
         .onStart {
-            val settings = settingsStore.getSettings()
+            val settings = settingsStore.get()
             audioInput.apply {
                 activeWakeWords = listOf(settings.wakeWord)
                 activeStopWords = listOf(settings.stopWord)
@@ -96,7 +96,7 @@ class VoiceSatellite(
     }
 
     override suspend fun getDeviceInfo(): DeviceInfoResponse = deviceInfoResponse {
-        val settings = settingsStore.getSettings()
+        val settings = settingsStore.get()
         name = settings.name
         usesPassword = false
         macAddress = settings.macAddress
@@ -157,7 +157,7 @@ class VoiceSatellite(
                 if (!timerFinished) {
                     timerFinished = true
                     mediaPlayerEntity.duck()
-                    mediaPlayerEntity.ttsPlayer.playSound(settingsStore.getSettings().timerFinishedSound) {
+                    mediaPlayerEntity.ttsPlayer.playSound(settingsStore.get().timerFinishedSound) {
                         scope.launch { onTimerFinished() }
                     }
                 }
@@ -269,7 +269,7 @@ class VoiceSatellite(
     ) {
         Log.d(TAG, "Wake satellite")
         _state.value = Listening
-        val settings = settingsStore.getSettings()
+        val settings = settingsStore.get()
         mediaPlayerEntity.duck()
         if (!isContinueConversation && settings.playWakeSound) {
             // Start streaming audio only after the wake sound has finished
@@ -321,7 +321,7 @@ class VoiceSatellite(
     private suspend fun onTimerFinished() {
         delay(1000)
         if (timerFinished) {
-            mediaPlayerEntity.ttsPlayer.playSound(settingsStore.getSettings().timerFinishedSound) {
+            mediaPlayerEntity.ttsPlayer.playSound(settingsStore.get().timerFinishedSound) {
                 scope.launch { onTimerFinished() }
             }
         } else {
@@ -345,14 +345,14 @@ class VoiceSatellite(
             stopWordProvider: WakeWordProvider,
             ttsPlayer: TtsPlayer,
             mediaPlayer: MediaPlayer,
-            settingsStore: VoiceSatellitePreferencesStore
+            settingsStore: VoiceSatelliteSettingsStore
         ): VoiceSatellite = VoiceSatellite(
             coroutineContext,
             name,
             port,
             wakeWordProvider,
             stopWordProvider,
-            MediaPlayerEntity(ttsPlayer, mediaPlayer),
+            MediaPlayerEntity(ttsPlayer, mediaPlayer, settings = settingsStore),
             settingsStore
         )
     }

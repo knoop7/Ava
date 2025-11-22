@@ -9,7 +9,8 @@ import com.example.ava.R
 import com.example.ava.microwakeword.AssetWakeWordProvider
 import com.example.ava.microwakeword.WakeWordProvider
 import com.example.ava.microwakeword.WakeWordWithId
-import com.example.ava.preferences.VoiceSatellitePreferencesStore
+import com.example.ava.settings.VoiceSatelliteSettingsStore
+import com.example.ava.settings.voiceSatelliteSettingsStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 
@@ -24,11 +25,11 @@ data class UIState(
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
-    private val preferencesStore = VoiceSatellitePreferencesStore(application)
+    private val settingsStore = VoiceSatelliteSettingsStore(application.voiceSatelliteSettingsStore)
     private val wakeWordProvider: WakeWordProvider = AssetWakeWordProvider(application.assets)
     private val wakeWords = wakeWordProvider.getWakeWords()
 
-    val uiState = preferencesStore.getSettingsFlow().map {
+    val uiState = settingsStore.getFlow().map {
         UIState(
             serverName = it.name,
             serverPort = it.serverPort,
@@ -42,7 +43,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun saveServerName(name: String) {
         if (validateName(name).isNullOrBlank()) {
-            preferencesStore.saveServerName(name)
+            settingsStore.saveName(name)
         } else {
             Log.w(TAG, "Cannot save invalid server name: $name")
         }
@@ -50,7 +51,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun saveServerPort(port: Int?) {
         if (validatePort(port).isNullOrBlank()) {
-            preferencesStore.saveServerPort(port!!)
+            settingsStore.saveServerPort(port!!)
         } else {
             Log.w(TAG, "Cannot save invalid server port: $port")
         }
@@ -58,14 +59,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun saveWakeWord(wakeWordId: String) {
         if (validateWakeWord(wakeWordId).isNullOrBlank()) {
-            preferencesStore.saveWakeWord(wakeWordId)
+            settingsStore.saveWakeWord(wakeWordId)
         } else {
             Log.w(TAG, "Cannot save invalid wake word: $wakeWordId")
         }
     }
 
     suspend fun savePlayWakeSound(playWakeSound: Boolean) {
-        preferencesStore.savePlayWakeSound(playWakeSound)
+        settingsStore.savePlayWakeSound(playWakeSound)
     }
 
 
