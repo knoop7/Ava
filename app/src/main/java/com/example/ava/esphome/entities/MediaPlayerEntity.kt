@@ -3,6 +3,8 @@ package com.example.ava.esphome.entities
 import androidx.media3.common.Player
 import com.example.ava.players.MediaPlayer
 import com.example.ava.players.TtsPlayer
+import com.example.ava.settings.SettingsStore
+import com.example.ava.settings.VoiceSatelliteSettings
 import com.example.esphomeproto.api.ListEntitiesRequest
 import com.example.esphomeproto.api.MediaPlayerCommand
 import com.example.esphomeproto.api.MediaPlayerCommandRequest
@@ -13,6 +15,7 @@ import com.example.esphomeproto.api.mediaPlayerStateResponse
 import com.google.protobuf.GeneratedMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
@@ -22,6 +25,7 @@ class MediaPlayerEntity(
     val key: Int = KEY,
     val name: String = NAME,
     val objectId: String = OBJECT_ID,
+    val settingsStore: SettingsStore<VoiceSatelliteSettings>
 ) : Entity, AutoCloseable {
 
     private val mediaPlayerState = AtomicReference(MediaPlayerState.MEDIA_PLAYER_STATE_IDLE)
@@ -39,17 +43,17 @@ class MediaPlayerEntity(
         }
     }
 
-    init {
+    override suspend fun start() {
         ttsPlayer.addListener(playerListener)
-        ttsPlayer.volume = volume.get()
-
         mediaPlayer.addListener(playerListener)
-        mediaPlayer.volume = volume.get()
+        val settings = settingsStore.get()
+        setIsMuted(settings.muted, false)
+        setVolume(settings.volume, false)
     }
 
-    override suspend fun handleMessage(message: GeneratedMessage) = sequence {
+    override fun handleMessage(message: GeneratedMessage) = flow {
         when (message) {
-            is ListEntitiesRequest -> yield(listEntitiesMediaPlayerResponse {
+            is ListEntitiesRequest -> emit(listEntitiesMediaPlayerResponse {
                 key = this@MediaPlayerEntity.key
                 name = this@MediaPlayerEntity.name
                 objectId = this@MediaPlayerEntity.objectId
@@ -96,16 +100,18 @@ class MediaPlayerEntity(
         stateChanged()
     }
 
-    private fun setVolume(volume: Float) {
+    private suspend fun setVolume(volume: Float, persist: Boolean = true) {
         this.volume.set(volume)
         if (!muted.get()) {
             ttsPlayer.volume = volume
             mediaPlayer.volume = if (isDucked.get()) volume / 2 else volume
         }
+        if (persist)
+            settingsStore.update { it.copy(volume = volume) }
         stateChanged()
     }
 
-    private fun setIsMuted(isMuted: Boolean) {
+    private suspend fun setIsMuted(isMuted: Boolean, persist: Boolean = true) {
         this.muted.set(isMuted)
         if (isMuted) {
             mediaPlayer.volume = 0.0f
@@ -114,6 +120,8 @@ class MediaPlayerEntity(
             ttsPlayer.volume = volume.get()
             mediaPlayer.volume = if (isDucked.get()) volume.get() / 2 else volume.get()
         }
+        if (persist)
+            settingsStore.update { it.copy(muted = isMuted) }
         stateChanged()
     }
 
@@ -134,7 +142,6 @@ class MediaPlayerEntity(
         ttsPlayer.close()
         mediaPlayer.close()
     }
-
 
     companion object {
         const val TAG = "MediaPlayerEntity"

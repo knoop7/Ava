@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface Entity {
     val state: Flow<GeneratedMessage>
-    suspend fun handleMessage(message: GeneratedMessage): Sequence<GeneratedMessage>
+    suspend fun start() {}
+    fun handleMessage(message: GeneratedMessage): Flow<GeneratedMessage>
 }

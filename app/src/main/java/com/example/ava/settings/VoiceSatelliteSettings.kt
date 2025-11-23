@@ -15,7 +15,9 @@ data class VoiceSatelliteSettings(
     val stopWord: String,
     val playWakeSound: Boolean,
     val wakeSound: String,
-    val timerFinishedSound: String
+    val timerFinishedSound: String,
+    val volume: Float,
+    val muted: Boolean
 )
 
 // The voice satellite uses a mac address as a unique identifier.
@@ -34,7 +36,9 @@ private val DEFAULT = VoiceSatelliteSettings(
     stopWord = "stop",
     playWakeSound = true,
     wakeSound = "asset:///sounds/wake_word_triggered.flac",
-    timerFinishedSound = "asset:///sounds/timer_finished.flac"
+    timerFinishedSound = "asset:///sounds/timer_finished.flac",
+    volume = 1.0f,
+    muted = false
 )
 
 val Context.voiceSatelliteSettingsStore: DataStore<VoiceSatelliteSettings> by dataStore(
@@ -44,7 +48,7 @@ val Context.voiceSatelliteSettingsStore: DataStore<VoiceSatelliteSettings> by da
 )
 
 class VoiceSatelliteSettingsStore(dataStore: DataStore<VoiceSatelliteSettings>) :
-    SettingsStore<VoiceSatelliteSettings>(dataStore, DEFAULT) {
+    SettingsStoreImpl<VoiceSatelliteSettings>(dataStore, DEFAULT) {
     suspend fun saveName(name: String) =
         update { it.copy(name = name) }
 

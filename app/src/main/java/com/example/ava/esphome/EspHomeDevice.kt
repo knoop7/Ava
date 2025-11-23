@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.job
 import kotlin.coroutines.CoroutineContext
 
@@ -85,15 +86,19 @@ abstract class EspHomeDevice(
         .launchIn(scope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun listenForEntityStateChanges() = isSubscribedToEntityState.flatMapLatest { subscribed ->
-        if (!subscribed)
-            emptyFlow()
-        else
-            entities
-                .map { it.state }
-                .merge()
-                .onEach { sendMessage(it) }
-    }.launchIn(scope)
+    fun listenForEntityStateChanges() = isSubscribedToEntityState
+        .onStart {
+            entities.forEach { it.start() }
+        }
+        .flatMapLatest { subscribed ->
+            if (!subscribed)
+                emptyFlow()
+            else
+                entities
+                    .map { it.state }
+                    .merge()
+                    .onEach { sendMessage(it) }
+        }.launchIn(scope)
 
     private suspend fun handleMessageInternal(message: GeneratedMessage) {
         Log.d(TAG, "Received message: ${message.javaClass.simpleName} $message")
@@ -122,11 +127,8 @@ abstract class EspHomeDevice(
             is ListEntitiesRequest, is SubscribeHomeAssistantStatesRequest, is MediaPlayerCommandRequest -> {
                 if (message is SubscribeHomeAssistantStatesRequest)
                     isSubscribedToEntityState.value = true
-                entities.forEach { entity ->
-                    entity.handleMessage(message).forEach { response ->
-                        sendMessage(response)
-                    }
-                }
+                entities.map { it.handleMessage(message) }.merge()
+                    .collect { response -> sendMessage(response) }
                 if (message is ListEntitiesRequest)
                     sendMessage(listEntitiesDoneResponse { })
             }

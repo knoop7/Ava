@@ -352,7 +352,7 @@ class VoiceSatellite(
             port,
             wakeWordProvider,
             stopWordProvider,
-            MediaPlayerEntity(ttsPlayer, mediaPlayer, settings = settingsStore),
+            MediaPlayerEntity(ttsPlayer, mediaPlayer, settingsStore = settingsStore),
             settingsStore
         )
     }
