@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -24,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.ava.R
@@ -49,7 +48,7 @@ fun HomeScreen(navController: NavController) {
                         var expanded by remember { mutableStateOf(false) }
                         IconButton(onClick = { expanded = !expanded }) {
                             Icon(
-                                imageVector = Icons.Default.MoreVert,
+                                painter = painterResource(R.drawable.more_vert_24px),
                                 contentDescription = "More options",
                                 tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
