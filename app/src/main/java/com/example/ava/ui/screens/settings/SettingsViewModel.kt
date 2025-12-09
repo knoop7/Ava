@@ -37,7 +37,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 wakeWord.id == it.wakeWord
             } ?: wakeWords.first(),
             wakeWords = wakeWords,
-            playWakeSound = it.playWakeSound
+            playWakeSound = it.enableWakeSound
         )
     }
 
@@ -65,8 +65,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    suspend fun savePlayWakeSound(playWakeSound: Boolean) {
-        settingsStore.savePlayWakeSound(playWakeSound)
+    suspend fun saveEnableWakeSound(enableWakeSound: Boolean) {
+        settingsStore.saveEnableWakeSound(enableWakeSound)
     }
 
 

@@ -14,7 +14,7 @@ data class VoiceSatelliteSettings(
     val macAddress: String,
     val wakeWord: String,
     val stopWord: String,
-    val playWakeSound: Boolean,
+    val enableWakeSound: Boolean,
     val wakeSound: String,
     val timerFinishedSound: String,
     val volume: Float,
@@ -35,7 +35,7 @@ private val DEFAULT = VoiceSatelliteSettings(
     macAddress = DEFAULT_MAC_ADDRESS,
     wakeWord = "okay_nabu",
     stopWord = "stop",
-    playWakeSound = true,
+    enableWakeSound = true,
     wakeSound = "asset:///sounds/wake_word_triggered.flac",
     timerFinishedSound = "asset:///sounds/timer_finished.flac",
     volume = 1.0f,
@@ -57,6 +57,21 @@ class VoiceSatelliteSettingsStore(dataStore: DataStore<VoiceSatelliteSettings>) 
         SettingState(getFlow().map { it.volume }) { value -> update { it.copy(volume = value) } }
     val muted =
         SettingState(getFlow().map { it.muted }) { value -> update { it.copy(muted = value) } }
+    val enableWakeSound = SettingState(getFlow().map { it.enableWakeSound }) { value ->
+        update {
+            it.copy(enableWakeSound = value)
+        }
+    }
+    val wakeSound =
+        SettingState(getFlow().map { it.wakeSound }) { value -> update { it.copy(wakeSound = value) } }
+    val timerFinishedSound =
+        SettingState(getFlow().map { it.timerFinishedSound }) { value ->
+            update {
+                it.copy(
+                    timerFinishedSound = value
+                )
+            }
+        }
 
     suspend fun saveServerPort(serverPort: Int) =
         update { it.copy(serverPort = serverPort) }
@@ -64,8 +79,8 @@ class VoiceSatelliteSettingsStore(dataStore: DataStore<VoiceSatelliteSettings>) 
     suspend fun saveWakeWord(wakeWord: String) =
         update { it.copy(wakeWord = wakeWord) }
 
-    suspend fun savePlayWakeSound(playWakeSound: Boolean) =
-        update { it.copy(playWakeSound = playWakeSound) }
+    suspend fun saveEnableWakeSound(enableWakeSound: Boolean) =
+        update { it.copy(enableWakeSound = enableWakeSound) }
 
     suspend fun ensureMacAddressIsSet() {
         update {

@@ -6,8 +6,8 @@ import androidx.annotation.RequiresPermission
 import com.example.ava.esphome.Connected
 import com.example.ava.esphome.EspHomeDevice
 import com.example.ava.esphome.EspHomeState
-import com.example.ava.esphome.entities.Entity
 import com.example.ava.esphome.entities.MediaPlayerEntity
+import com.example.ava.esphome.entities.SwitchEntity
 import com.example.ava.microwakeword.WakeWordProvider
 import com.example.ava.settings.VoiceSatelliteSettingsStore
 import com.example.esphomeproto.api.DeviceInfoResponse
@@ -54,7 +54,15 @@ class VoiceSatellite(
     coroutineContext,
     name,
     port,
-    listOf<Entity>(MediaPlayerEntity(player = player))
+    listOf(
+        MediaPlayerEntity(0, "Media Player", "media_player", player),
+        SwitchEntity(
+            1,
+            "Play Wake Sound",
+            "play_wake_sound",
+            player.enableWakeSound
+        ) { player.enableWakeSound.set(it) }
+    )
 ) {
     private val audioInput = VoiceSatelliteAudioInput(wakeWordProvider, stopWordProvider)
     private var continueConversation = false
@@ -155,7 +163,7 @@ class VoiceSatellite(
                 if (!timerFinished) {
                     timerFinished = true
                     player.duck()
-                    player.ttsPlayer.playSound(settingsStore.get().timerFinishedSound) {
+                    player.playTimerFinishedSound {
                         scope.launch { onTimerFinished() }
                     }
                 }
@@ -267,11 +275,10 @@ class VoiceSatellite(
     ) {
         Log.d(TAG, "Wake satellite")
         _state.value = Listening
-        val settings = settingsStore.get()
         player.duck()
-        if (!isContinueConversation && settings.playWakeSound) {
+        if (!isContinueConversation) {
             // Start streaming audio only after the wake sound has finished
-            player.ttsPlayer.playSound(settings.wakeSound) {
+            player.playWakeSound {
                 scope.launch { sendVoiceAssistantStartRequest(wakeWordPhrase) }
             }
         } else {
@@ -320,7 +327,7 @@ class VoiceSatellite(
     private suspend fun onTimerFinished() {
         delay(1000)
         if (timerFinished) {
-            player.ttsPlayer.playSound(settingsStore.get().timerFinishedSound) {
+            player.playTimerFinishedSound {
                 scope.launch { onTimerFinished() }
             }
         } else {

@@ -4,6 +4,7 @@ import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import com.example.ava.players.AudioPlayer
 import com.example.ava.players.TtsPlayer
+import com.example.ava.settings.SettingState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -11,11 +12,16 @@ import kotlinx.coroutines.flow.asStateFlow
 class VoiceSatellitePlayer(
     val ttsPlayer: TtsPlayer,
     val mediaPlayer: AudioPlayer,
+    volume: Float = 1.0f,
+    muted: Boolean = false,
+    val enableWakeSound: SettingState<Boolean>,
+    val wakeSound: SettingState<String>,
+    val timerFinishedSound: SettingState<String>,
     private val duckMultiplier: Float = 0.5f
 ) : AutoCloseable {
     private var _isDucked = false
-    private val _volume = MutableStateFlow(1.0f)
-    private val _muted = MutableStateFlow(false)
+    private val _volume = MutableStateFlow(volume)
+    private val _muted = MutableStateFlow(muted)
 
     val volume get() = _volume.asStateFlow()
     fun setVolume(value: Float) {
@@ -36,6 +42,16 @@ class VoiceSatellitePlayer(
             ttsPlayer.volume = _volume.value
             mediaPlayer.volume = if (_isDucked) _volume.value * duckMultiplier else _volume.value
         }
+    }
+
+    suspend fun playWakeSound(onCompletion: () -> Unit = {}) {
+        if (enableWakeSound.get())
+            ttsPlayer.playSound(wakeSound.get(), onCompletion)
+        else onCompletion()
+    }
+
+    suspend fun playTimerFinishedSound(onCompletion: () -> Unit = {}) {
+        ttsPlayer.playSound(timerFinishedSound.get(), onCompletion)
     }
 
     fun duck() {

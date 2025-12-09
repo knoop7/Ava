@@ -115,13 +115,6 @@ class VoiceSatelliteService() : LifecycleService() {
         _voiceSatellite.flatMapLatest { satellite ->
             if (satellite == null) emptyFlow()
             else merge(
-                // Update satellite when settings change
-                settingsStore.volume.onEach {
-                    satellite.player.setVolume(it)
-                },
-                settingsStore.muted.onEach {
-                    satellite.player.setMuted(it)
-                },
                 // Update settings when satellite changes,
                 // dropping the initial value to avoid overwriting
                 // settings with the initial/default values
@@ -148,7 +141,12 @@ class VoiceSatelliteService() : LifecycleService() {
                 USAGE_MEDIA,
                 AUDIO_CONTENT_TYPE_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN
-            )
+            ),
+            volume = settings.volume,
+            muted = settings.muted,
+            enableWakeSound = settingsStore.enableWakeSound,
+            wakeSound = settingsStore.wakeSound,
+            timerFinishedSound = settingsStore.timerFinishedSound
         )
 
         return VoiceSatellite(

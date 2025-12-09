@@ -71,13 +71,13 @@ fun VoiceSatelliteSettings(
         }
         item {
             SwitchSetting(
-                name = stringResource(R.string.label_voice_satellite_play_wake_sound),
+                name = stringResource(R.string.label_voice_satellite_enable_wake_sound),
                 description = stringResource(R.string.description_voice_satellite_play_wake_sound),
                 value = uiState?.playWakeSound ?: true,
                 enabled = enabled,
                 onCheckedChange = {
                     coroutineScope.launch {
-                        viewModel.savePlayWakeSound(it)
+                        viewModel.saveEnableWakeSound(it)
                     }
                 }
             )
