@@ -16,9 +16,9 @@ import kotlinx.coroutines.flow.flow
 
 @OptIn(UnstableApi::class)
 class MediaPlayerEntity(
-    val key: Int = KEY,
-    val name: String = NAME,
-    val objectId: String = OBJECT_ID,
+    val key: Int,
+    val name: String,
+    val objectId: String,
     val player: VoiceSatellitePlayer
 ) : Entity {
 
@@ -69,12 +69,5 @@ class MediaPlayerEntity(
         AudioPlayerState.PLAYING -> MediaPlayerState.MEDIA_PLAYER_STATE_PLAYING
         AudioPlayerState.PAUSED -> MediaPlayerState.MEDIA_PLAYER_STATE_PAUSED
         AudioPlayerState.IDLE -> MediaPlayerState.MEDIA_PLAYER_STATE_IDLE
-    }
-
-    companion object {
-        const val TAG = "MediaPlayerEntity"
-        const val KEY = 0
-        const val NAME = "Media Player"
-        const val OBJECT_ID = "media_player"
     }
 }
