@@ -8,7 +8,6 @@ import com.example.ava.esphome.EspHomeDevice
 import com.example.ava.esphome.EspHomeState
 import com.example.ava.esphome.entities.MediaPlayerEntity
 import com.example.ava.esphome.entities.SwitchEntity
-import com.example.ava.microwakeword.WakeWordProvider
 import com.example.ava.settings.VoiceSatelliteSettingsStore
 import com.example.esphomeproto.api.DeviceInfoResponse
 import com.example.esphomeproto.api.VoiceAssistantAnnounceRequest
@@ -34,7 +33,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -46,8 +44,7 @@ class VoiceSatellite(
     coroutineContext: CoroutineContext,
     name: String,
     port: Int,
-    wakeWordProvider: WakeWordProvider,
-    stopWordProvider: WakeWordProvider,
+    val audioInput: VoiceSatelliteAudioInput,
     val player: VoiceSatellitePlayer,
     val settingsStore: VoiceSatelliteSettingsStore
 ) : EspHomeDevice(
@@ -64,7 +61,6 @@ class VoiceSatellite(
         ) { player.enableWakeSound.set(it) }
     )
 ) {
-    private val audioInput = VoiceSatelliteAudioInput(wakeWordProvider, stopWordProvider)
     private var continueConversation = false
     private var timerFinished = false
 
@@ -81,13 +77,6 @@ class VoiceSatellite(
             if (isConnected) audioInput.start() else emptyFlow()
         }
         .flowOn(Dispatchers.IO)
-        .onStart {
-            val settings = settingsStore.get()
-            audioInput.apply {
-                activeWakeWords = listOf(settings.wakeWord)
-                activeStopWords = listOf(settings.stopWord)
-            }
-        }
         .onEach {
             handleAudioResult(audioResult = it)
         }
@@ -124,7 +113,7 @@ class VoiceSatellite(
                             trainedLanguages += it.wakeWord.trained_languages.toList()
                         }
                     }
-                    activeWakeWords += audioInput.activeWakeWords
+                    activeWakeWords += audioInput.activeWakeWords.value
                     maxActiveWakeWords = 1
                 })
 
@@ -133,8 +122,7 @@ class VoiceSatellite(
                     message.activeWakeWordsList.filter { audioInput.availableWakeWords.any { wakeWord -> wakeWord.id == it } }
                 Log.d(TAG, "Setting active wake words: $activeWakeWords")
                 if (activeWakeWords.isNotEmpty()) {
-                    audioInput.activeWakeWords = activeWakeWords
-                    settingsStore.saveWakeWord(activeWakeWords.first())
+                    audioInput.setActiveWakeWords(activeWakeWords)
                 }
                 val ignoredWakeWords =
                     message.activeWakeWordsList.filter { !activeWakeWords.contains(it) }

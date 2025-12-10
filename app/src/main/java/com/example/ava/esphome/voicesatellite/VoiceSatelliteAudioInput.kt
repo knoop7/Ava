@@ -6,35 +6,33 @@ import com.example.ava.audio.MicrophoneInput
 import com.example.ava.microwakeword.WakeWordDetector
 import com.example.ava.microwakeword.WakeWordProvider
 import com.google.protobuf.ByteString
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.yield
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicReference
 
 class VoiceSatelliteAudioInput(
+    activeWakeWords: List<String>,
+    activeStopWords: List<String>,
     private val wakeWordProvider: WakeWordProvider,
     private val stopWordProvider: WakeWordProvider
 ) {
     val availableWakeWords = wakeWordProvider.getWakeWords()
     val availableStopWords = stopWordProvider.getWakeWords()
 
-    private val activeWakeWordsChanged = AtomicBoolean(false)
-    private val _activeWakeWords = AtomicReference(listOf<String>())
-    var activeWakeWords: List<String>
-        get() = _activeWakeWords.get()
-        set(value) {
-            _activeWakeWords.set(value.toList())
-            activeWakeWordsChanged.set(true)
-        }
+    private val _activeWakeWords = MutableStateFlow(activeWakeWords)
+    val activeWakeWords = _activeWakeWords.asStateFlow()
+    fun setActiveWakeWords(value: List<String>) {
+        _activeWakeWords.value = value
+    }
 
-    private val activeStopWordsChanged = AtomicBoolean(false)
-    private val _activeStopWords = AtomicReference(listOf<String>())
-    var activeStopWords: List<String>
-        get() = _activeStopWords.get()
-        set(value) {
-            _activeStopWords.set(value.toList())
-            activeStopWordsChanged.set(true)
-        }
+    private val _activeStopWords = MutableStateFlow(activeStopWords)
+    val activeStopWords = _activeStopWords.asStateFlow()
+    fun setActiveStopWords(value: List<String>) {
+        _activeStopWords.value = value
+    }
 
     private val _isStreaming = AtomicBoolean(false)
     var isStreaming: Boolean
@@ -47,24 +45,30 @@ class VoiceSatelliteAudioInput(
         data class StopDetected(val stopWord: String) : AudioResult()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     fun start() = flow {
         val microphoneInput = MicrophoneInput()
+        var wakeWords = activeWakeWords.value
+        var stopWords = activeStopWords.value
+
         val wakeWordDetector = WakeWordDetector(wakeWordProvider).apply {
-            setActiveWakeWords(activeWakeWords)
+            setActiveWakeWords(wakeWords)
         }
         val stopWordDetector = WakeWordDetector(stopWordProvider).apply {
-            setActiveWakeWords(activeStopWords)
+            setActiveWakeWords(stopWords)
         }
         try {
             microphoneInput.start()
             while (true) {
-                if (activeWakeWordsChanged.compareAndSet(true, false)) {
-                    wakeWordDetector.setActiveWakeWords(activeWakeWords)
+                if (wakeWords != activeWakeWords.value) {
+                    wakeWords = activeWakeWords.value
+                    wakeWordDetector.setActiveWakeWords(wakeWords)
                 }
 
-                if (activeStopWordsChanged.compareAndSet(true, false)) {
-                    stopWordDetector.setActiveWakeWords(activeStopWords)
+                if (stopWords != activeStopWords.value) {
+                    stopWords = activeStopWords.value
+                    stopWordDetector.setActiveWakeWords(stopWords)
                 }
 
                 val audio = microphoneInput.read()

@@ -53,6 +53,10 @@ class VoiceSatelliteSettingsStore(dataStore: DataStore<VoiceSatelliteSettings>) 
     suspend fun saveName(name: String) =
         update { it.copy(name = name) }
 
+    val wakeWord =
+        SettingState(getFlow().map { it.wakeWord }) { value -> update { it.copy(wakeWord = value) } }
+    val stopWord =
+        SettingState(getFlow().map { it.stopWord }) { value -> update { it.copy(stopWord = value) } }
     val volume =
         SettingState(getFlow().map { it.volume }) { value -> update { it.copy(volume = value) } }
     val muted =
@@ -75,12 +79,6 @@ class VoiceSatelliteSettingsStore(dataStore: DataStore<VoiceSatelliteSettings>) 
 
     suspend fun saveServerPort(serverPort: Int) =
         update { it.copy(serverPort = serverPort) }
-
-    suspend fun saveWakeWord(wakeWord: String) =
-        update { it.copy(wakeWord = wakeWord) }
-
-    suspend fun saveEnableWakeSound(enableWakeSound: Boolean) =
-        update { it.copy(enableWakeSound = enableWakeSound) }
 
     suspend fun ensureMacAddressIsSet() {
         update {

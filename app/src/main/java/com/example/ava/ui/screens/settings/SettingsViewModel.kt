@@ -59,14 +59,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun saveWakeWord(wakeWordId: String) {
         if (validateWakeWord(wakeWordId).isNullOrBlank()) {
-            settingsStore.saveWakeWord(wakeWordId)
+            settingsStore.wakeWord.set(wakeWordId)
         } else {
             Log.w(TAG, "Cannot save invalid wake word: $wakeWordId")
         }
     }
 
     suspend fun saveEnableWakeSound(enableWakeSound: Boolean) {
-        settingsStore.saveEnableWakeSound(enableWakeSound)
+        settingsStore.enableWakeSound.set(enableWakeSound)
     }
 
 

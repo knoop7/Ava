@@ -17,6 +17,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.ava.esphome.Stopped
 import com.example.ava.esphome.voicesatellite.VoiceSatellite
+import com.example.ava.esphome.voicesatellite.VoiceSatelliteAudioInput
 import com.example.ava.esphome.voicesatellite.VoiceSatellitePlayer
 import com.example.ava.microwakeword.AssetWakeWordProvider
 import com.example.ava.notifications.createVoiceSatelliteServiceNotification
@@ -118,6 +119,9 @@ class VoiceSatelliteService() : LifecycleService() {
                 // Update settings when satellite changes,
                 // dropping the initial value to avoid overwriting
                 // settings with the initial/default values
+                satellite.audioInput.activeWakeWords.drop(1).onEach {
+                    settingsStore.wakeWord.set(if (it.isNotEmpty()) it.first() else "")
+                },
                 satellite.player.volume.drop(1).onEach {
                     settingsStore.volume.set(it)
                 },
@@ -129,6 +133,13 @@ class VoiceSatelliteService() : LifecycleService() {
     }
 
     private fun createVoiceSatellite(settings: VoiceSatelliteSettings): VoiceSatellite {
+        val audioInput = VoiceSatelliteAudioInput(
+            activeWakeWords = listOf(settings.wakeWord),
+            activeStopWords = listOf(settings.stopWord),
+            wakeWordProvider = AssetWakeWordProvider(assets),
+            stopWordProvider = AssetWakeWordProvider(assets, "stopWords"),
+        )
+
         val player = VoiceSatellitePlayer(
             ttsPlayer = TtsPlayer(
                 createAudioPlayer(
@@ -153,8 +164,7 @@ class VoiceSatelliteService() : LifecycleService() {
             coroutineContext = lifecycleScope.coroutineContext,
             name = settings.name,
             port = settings.serverPort,
-            wakeWordProvider = AssetWakeWordProvider(assets),
-            stopWordProvider = AssetWakeWordProvider(assets, "stopWords"),
+            audioInput = audioInput,
             player = player,
             settingsStore = settingsStore
         )
