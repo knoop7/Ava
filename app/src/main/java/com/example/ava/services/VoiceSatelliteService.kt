@@ -26,8 +26,10 @@ import com.example.ava.nsd.NsdRegistration
 import com.example.ava.nsd.registerVoiceSatelliteNsd
 import com.example.ava.players.AudioPlayer
 import com.example.ava.players.TtsPlayer
+import com.example.ava.settings.PlayerSettingsStore
 import com.example.ava.settings.VoiceSatelliteSettings
 import com.example.ava.settings.VoiceSatelliteSettingsStore
+import com.example.ava.settings.playerSettingsStore
 import com.example.ava.settings.voiceSatelliteSettingsStore
 import com.example.ava.utils.translate
 import com.example.ava.wakelocks.WifiWakeLock
@@ -48,7 +50,8 @@ import java.util.concurrent.atomic.AtomicReference
 @androidx.annotation.OptIn(UnstableApi::class)
 class VoiceSatelliteService() : LifecycleService() {
     private val wifiWakeLock = WifiWakeLock()
-    private lateinit var settingsStore: VoiceSatelliteSettingsStore
+    private lateinit var satelliteSettingsStore: VoiceSatelliteSettingsStore
+    private lateinit var playerSettingsStore: PlayerSettingsStore
     private var voiceSatelliteNsd = AtomicReference<NsdRegistration?>(null)
     private val _voiceSatellite = MutableStateFlow<VoiceSatellite?>(null)
 
@@ -76,7 +79,9 @@ class VoiceSatelliteService() : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         wifiWakeLock.create(applicationContext, TAG)
-        settingsStore = VoiceSatelliteSettingsStore(applicationContext.voiceSatelliteSettingsStore)
+        satelliteSettingsStore =
+            VoiceSatelliteSettingsStore(applicationContext.voiceSatelliteSettingsStore)
+        playerSettingsStore = PlayerSettingsStore(applicationContext.playerSettingsStore)
         createVoiceSatelliteServiceNotificationChannel(this)
         updateNotificationOnStateChanges()
         startSettingsWatcher()
@@ -102,8 +107,8 @@ class VoiceSatelliteService() : LifecycleService() {
                         Stopped.translate(resources)
                     )
                 )
-                settingsStore.ensureMacAddressIsSet()
-                val settings = settingsStore.get()
+                satelliteSettingsStore.ensureMacAddressIsSet()
+                val settings = satelliteSettingsStore.get()
                 _voiceSatellite.value = createVoiceSatellite(settings).apply { start() }
                 voiceSatelliteNsd.set(registerVoiceSatelliteNsd(settings))
                 wifiWakeLock.acquire()
@@ -120,26 +125,27 @@ class VoiceSatelliteService() : LifecycleService() {
                 // dropping the initial value to avoid overwriting
                 // settings with the initial/default values
                 satellite.audioInput.activeWakeWords.drop(1).onEach {
-                    settingsStore.wakeWord.set(if (it.isNotEmpty()) it.first() else "")
+                    satelliteSettingsStore.wakeWord.set(if (it.isNotEmpty()) it.first() else "")
                 },
                 satellite.player.volume.drop(1).onEach {
-                    settingsStore.volume.set(it)
+                    playerSettingsStore.volume.set(it)
                 },
                 satellite.player.muted.drop(1).onEach {
-                    settingsStore.muted.set(it)
+                    playerSettingsStore.muted.set(it)
                 }
             )
         }.launchIn(lifecycleScope)
     }
 
-    private fun createVoiceSatellite(settings: VoiceSatelliteSettings): VoiceSatellite {
+    private suspend fun createVoiceSatellite(satelliteSettings: VoiceSatelliteSettings): VoiceSatellite {
         val audioInput = VoiceSatelliteAudioInput(
-            activeWakeWords = listOf(settings.wakeWord),
-            activeStopWords = listOf(settings.stopWord),
+            activeWakeWords = listOf(satelliteSettings.wakeWord),
+            activeStopWords = listOf(satelliteSettings.stopWord),
             wakeWordProvider = AssetWakeWordProvider(assets),
             stopWordProvider = AssetWakeWordProvider(assets, "stopWords"),
         )
 
+        val playerSettings = playerSettingsStore.get()
         val player = VoiceSatellitePlayer(
             ttsPlayer = TtsPlayer(
                 createAudioPlayer(
@@ -153,20 +159,20 @@ class VoiceSatelliteService() : LifecycleService() {
                 AUDIO_CONTENT_TYPE_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN
             ),
-            volume = settings.volume,
-            muted = settings.muted,
-            enableWakeSound = settingsStore.enableWakeSound,
-            wakeSound = settingsStore.wakeSound,
-            timerFinishedSound = settingsStore.timerFinishedSound
+            volume = playerSettings.volume,
+            muted = playerSettings.muted,
+            enableWakeSound = playerSettingsStore.enableWakeSound,
+            wakeSound = playerSettingsStore.wakeSound,
+            timerFinishedSound = playerSettingsStore.timerFinishedSound
         )
 
         return VoiceSatellite(
             coroutineContext = lifecycleScope.coroutineContext,
-            name = settings.name,
-            port = settings.serverPort,
+            name = satelliteSettings.name,
+            port = satelliteSettings.serverPort,
             audioInput = audioInput,
             player = player,
-            settingsStore = settingsStore
+            settingsStore = satelliteSettingsStore
         )
     }
 

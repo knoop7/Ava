@@ -9,7 +9,9 @@ import com.example.ava.R
 import com.example.ava.microwakeword.AssetWakeWordProvider
 import com.example.ava.microwakeword.WakeWordProvider
 import com.example.ava.microwakeword.WakeWordWithId
+import com.example.ava.settings.PlayerSettingsStore
 import com.example.ava.settings.VoiceSatelliteSettingsStore
+import com.example.ava.settings.playerSettingsStore
 import com.example.ava.settings.voiceSatelliteSettingsStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
@@ -19,31 +21,33 @@ data class UIState(
     val serverName: String,
     val serverPort: Int,
     val wakeWord: WakeWordWithId,
-    val wakeWords: List<WakeWordWithId>,
-    val playWakeSound: Boolean
+    val wakeWords: List<WakeWordWithId>
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
-    private val settingsStore = VoiceSatelliteSettingsStore(application.voiceSatelliteSettingsStore)
+    private val satelliteSettingsStore =
+        VoiceSatelliteSettingsStore(application.voiceSatelliteSettingsStore)
+    private val playerSettingsStore = PlayerSettingsStore(application.playerSettingsStore)
     private val wakeWordProvider: WakeWordProvider = AssetWakeWordProvider(application.assets)
     private val wakeWords = wakeWordProvider.getWakeWords()
 
-    val uiState = settingsStore.getFlow().map {
+    val satelliteSettingsState = satelliteSettingsStore.getFlow().map {
         UIState(
             serverName = it.name,
             serverPort = it.serverPort,
             wakeWord = wakeWords.firstOrNull { wakeWord ->
                 wakeWord.id == it.wakeWord
             } ?: wakeWords.first(),
-            wakeWords = wakeWords,
-            playWakeSound = it.enableWakeSound
+            wakeWords = wakeWords
         )
     }
 
+    val playerSettingsState = playerSettingsStore.getFlow()
+
     suspend fun saveServerName(name: String) {
         if (validateName(name).isNullOrBlank()) {
-            settingsStore.saveName(name)
+            satelliteSettingsStore.saveName(name)
         } else {
             Log.w(TAG, "Cannot save invalid server name: $name")
         }
@@ -51,7 +55,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun saveServerPort(port: Int?) {
         if (validatePort(port).isNullOrBlank()) {
-            settingsStore.saveServerPort(port!!)
+            satelliteSettingsStore.saveServerPort(port!!)
         } else {
             Log.w(TAG, "Cannot save invalid server port: $port")
         }
@@ -59,14 +63,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun saveWakeWord(wakeWordId: String) {
         if (validateWakeWord(wakeWordId).isNullOrBlank()) {
-            settingsStore.wakeWord.set(wakeWordId)
+            satelliteSettingsStore.wakeWord.set(wakeWordId)
         } else {
             Log.w(TAG, "Cannot save invalid wake word: $wakeWordId")
         }
     }
 
     suspend fun saveEnableWakeSound(enableWakeSound: Boolean) {
-        settingsStore.enableWakeSound.set(enableWakeSound)
+        playerSettingsStore.enableWakeSound.set(enableWakeSound)
     }
 
 

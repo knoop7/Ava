@@ -13,12 +13,7 @@ data class VoiceSatelliteSettings(
     val serverPort: Int,
     val macAddress: String,
     val wakeWord: String,
-    val stopWord: String,
-    val enableWakeSound: Boolean,
-    val wakeSound: String,
-    val timerFinishedSound: String,
-    val volume: Float,
-    val muted: Boolean
+    val stopWord: String
 )
 
 // The voice satellite uses a mac address as a unique identifier.
@@ -34,12 +29,7 @@ private val DEFAULT = VoiceSatelliteSettings(
     serverPort = 6053,
     macAddress = DEFAULT_MAC_ADDRESS,
     wakeWord = "okay_nabu",
-    stopWord = "stop",
-    enableWakeSound = true,
-    wakeSound = "asset:///sounds/wake_word_triggered.flac",
-    timerFinishedSound = "asset:///sounds/timer_finished.flac",
-    volume = 1.0f,
-    muted = false
+    stopWord = "stop"
 )
 
 val Context.voiceSatelliteSettingsStore: DataStore<VoiceSatelliteSettings> by dataStore(
@@ -50,32 +40,14 @@ val Context.voiceSatelliteSettingsStore: DataStore<VoiceSatelliteSettings> by da
 
 class VoiceSatelliteSettingsStore(dataStore: DataStore<VoiceSatelliteSettings>) :
     SettingsStoreImpl<VoiceSatelliteSettings>(dataStore, DEFAULT) {
-    suspend fun saveName(name: String) =
-        update { it.copy(name = name) }
 
     val wakeWord =
         SettingState(getFlow().map { it.wakeWord }) { value -> update { it.copy(wakeWord = value) } }
     val stopWord =
         SettingState(getFlow().map { it.stopWord }) { value -> update { it.copy(stopWord = value) } }
-    val volume =
-        SettingState(getFlow().map { it.volume }) { value -> update { it.copy(volume = value) } }
-    val muted =
-        SettingState(getFlow().map { it.muted }) { value -> update { it.copy(muted = value) } }
-    val enableWakeSound = SettingState(getFlow().map { it.enableWakeSound }) { value ->
-        update {
-            it.copy(enableWakeSound = value)
-        }
-    }
-    val wakeSound =
-        SettingState(getFlow().map { it.wakeSound }) { value -> update { it.copy(wakeSound = value) } }
-    val timerFinishedSound =
-        SettingState(getFlow().map { it.timerFinishedSound }) { value ->
-            update {
-                it.copy(
-                    timerFinishedSound = value
-                )
-            }
-        }
+
+    suspend fun saveName(name: String) =
+        update { it.copy(name = name) }
 
     suspend fun saveServerPort(serverPort: Int) =
         update { it.copy(serverPort = serverPort) }

@@ -21,7 +21,9 @@ fun VoiceSatelliteSettings(
     viewModel: SettingsViewModel = viewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle(null)
+    val uiState by viewModel.satelliteSettingsState.collectAsStateWithLifecycle(null)
+    val playerState by viewModel.playerSettingsState.collectAsStateWithLifecycle(null)
+
     LazyColumn(
         modifier = modifier
     ) {
@@ -73,7 +75,7 @@ fun VoiceSatelliteSettings(
             SwitchSetting(
                 name = stringResource(R.string.label_voice_satellite_enable_wake_sound),
                 description = stringResource(R.string.description_voice_satellite_play_wake_sound),
-                value = uiState?.playWakeSound ?: true,
+                value = playerState?.enableWakeSound ?: true,
                 enabled = enabled,
                 onCheckedChange = {
                     coroutineScope.launch {
