@@ -1,7 +1,7 @@
 {
-    "versionCode": 7,
-    "versionName": "0.0.7",
-    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.0.7/Ava-0.0.7-release.apk",
-    "changelog": "免费获取天气数据，解决多项优化"
+    "versionCode": 8,
+    "versionName": "0.0.8",
+    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.0.8/Ava-0.0.8-release.apk",
+    "changelog": "彻底修复播放器逻辑，天气逻辑"
 }
 
