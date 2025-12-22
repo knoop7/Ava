@@ -1,7 +1,7 @@
 {
-    "versionCode": 8,
-    "versionName": "0.0.8",
-    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.0.8/Ava-0.0.8-release.apk",
-    "changelog": "彻底修复播放器逻辑，天气逻辑"
+    "versionCode": 9,
+    "versionName": "0.0.9",
+    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.0.9/Ava-0.0.9-release.apk",
+    "changelog": "添加开机重启，修复语音"
 }
 
