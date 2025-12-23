@@ -1,7 +1,7 @@
 {
-    "versionCode": 9,
-    "versionName": "0.0.9",
-    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.0.9/Ava-0.0.9-release.apk",
-    "changelog": "添加开机重启，修复语音"
+    "versionCode": 10,
+    "versionName": "0.1.0",
+    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.1.0/Ava-0.1.0-release.apk",
+    "changelog": "New！摄像头屏保功能，修复自启动"
 }
 
