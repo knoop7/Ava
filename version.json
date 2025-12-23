@@ -1,7 +1,7 @@
 {
-    "versionCode": 10,
-    "versionName": "0.1.0",
-    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.1.0/Ava-0.1.0-release.apk",
-    "changelog": "New！摄像头屏保功能，修复自启动"
+    "versionCode": 11,
+    "versionName": "0.1.1",
+    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.1.1/Ava-0.1.1-release.apk",
+    "changelog": "New！网页功能，空值取消｜修复唤醒"
 }
 
