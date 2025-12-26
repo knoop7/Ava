@@ -1,20 +1,15 @@
-  "scenes": [
-    {
-      "id": "morning",
-      "icon": "fa-sun",
-      "iconColor": "text-amber-200",
-      "title": "我的，新的一天",
-      "desc": "起床时间到了",
-      "subDesc": "窗帘已自动打开",
-      "themeColors": [
-        "#f59e0b",
-        "#d97706",
-        "#92400e",
-        "#78350f"
-      ],
-      "beamColor": "rgba(251, 191, 36, 0.8)",
-      "dividerColor": "rgba(251, 191, 36, 0.8)",
-      "dotColor": "bg-amber-300",
-      "animation": "sun-rise 3s ease-in-out infinite"
-    }
-  ]
+[
+  {
+    "id": "morning",
+    "icon": "fa-sun",
+    "iconColor": "#fde68a",
+    "title": "我的，新的一天",
+    "desc": "起床时间到了",
+    "subDesc": "窗帘已自动打开",
+    "themeColors": ["#f59e0b", "#d97706", "#92400e", "#78350f"],
+    "beamColor": "rgba(251, 191, 36, 0.8)",
+    "dividerColor": "rgba(251, 191, 36, 0.8)",
+    "dotColor": "#fcd34d",
+    "animation": "sun-rise"
+  }
+]
