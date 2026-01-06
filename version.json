@@ -1,7 +1,6 @@
 {
-    "versionCode": 14,
-    "versionName": "0.1.4",
-    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.1.4/Ava-0.1.4-release.apk",
-    "changelog": "New！新年快乐！新增大量特色功能，蓝牙信标、浏览器、进场控制、传感器同步等，完美支持通过 Home Assistant 控制浏览器\n• 支持执行 JS 特效倒计时、樱花、流星雨等等一切以前难以难以实现的特色功能，特别感谢 @隔壁的西门庆（fnos+haosao） 辅助检查错误漏洞"
+    "versionCode": 15,
+    "versionName": "0.1.5",
+    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.1.5/Ava-0.1.5-release.apk",
+    "changelog": "New！小米画报屏保来袭！新增小米画报风格屏保：自动获取精美壁纸，3D视差动画效果，时间日期诗词一体化"
 }
-
