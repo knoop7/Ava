@@ -1,0 +1,382 @@
+<resources>
+    <string name="app_name">Ava 语音助手</string>
+    <string name="service_name">Voice Satellite Service</string>
+    <string name="screensaver_image">Screensaver Image</string>
+    <string name="label_start_service">启动服务</string>
+    <string name="label_stop_service">停止服务</string>
+    <string name="label_ok">确定</string>
+    <string name="label_cancel">取消</string>
+    <string name="settings_coming_soon">正在开发中，敬请期待</string>
+    <string name="label_settings">设置</string>
+    <string name="label_voice_satellite_name">设备名称</string>
+    <string name="label_voice_satellite_port">服务端口</string>
+    <string name="label_voice_satellite_wake_word">唤醒词</string>
+    <string name="label_voice_satellite_enable_wake_sound">唤醒提示音</string>
+    <string name="description_voice_satellite_play_wake_sound">识别到唤醒词时播放提示音</string>
+
+    <string name="validation_voice_satellite_name_empty">名称不能为空</string>
+    <string name="validation_voice_satellite_port_invalid">端口号必须在 1 到 65535 之间</string>
+    <string name="validation_voice_satellite_wake_word_invalid">唤醒词未找到</string>
+    <string name="satellite_state_stopped">已停止</string>
+    <string name="satellite_state_disconnected">未连接</string>
+    <string name="satellite_state_idle">待机中</string>
+    <string name="satellite_state_listening">正在聆听</string>
+    <string name="satellite_state_processing">处理中</string>
+    <string name="satellite_state_responding">回复中</string>
+    <string name="satellite_state_server_error">服务器错误: %1$s</string>
+    
+    
+    <string name="entity_media_player">媒体播放器</string>
+    <string name="entity_mute_microphone">静音麦克风</string>
+    <string name="entity_wake_sound">唤醒提示音</string>
+    <string name="entity_screen_toggle">开关屏幕</string>
+    <string name="entity_screensaver_image_url">摄像头图片地址</string>
+    <string name="entity_screensaver_enable">屏保开关</string>
+    <string name="entity_screensaver_url">屏保网址</string>
+    <string name="entity_ha_remote_url">远程浏览器网址</string>
+    <string name="entity_restart_service">重启服务</string>
+    <string name="entity_notification_scene">通知场景</string>
+    <string name="entity_scene_display_duration">场景显示时长</string>
+    <string name="entity_custom_scene_url">自定义场景URL</string>
+    <string name="entity_take_snapshot">拍摄快照</string>
+    <string name="entity_camera_snapshot">设备快照</string>
+    <string name="entity_video_recording">开始录像</string>
+    <string name="entity_camera_video">设备录制</string>
+    
+    
+    <string name="entity_bluetooth_scan_mode">蓝牙代理扫描模式</string>
+    <string name="bluetooth_scan_mode_active">主动扫描</string>
+    <string name="bluetooth_scan_mode_passive">被动扫描</string>
+    
+    
+    <string name="section_core_connection">核心连接</string>
+    <string name="section_interaction_visual">交互与视觉</string>
+    <string name="section_local_service">本地服务</string>
+    <string name="notification_sound">通知提示音</string>
+    <string name="notification_sound_desc">场景弹窗时播放提示音</string>
+    <string name="select_sound">选择提示音</string>
+    <string name="select_external_audio">＋ 选择外部音频</string>
+    <string name="sound_none">无</string>
+    <string name="sound_unknown">未知</string>
+    <string name="custom_scene_config">自定义场景配置</string>
+    <string name="custom_scene_desc">自定义场景功能允许您从远程 JSON 文件加载通知场景配置。</string>
+    <string name="custom_scene_json_format">JSON 格式要求：</string>
+    <string name="custom_scene_json_requirements">• 必须是有效的 JSON 数组或包含 "scenes" 键的对象\n• 每个场景需要 title、icon、color 等字段\n• 支持 FontAwesome 图标</string>
+    <string name="custom_scene_example_hint">点击「使用示例」将自动填入一个示例配置 URL，您可以参考学习。</string>
+    <string name="custom_scene_use_example">使用示例</string>
+    <string name="custom_scene_i_know">我知晓了</string>
+    <string name="validation_range">请输入 %1$d-%2$d 之间的数值</string>
+    <string name="status_connected">已连接</string>
+    <string name="status_stopped">已停止</string>
+    <string name="status_disconnected">已断开</string>
+    <string name="status_error">错误</string>
+    <string name="status_working">工作中</string>
+    <string name="render_hardware">硬件</string>
+    <string name="render_software">软件</string>
+    <string name="github_project">Open Source Project</string>
+    <string name="ava_version">Ava Assistant %1$s (Beta)</string>
+    <string name="device_ip">设备 IP: %1$s</string>
+    <string name="original_author">Original Author: brownard</string>
+    <string name="secondary_dev">Secondary Dev: knoop7</string>
+    
+    
+    <string name="screen_toggle_on_success">屏幕开启成功 (%1$s)</string>
+    <string name="screen_toggle_off_success">屏幕关闭成功 (%1$s)</string>
+    <string name="screen_toggle_failed">屏幕控制失败，请检查Root或Shizuku权限</string>
+    
+    
+    <string name="floating_ai_reply">AI 回复:</string>
+    <string name="weather_city">天气城市</string>
+    
+    
+    <string name="settings_experimental">实验功能</string>
+    <string name="settings_camera_enabled">远程摄像</string>
+    <string name="settings_camera_enabled_desc">允许 Home Assistant 远程控制摄像头</string>
+    <string name="settings_no_camera">设备无摄像头</string>
+    <string name="settings_camera_mode">摄像模式</string>
+    <string name="settings_camera_mode_snapshot">拍照模式</string>
+    <string name="settings_camera_mode_snapshot_desc">触发拍照并获取快照图片</string>
+    <string name="settings_camera_mode_video">录像模式</string>
+    <string name="settings_camera_mode_video_desc">开关控制录像，获取视频流</string>
+    <string name="settings_video_fps">视频帧率</string>
+    <string name="settings_video_fps_desc">为保证软件稳定性，建议使用较低帧率</string>
+    <string name="settings_video_fps_format">%d 帧/秒</string>
+    <string name="settings_video_resolution">视频分辨率</string>
+    <string name="settings_video_resolution_240">流畅 (320×240)</string>
+    <string name="settings_video_resolution_360">标清 (480×360)</string>
+    <string name="settings_video_resolution_480">高清 (640×480)</string>
+    <string name="settings_video_resolution_720">超清 (960×720)</string>
+    <string name="settings_camera_position">摄像头选择</string>
+    <string name="settings_camera_back">后置摄像头</string>
+    <string name="settings_camera_front">前置摄像头</string>
+    <string name="settings_image_size">图片尺寸</string>
+    <string name="settings_image_size_original">原始比例 (不裁剪)</string>
+    <string name="settings_image_size_500">500px (正方形裁剪)</string>
+    <string name="settings_image_size_720">720px (正方形裁剪)</string>
+    <string name="settings_image_size_1080">1080px (正方形裁剪)</string>
+    
+    <string name="settings_group_connection">ESPHome 配置</string>
+    <string name="settings_group_connection_en">Voice</string>
+    <string name="settings_group_connection_desc">唤醒词 · 设备名称 · 端口</string>
+    <string name="settings_group_interaction">界面显示</string>
+    <string name="settings_group_interaction_en">Display</string>
+    <string name="settings_group_interaction_desc">对话模式 · 悬浮窗 · 时钟</string>
+    <string name="settings_group_experimental">实验功能</string>
+    <string name="settings_group_experimental_en">Labs</string>
+    <string name="settings_group_experimental_desc">远程拍照 · 摄像头</string>
+    <string name="settings_group_service">设备服务</string>
+    <string name="settings_group_service_en">Service</string>
+    <string name="settings_group_service_desc">传感器 · 屏幕 · 方向</string>
+    <string name="settings_group_browser">网页浏览</string>
+    <string name="settings_group_browser_en">Browser</string>
+    <string name="settings_group_browser_desc">缩放 · 触摸 · 渲染</string>
+    <string name="settings_group_bluetooth">蓝牙设备</string>
+    <string name="settings_group_bluetooth_en">Bluetooth</string>
+    <string name="settings_group_bluetooth_desc">信标 · 检测 · 通知</string>
+    <string name="settings_group_screensaver">屏保设置</string>
+    <string name="settings_group_screensaver_en">Screensaver</string>
+    <string name="settings_group_screensaver_desc">闲置网站 · 亮度 · 运动感知</string>
+    
+    
+    <string name="settings_screensaver_url">屏保网站</string>
+    <string name="settings_screensaver_url_desc">自定义屏保网页地址</string>
+    <string name="settings_screensaver_url_visible">显示屏保网址</string>
+    <string name="settings_screensaver_url_visible_desc">在 Home Assistant 中显示屏保网址实体</string>
+    <string name="settings_xiaomi_wallpaper">仿小米画报</string>
+    <string name="settings_xiaomi_wallpaper_desc">使用随机壁纸作为屏保背景</string>
+    <string name="settings_screensaver_enable">启用屏保</string>
+    <string name="settings_screensaver_enable_desc">开启后按闲置时间显示屏保</string>
+    <string name="settings_screensaver_timeout">显示时间</string>
+    <string name="settings_screensaver_timeout_desc">屏保启动前的闲置等待时间（秒）</string>
+    <string name="settings_screensaver_dark_off">黑暗中关闭屏幕</string>
+    <string name="settings_screensaver_dark_off_desc">检测到黑暗时关闭屏幕</string>
+    <string name="settings_screensaver_background_pause">后台暂停</string>
+    <string name="settings_screensaver_background_pause_desc">在另一个应用处于前景时暂停运动检测</string>
+    <string name="settings_screensaver_motion_on">接近传感器唤醒</string>
+    <string name="settings_screensaver_motion_on_desc">检测到接近时打开屏幕</string>
+    <string name="screensaver_notification_title">屏保运行中</string>
+
+    
+    <string name="settings_browser_pull_refresh">下拉刷新</string>
+    <string name="settings_browser_pull_refresh_desc">往下拉网页可以刷新页面</string>
+    <string name="settings_browser_initial_scale">页面缩放</string>
+    <string name="settings_browser_initial_scale_desc">网页打开时的大小，0表示自动适应屏幕</string>
+    <string name="settings_browser_font_size">字体大小</string>
+    <string name="settings_browser_font_size_desc">网页文字的大小，100是正常大小</string>
+    <string name="settings_browser_settings_button">设置按钮</string>
+    <string name="settings_browser_settings_button_desc">在屏幕右下角显示一个小齿轮按钮</string>
+    <string name="settings_browser_search_engine">搜索服务</string>
+    <string name="settings_browser_touch">允许点击</string>
+    <string name="settings_browser_touch_desc">可以用手指点击网页上的按钮和链接</string>
+    <string name="settings_browser_drag">允许滑动</string>
+    <string name="settings_browser_drag_desc">可以用手指滑动和滚动网页</string>
+    <string name="settings_browser_render_mode">显示模式</string>
+    <string name="settings_browser_render_mode_desc">网页显示不正常时可以切换试试</string>
+    <string name="settings_browser_render_hardware">硬件</string>
+    <string name="settings_browser_render_software">软件</string>
+    <string name="settings_browser_advanced_control">HA 远程控制</string>
+    <string name="settings_browser_advanced_control_desc">通过 Home Assistant 控制浏览器，支持特效、亮度、音量等</string>
+    <string name="settings_browser_back_key_hide">返回键隐藏</string>
+    <string name="settings_browser_back_key_hide_desc">按返回键时隐藏悬浮浏览器窗口</string>
+    <string name="advanced_control_help_title">浏览器命令服务说明</string>
+    <string name="advanced_control_help_content" formatted="false">【使用方法】\n\n在 Home Assistant 中调用服务：\nservice: esphome.xxx_webview_command\ndata:\n  command: \'你的命令\'\n\n【基础命令】\n\n执行JS：{\"eval\": \"代码\"}\n刷新页面：{\"reload\": true}\n清除缓存：{\"clearCache\": true}\n打开设置：{\"settings\": true}\n清除特效：{\"eval\": \"\"}\n\n【系统控制】\n\n设置亮度(0-255)：{\"brightness\": 128}\n设置音量(0-100)：{\"volume\": 50}\n打开摄像头：{\"camera\": true}\n\n【自动化命令】\n\n注入CSS：{\"injectCSS\": \"body{color:red}\"}\n点击元素：{\"clickElement\": \"#btn\"}\n填充表单：{\"fillInput\": {\"selector\": \"#input\", \"value\": \"文字\"}}\n\n【示例特效 - 60秒倒计时】\n\n{\"eval\": \"!function(){var d=document,s=d.createElement(\'style\'),o=d.createElement(\'div\'),t=d.createElement(\'div\');s.innerHTML=\'@keyframes p{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.02);opacity:1;text-shadow:0 0 60px #fff}}#x_ov{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:9999;display:flex;justify-content:center;align-items:center;opacity:0;transition:opacity 2s ease;pointer-events:none}#x_tm{font-family:Helvetica Neue,sans-serif;font-size:20vw;color:#fff;font-weight:100;animation:p 2s infinite ease-in-out}\',d.head.appendChild(s),o.id=\'x_ov\',t.id=\'x_tm\',t.innerText=\'01:00\',o.appendChild(t),d.body.appendChild(o),setTimeout(function(){o.style.opacity=\'.98\'},10);var e=60,n=setInterval(function(){e--;var i=e&lt;10?\'0\'+e:e;t.innerText=\'00:\'+i,e&lt;=0&amp;&amp;(clearInterval(n),setTimeout(function(){o.style.opacity=\'0\',setTimeout(function(){o.remove(),s.remove()},2e3)},1e3))},1e3)}()\"}\n\n【AI 生成更多特效】\n\n访问 AI 助手生成自定义特效：\nhttps://gemini.google.com/gem/ee3cb858f9d0</string>
+    <string name="advanced_control_copy">复制到剪贴板</string>
+    <string name="advanced_control_dismiss">我知晓了</string>
+    <string name="copied_to_clipboard">已复制到剪贴板</string>
+    
+    
+    <string name="settings_bluetooth_detect">设备检测</string>
+    <string name="settings_bluetooth_detect_desc">检测周围蓝牙设备（回家感知）</string>
+    <string name="settings_bluetooth_rssi_threshold">RSSI 存在阈值</string>
+    <string name="settings_bluetooth_rssi_threshold_desc">左近右远，调整检测灵敏度</string>
+    <string name="settings_bluetooth_away_delay">离场判定延迟</string>
+    <string name="settings_bluetooth_away_delay_desc">离开区域后多久更新状态</string>
+    <string name="settings_bluetooth_add_device">添加蓝牙设备</string>
+    <string name="settings_bluetooth_add_device_hint">iPhone 设备需要先配对才能被检测到。如果发现设备无法被识别，请先在系统蓝牙设置中完成配对。</string>
+    
+    
+    <string name="settings_environment_sensor">环境传感器</string>
+    <string name="settings_environment_sensor_desc">将光线和磁场数据发送到 Home Assistant</string>
+    <string name="settings_sensor_update_interval">数据更新间隔</string>
+    <string name="settings_sensor_update_interval_desc">传感器数据发送频率</string>
+    <string name="entity_light_sensor">光线传感器</string>
+    <string name="entity_magnetic_sensor">磁场传感器</string>
+    <string name="entity_proximity_sensor">接近传感器</string>
+    <string name="entity_screen_brightness">屏幕亮度</string>
+    <string name="settings_proximity_threshold">触发阈值</string>
+    <string name="settings_proximity_threshold_desc">小于此距离时触发亮屏</string>
+    <string name="settings_bluetooth_tracked_devices">已跟踪的设备</string>
+    <string name="settings_bluetooth_nearby">在附近</string>
+    <string name="settings_bluetooth_not_nearby">不在附近</string>
+    <string name="settings_bluetooth_select_device">选择蓝牙设备</string>
+    <string name="settings_bluetooth_searching">正在搜寻周边设备...</string>
+    <string name="settings_bluetooth_no_device">未找到可用设备</string>
+    <string name="settings_bluetooth_already_added">已添加</string>
+    <string name="settings_bluetooth_paired">已配对</string>
+    <string name="settings_bluetooth_unknown_device">未知设备</string>
+    <string name="settings_bluetooth_permission_required">需要蓝牙和位置权限才能扫描</string>
+    <string name="settings_bluetooth_wifi_conflict">此设备蓝牙会影响WiFi通讯性能</string>
+    
+    
+    <string name="settings_group_root">超级权限</string>
+    <string name="settings_group_root_en">Super Permissions</string>
+    <string name="settings_group_root_desc">兼容 · 同步 · 提升权限</string>
+    <string name="settings_shizuku_title">Shizuku 授权</string>
+    <string name="settings_shizuku_desc">通过 Shizuku 提升应用权限</string>
+    <string name="settings_shizuku_not_installed">未安装 Shizuku</string>
+    <string name="settings_shizuku_not_running">Shizuku 未运行</string>
+    <string name="settings_shizuku_authorized">已授权</string>
+    <string name="settings_shizuku_waiting">等待授权</string>
+    <string name="settings_shizuku_install">安装 Shizuku</string>
+    <string name="settings_shizuku_start">启动 Shizuku</string>
+    <string name="settings_shizuku_authorize">授权 Shizuku</string>
+    <string name="settings_shizuku_refresh">刷新</string>
+    <string name="settings_shizuku_guide">使用说明</string>
+    <string name="settings_shizuku_guide_text">Shizuku 是一个开源的权限管理工具，可以让我们应用获得权限。\n\n安装步骤：\n1. 从 GitHub 下载安装 Shizuku\n2. 通过无线调试或电脑 ADB \n3. 返回此页面点击授权按钮\n\n授权后将自动支持权限：\n- 蓝牙扫描和连接权限\n- 精确位置权限（熄屏蓝牙扫描需要）\n- 屏幕开关控制权限</string>
+    <string name="settings_root_status">Root 状态</string>
+    <string name="settings_root_available">已获取 Root 权限</string>
+    <string name="settings_root_unavailable">未获取 Root 权限</string>
+    <string name="entity_bluetooth_rssi_threshold">蓝牙 RSSI 阈值</string>
+    <string name="entity_bluetooth_away_delay">蓝牙离场延迟</string>
+    <string name="bluetooth_device_presence">%s 存在</string>
+    
+    
+    <string name="settings_diagnostic_sensor">高级诊断</string>
+    <string name="settings_diagnostic_sensor_desc">同步设备信息到HA</string>
+    <string name="settings_diagnostic_wifi">WiFi 信号</string>
+    <string name="settings_diagnostic_wifi_desc">显示信号强度</string>
+    <string name="settings_diagnostic_ip">设备 IP</string>
+    <string name="settings_diagnostic_ip_desc">显示网络地址</string>
+    <string name="settings_diagnostic_storage">存储空间</string>
+    <string name="settings_diagnostic_storage_desc">显示剩余容量</string>
+    <string name="settings_diagnostic_memory">内存使用</string>
+    <string name="settings_diagnostic_memory_desc">显示已用内存</string>
+    <string name="settings_diagnostic_uptime">开机时间</string>
+    <string name="settings_diagnostic_uptime_desc">显示运行时长</string>
+    <string name="entity_wifi_signal">WiFi 信号强度</string>
+    <string name="entity_device_ip">设备 IP 地址</string>
+    <string name="entity_storage_free">可用存储空间</string>
+    <string name="entity_memory_usage">已用内存</string>
+    <string name="entity_device_uptime">开机时长</string>
+    <string name="entity_kill_app">杀死应用</string>
+    <string name="entity_reboot_device">重启设备</string>
+    <string name="settings_diagnostic_kill_app">杀死应用</string>
+    <string name="settings_diagnostic_kill_app_desc">强制关闭本应用</string>
+    <string name="settings_diagnostic_reboot">重启设备</string>
+    <string name="settings_diagnostic_reboot_desc">重启整个设备</string>
+    <string name="settings_diagnostic_battery_level">电池电量</string>
+    <string name="settings_diagnostic_battery_voltage">电池电压</string>
+    <string name="settings_diagnostic_charging_status">充电状态</string>
+    
+    
+    <string name="settings_sensor_enabled">环境传感器</string>
+    <string name="settings_sensor_enabled_desc">启用读取可用环境传感器</string>
+    <string name="settings_battery_monitor">电池状态监控</string>
+    <string name="settings_battery_monitor_desc">监控电池电量和充电状态</string>
+    <string name="settings_proximity_sensor">接近传感器</string>
+    <string name="settings_proximity_sensor_desc">启用接近传感器功能</string>
+    <string name="settings_proximity_send_to_hass">发送到 Home Assistant</string>
+    <string name="settings_proximity_send_to_hass_desc">将接近状态双向同步</string>
+    <string name="settings_proximity_wake_screen">接近亮屏</string>
+    <string name="settings_proximity_wake_screen_desc">检测到有物体靠近时自动亮屏</string>
+    <string name="settings_proximity_away_delay">离开延迟</string>
+    <string name="settings_proximity_away_delay_desc">远离后多少秒判断为离开</string>
+    <string name="settings_keep_screen_on">保持屏幕开启</string>
+    <string name="settings_keep_screen_on_desc">防止安卓屏幕在一段时间后变暗和关闭</string>
+    <string name="settings_screen_brightness">屏幕亮度</string>
+    <string name="settings_screen_brightness_desc">双向同步屏幕亮度</string>
+    <string name="settings_force_orientation">强制屏幕方向</string>
+    <string name="settings_force_orientation_desc">锁定屏幕方向（需要悬浮窗权限）</string>
+    <string name="settings_force_orientation_mode">方向模式</string>
+    <string name="settings_orientation_portrait">竖屏</string>
+    <string name="settings_orientation_landscape">横屏</string>
+    <string name="settings_orientation_auto">跟随系统</string>
+    <string name="settings_display_size">屏幕分辨率</string>
+    <string name="settings_display_size_desc">调整屏幕显示分辨率（需要ADB授权）</string>
+    <string name="settings_display_scale">缩放比例</string>
+    <string name="settings_display_scale_desc">数值越小，显示内容越多</string>
+    <string name="settings_display_size_error">设置失败，请确认已授权 WRITE_SECURE_SETTINGS</string>
+    <string name="settings_overlay_permission_required">需要授予「悬浮窗」权限</string>
+    <string name="settings_write_settings_permission_required">需要授予「修改系统设置」权限</string>
+    <string name="settings_device_not_supported">本机不支持此功能</string>
+    <string name="settings_auto_unlock">解锁滑动屏幕锁定</string>
+    <string name="settings_auto_unlock_desc">试着自动解锁滑动屏锁（实验性）</string>
+    
+    
+    <string name="settings_category_service">服务设置</string>
+    <string name="settings_category_display">显示设置</string>
+    <string name="settings_category_weather">天气设置</string>
+    <string name="settings_port_description">多设备时请修改端口避免冲突</string>
+    <string name="settings_continuous_conversation">连续对话模式</string>
+    <string name="settings_continuous_conversation_desc">TTS 结束后自动继续监听</string>
+    <string name="settings_auto_restart">自动重启</string>
+    <string name="settings_auto_restart_desc">开机自启动并自动开启服务</string>
+    <string name="settings_floating_window">浮动字幕窗口</string>
+    <string name="settings_floating_window_desc">显示语音对话内容</string>
+    <string name="settings_vinyl_cover">歌曲封面</string>
+    <string name="settings_vinyl_cover_desc">播放音乐时显示全屏歌曲封面</string>
+    <string name="settings_dream_clock">梦幻时钟</string>
+    <string name="settings_dream_clock_desc">显示机械模拟时钟悬浮窗</string>
+    <string name="settings_weather_overlay">天气悬浮窗</string>
+    <string name="settings_weather_overlay_desc">显示沉浸式天气界面，左滑可切换</string>
+    <string name="settings_weather_overlay_realtime_desc">实时显示天气信息</string>
+    <string name="settings_scene_display_duration">场景显示时长</string>
+    <string name="settings_scene_display_duration_desc">设置通知场景显示的秒数</string>
+    <string name="settings_custom_scene_url">自定义场景JSON</string>
+    <string name="settings_custom_scene_not_configured">未配置</string>
+    <string name="settings_custom_scene_count">已配置 %1$d 个</string>
+    <string name="settings_custom_scene_loaded">已识别 %1$d 个场景</string>
+    <string name="settings_custom_scene_loading">加载中...</string>
+    <string name="settings_custom_scene_url_placeholder">请输入 JSON URL</string>
+    <string name="settings_province">省份</string>
+    <string name="settings_city">城市</string>
+    <string name="settings_district">区县</string>
+    <string name="settings_please_select">请选择</string>
+    <string name="error_json_empty">内容为空</string>
+    <string name="error_json_not_array">格式错误：非 JSON 数组</string>
+    <string name="error_json_no_scenes">未找到场景定义</string>
+    <string name="error_json_parse_failed">解析失败: %1$s</string>
+    
+    
+    <string name="settings_about">关于</string>
+    <string name="settings_device_info">设备信息</string>
+    <string name="settings_author">原作者</string>
+    <string name="settings_secondary_dev">二次开发</string>
+    <string name="settings_project_url">项目地址</string>
+    <string name="more_options">更多选项</string>
+    <string name="back">返回</string>
+    <string name="connecting_service">正在创建...</string>
+    
+    
+    <string name="welcome_title">欢迎使用 Ava</string>
+    <string name="welcome_subtitle">关注公众号获取更多智能家居资讯</string>
+    <string name="qr_code_desc">公众号二维码</string>
+    <string name="wechat_account">老王杂谈说</string>
+    <string name="auto_close_countdown">10秒后自动关闭</string>
+    
+    
+    <string name="update_available">发现新版本</string>
+    <string name="update_later">稍后</string>
+    <string name="update_now">立即更新</string>
+    <string name="thinking">正在思考...</string>
+    
+    
+    <string name="weather_humidity">湿度</string>
+    <string name="weather_air">空气</string>
+    <string name="weather_pressure">气压</string>
+    <string name="weather_wind_speed">风速</string>
+    <string name="weather_wind_direction">风向</string>
+    <string name="weather_north_wind">北风</string>
+    <string name="weather_sunny">晴</string>
+    <string name="weather_cloudy">多云</string>
+    <string name="weather_light_rain">小雨</string>
+    <string name="weather_rainy">雨</string>
+    <string name="weather_heavy_rain">大雨</string>
+    <string name="weather_light_snow">小雪</string>
+    <string name="weather_snowy">雪</string>
+    <string name="weather_heavy_snow">大雪</string>
+    <string name="weather_fog">雾</string>
+    <string name="weather_haze">霾</string>
+    <string name="weather_wind">大风</string>
+    <string name="weather_sandstorm">沙尘暴</string>
+</resources>

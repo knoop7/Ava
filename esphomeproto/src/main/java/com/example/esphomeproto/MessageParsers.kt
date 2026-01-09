@@ -1,0 +1,390 @@
+package com.example.esphomeproto
+
+import com.example.esphomeproto.api.AlarmControlPanelCommandRequest
+import com.example.esphomeproto.api.AlarmControlPanelStateResponse
+import com.example.esphomeproto.api.BinarySensorStateResponse
+import com.example.esphomeproto.api.BluetoothConnectionsFreeResponse
+import com.example.esphomeproto.api.BluetoothDeviceClearCacheResponse
+import com.example.esphomeproto.api.BluetoothDeviceConnectionResponse
+import com.example.esphomeproto.api.BluetoothDevicePairingResponse
+import com.example.esphomeproto.api.BluetoothDeviceRequest
+import com.example.esphomeproto.api.BluetoothDeviceUnpairingResponse
+import com.example.esphomeproto.api.BluetoothGATTErrorResponse
+import com.example.esphomeproto.api.BluetoothGATTGetServicesDoneResponse
+import com.example.esphomeproto.api.BluetoothGATTGetServicesRequest
+import com.example.esphomeproto.api.BluetoothGATTGetServicesResponse
+import com.example.esphomeproto.api.BluetoothGATTNotifyDataResponse
+import com.example.esphomeproto.api.BluetoothGATTNotifyRequest
+import com.example.esphomeproto.api.BluetoothGATTNotifyResponse
+import com.example.esphomeproto.api.BluetoothGATTReadDescriptorRequest
+import com.example.esphomeproto.api.BluetoothGATTReadRequest
+import com.example.esphomeproto.api.BluetoothGATTReadResponse
+import com.example.esphomeproto.api.BluetoothGATTWriteDescriptorRequest
+import com.example.esphomeproto.api.BluetoothGATTWriteRequest
+import com.example.esphomeproto.api.BluetoothGATTWriteResponse
+import com.example.esphomeproto.api.BluetoothLEAdvertisementResponse
+import com.example.esphomeproto.api.BluetoothLERawAdvertisementsResponse
+import com.example.esphomeproto.api.BluetoothScannerSetModeRequest
+import com.example.esphomeproto.api.BluetoothScannerStateResponse
+import com.example.esphomeproto.api.ButtonCommandRequest
+import com.example.esphomeproto.api.CameraImageRequest
+import com.example.esphomeproto.api.CameraImageResponse
+import com.example.esphomeproto.api.ClimateCommandRequest
+import com.example.esphomeproto.api.ClimateStateResponse
+import com.example.esphomeproto.api.ConnectRequest
+import com.example.esphomeproto.api.ConnectResponse
+import com.example.esphomeproto.api.CoverCommandRequest
+import com.example.esphomeproto.api.CoverStateResponse
+import com.example.esphomeproto.api.DateCommandRequest
+import com.example.esphomeproto.api.DateStateResponse
+import com.example.esphomeproto.api.DateTimeCommandRequest
+import com.example.esphomeproto.api.DateTimeStateResponse
+import com.example.esphomeproto.api.DeviceInfoRequest
+import com.example.esphomeproto.api.DeviceInfoResponse
+import com.example.esphomeproto.api.DisconnectRequest
+import com.example.esphomeproto.api.DisconnectResponse
+import com.example.esphomeproto.api.EventResponse
+import com.example.esphomeproto.api.ExecuteServiceRequest
+import com.example.esphomeproto.api.FanCommandRequest
+import com.example.esphomeproto.api.FanStateResponse
+import com.example.esphomeproto.api.GetTimeRequest
+import com.example.esphomeproto.api.GetTimeResponse
+import com.example.esphomeproto.api.HelloRequest
+import com.example.esphomeproto.api.HelloResponse
+import com.example.esphomeproto.api.HomeAssistantStateResponse
+import com.example.esphomeproto.api.HomeassistantServiceResponse
+import com.example.esphomeproto.api.LightCommandRequest
+import com.example.esphomeproto.api.LightStateResponse
+import com.example.esphomeproto.api.ListEntitiesAlarmControlPanelResponse
+import com.example.esphomeproto.api.ListEntitiesBinarySensorResponse
+import com.example.esphomeproto.api.ListEntitiesButtonResponse
+import com.example.esphomeproto.api.ListEntitiesCameraResponse
+import com.example.esphomeproto.api.ListEntitiesClimateResponse
+import com.example.esphomeproto.api.ListEntitiesCoverResponse
+import com.example.esphomeproto.api.ListEntitiesDateResponse
+import com.example.esphomeproto.api.ListEntitiesDateTimeResponse
+import com.example.esphomeproto.api.ListEntitiesDoneResponse
+import com.example.esphomeproto.api.ListEntitiesEventResponse
+import com.example.esphomeproto.api.ListEntitiesFanResponse
+import com.example.esphomeproto.api.ListEntitiesLightResponse
+import com.example.esphomeproto.api.ListEntitiesLockResponse
+import com.example.esphomeproto.api.ListEntitiesMediaPlayerResponse
+import com.example.esphomeproto.api.ListEntitiesNumberResponse
+import com.example.esphomeproto.api.ListEntitiesRequest
+import com.example.esphomeproto.api.ListEntitiesSelectResponse
+import com.example.esphomeproto.api.ListEntitiesSensorResponse
+import com.example.esphomeproto.api.ListEntitiesServicesResponse
+import com.example.esphomeproto.api.ListEntitiesSirenResponse
+import com.example.esphomeproto.api.ListEntitiesSwitchResponse
+import com.example.esphomeproto.api.ListEntitiesTextResponse
+import com.example.esphomeproto.api.ListEntitiesTextSensorResponse
+import com.example.esphomeproto.api.ListEntitiesTimeResponse
+import com.example.esphomeproto.api.ListEntitiesUpdateResponse
+import com.example.esphomeproto.api.ListEntitiesValveResponse
+import com.example.esphomeproto.api.LockCommandRequest
+import com.example.esphomeproto.api.LockStateResponse
+import com.example.esphomeproto.api.MediaPlayerCommandRequest
+import com.example.esphomeproto.api.MediaPlayerStateResponse
+import com.example.esphomeproto.api.NoiseEncryptionSetKeyRequest
+import com.example.esphomeproto.api.NoiseEncryptionSetKeyResponse
+import com.example.esphomeproto.api.NumberCommandRequest
+import com.example.esphomeproto.api.NumberStateResponse
+import com.example.esphomeproto.api.PingRequest
+import com.example.esphomeproto.api.PingResponse
+import com.example.esphomeproto.api.SelectCommandRequest
+import com.example.esphomeproto.api.SelectStateResponse
+import com.example.esphomeproto.api.SensorStateResponse
+import com.example.esphomeproto.api.SirenCommandRequest
+import com.example.esphomeproto.api.SirenStateResponse
+import com.example.esphomeproto.api.SubscribeBluetoothConnectionsFreeRequest
+import com.example.esphomeproto.api.SubscribeBluetoothLEAdvertisementsRequest
+import com.example.esphomeproto.api.SubscribeHomeAssistantStateResponse
+import com.example.esphomeproto.api.SubscribeHomeAssistantStatesRequest
+import com.example.esphomeproto.api.SubscribeHomeassistantServicesRequest
+import com.example.esphomeproto.api.SubscribeLogsRequest
+import com.example.esphomeproto.api.SubscribeLogsResponse
+import com.example.esphomeproto.api.SubscribeStatesRequest
+import com.example.esphomeproto.api.SubscribeVoiceAssistantRequest
+import com.example.esphomeproto.api.SwitchCommandRequest
+import com.example.esphomeproto.api.SwitchStateResponse
+import com.example.esphomeproto.api.TextCommandRequest
+import com.example.esphomeproto.api.TextSensorStateResponse
+import com.example.esphomeproto.api.TextStateResponse
+import com.example.esphomeproto.api.TimeCommandRequest
+import com.example.esphomeproto.api.TimeStateResponse
+import com.example.esphomeproto.api.UnsubscribeBluetoothLEAdvertisementsRequest
+import com.example.esphomeproto.api.UpdateCommandRequest
+import com.example.esphomeproto.api.UpdateStateResponse
+import com.example.esphomeproto.api.ValveCommandRequest
+import com.example.esphomeproto.api.ValveStateResponse
+import com.example.esphomeproto.api.VoiceAssistantAnnounceFinished
+import com.example.esphomeproto.api.VoiceAssistantAnnounceRequest
+import com.example.esphomeproto.api.VoiceAssistantAudio
+import com.example.esphomeproto.api.VoiceAssistantConfigurationRequest
+import com.example.esphomeproto.api.VoiceAssistantConfigurationResponse
+import com.example.esphomeproto.api.VoiceAssistantEventResponse
+import com.example.esphomeproto.api.VoiceAssistantRequest
+import com.example.esphomeproto.api.VoiceAssistantResponse
+import com.example.esphomeproto.api.VoiceAssistantSetConfiguration
+import com.example.esphomeproto.api.VoiceAssistantTimerEventResponse
+import com.google.protobuf.Parser
+
+val MESSAGE_PARSERS = mapOf<Int, Parser<out Any>>(
+    Pair(1, HelloRequest.parser()),
+    Pair(2, HelloResponse.parser()),
+    Pair(3, ConnectRequest.parser()),
+    Pair(4, ConnectResponse.parser()),
+    Pair(5, DisconnectRequest.parser()),
+    Pair(6, DisconnectResponse.parser()),
+    Pair(7, PingRequest.parser()),
+    Pair(8, PingResponse.parser()),
+    Pair(9, DeviceInfoRequest.parser()),
+    Pair(10, DeviceInfoResponse.parser()),
+    Pair(11, ListEntitiesRequest.parser()),
+    Pair(12, ListEntitiesBinarySensorResponse.parser()),
+    Pair(13, ListEntitiesCoverResponse.parser()),
+    Pair(14, ListEntitiesFanResponse.parser()),
+    Pair(15, ListEntitiesLightResponse.parser()),
+    Pair(16, ListEntitiesSensorResponse.parser()),
+    Pair(17, ListEntitiesSwitchResponse.parser()),
+    Pair(18, ListEntitiesTextSensorResponse.parser()),
+    Pair(19, ListEntitiesDoneResponse.parser()),
+    Pair(20, SubscribeStatesRequest.parser()),
+    Pair(21, BinarySensorStateResponse.parser()),
+    Pair(22, CoverStateResponse.parser()),
+    Pair(23, FanStateResponse.parser()),
+    Pair(24, LightStateResponse.parser()),
+    Pair(25, SensorStateResponse.parser()),
+    Pair(26, SwitchStateResponse.parser()),
+    Pair(27, TextSensorStateResponse.parser()),
+    Pair(28, SubscribeLogsRequest.parser()),
+    Pair(29, SubscribeLogsResponse.parser()),
+    Pair(30, CoverCommandRequest.parser()),
+    Pair(31, FanCommandRequest.parser()),
+    Pair(32, LightCommandRequest.parser()),
+    Pair(33, SwitchCommandRequest.parser()),
+    Pair(34, SubscribeHomeassistantServicesRequest.parser()),
+    Pair(35, HomeassistantServiceResponse.parser()),
+    Pair(36, GetTimeRequest.parser()),
+    Pair(37, GetTimeResponse.parser()),
+    Pair(38, SubscribeHomeAssistantStatesRequest.parser()),
+    Pair(39, SubscribeHomeAssistantStateResponse.parser()),
+    Pair(40, HomeAssistantStateResponse.parser()),
+    Pair(41, ListEntitiesServicesResponse.parser()),
+    Pair(42, ExecuteServiceRequest.parser()),
+    Pair(43, ListEntitiesCameraResponse.parser()),
+    Pair(44, CameraImageResponse.parser()),
+    Pair(45, CameraImageRequest.parser()),
+    Pair(46, ListEntitiesClimateResponse.parser()),
+    Pair(47, ClimateStateResponse.parser()),
+    Pair(48, ClimateCommandRequest.parser()),
+    Pair(49, ListEntitiesNumberResponse.parser()),
+    Pair(50, NumberStateResponse.parser()),
+    Pair(51, NumberCommandRequest.parser()),
+    Pair(52, ListEntitiesSelectResponse.parser()),
+    Pair(53, SelectStateResponse.parser()),
+    Pair(54, SelectCommandRequest.parser()),
+    Pair(55, ListEntitiesSirenResponse.parser()),
+    Pair(56, SirenStateResponse.parser()),
+    Pair(57, SirenCommandRequest.parser()),
+    Pair(58, ListEntitiesLockResponse.parser()),
+    Pair(59, LockStateResponse.parser()),
+    Pair(60, LockCommandRequest.parser()),
+    Pair(61, ListEntitiesButtonResponse.parser()),
+    Pair(62, ButtonCommandRequest.parser()),
+    Pair(63, ListEntitiesMediaPlayerResponse.parser()),
+    Pair(64, MediaPlayerStateResponse.parser()),
+    Pair(65, MediaPlayerCommandRequest.parser()),
+    Pair(66, SubscribeBluetoothLEAdvertisementsRequest.parser()),
+    Pair(67, BluetoothLEAdvertisementResponse.parser()),
+    Pair(68, BluetoothDeviceRequest.parser()),
+    Pair(69, BluetoothDeviceConnectionResponse.parser()),
+    Pair(70, BluetoothGATTGetServicesRequest.parser()),
+    Pair(71, BluetoothGATTGetServicesResponse.parser()),
+    Pair(72, BluetoothGATTGetServicesDoneResponse.parser()),
+    Pair(73, BluetoothGATTReadRequest.parser()),
+    Pair(74, BluetoothGATTReadResponse.parser()),
+    Pair(75, BluetoothGATTWriteRequest.parser()),
+    Pair(76, BluetoothGATTReadDescriptorRequest.parser()),
+    Pair(77, BluetoothGATTWriteDescriptorRequest.parser()),
+    Pair(78, BluetoothGATTNotifyRequest.parser()),
+    Pair(79, BluetoothGATTNotifyDataResponse.parser()),
+    Pair(80, SubscribeBluetoothConnectionsFreeRequest.parser()),
+    Pair(81, BluetoothConnectionsFreeResponse.parser()),
+    Pair(82, BluetoothGATTErrorResponse.parser()),
+    Pair(83, BluetoothGATTWriteResponse.parser()),
+    Pair(84, BluetoothGATTNotifyResponse.parser()),
+    Pair(85, BluetoothDevicePairingResponse.parser()),
+    Pair(86, BluetoothDeviceUnpairingResponse.parser()),
+    Pair(87, UnsubscribeBluetoothLEAdvertisementsRequest.parser()),
+    Pair(88, BluetoothDeviceClearCacheResponse.parser()),
+    Pair(89, SubscribeVoiceAssistantRequest.parser()),
+    Pair(90, VoiceAssistantRequest.parser()),
+    Pair(91, VoiceAssistantResponse.parser()),
+    Pair(92, VoiceAssistantEventResponse.parser()),
+    Pair(93, BluetoothLERawAdvertisementsResponse.parser()),
+    Pair(94, ListEntitiesAlarmControlPanelResponse.parser()),
+    Pair(95, AlarmControlPanelStateResponse.parser()),
+    Pair(96, AlarmControlPanelCommandRequest.parser()),
+    Pair(97, ListEntitiesTextResponse.parser()),
+    Pair(98, TextStateResponse.parser()),
+    Pair(99, TextCommandRequest.parser()),
+    Pair(100, ListEntitiesDateResponse.parser()),
+    Pair(101, DateStateResponse.parser()),
+    Pair(102, DateCommandRequest.parser()),
+    Pair(103, ListEntitiesTimeResponse.parser()),
+    Pair(104, TimeStateResponse.parser()),
+    Pair(105, TimeCommandRequest.parser()),
+    Pair(106, VoiceAssistantAudio.parser()),
+    Pair(107, ListEntitiesEventResponse.parser()),
+    Pair(108, EventResponse.parser()),
+    Pair(109, ListEntitiesValveResponse.parser()),
+    Pair(110, ValveStateResponse.parser()),
+    Pair(111, ValveCommandRequest.parser()),
+    Pair(112, ListEntitiesDateTimeResponse.parser()),
+    Pair(113, DateTimeStateResponse.parser()),
+    Pair(114, DateTimeCommandRequest.parser()),
+    Pair(115, VoiceAssistantTimerEventResponse.parser()),
+    Pair(116, ListEntitiesUpdateResponse.parser()),
+    Pair(117, UpdateStateResponse.parser()),
+    Pair(118, UpdateCommandRequest.parser()),
+    Pair(119, VoiceAssistantAnnounceRequest.parser()),
+    Pair(120, VoiceAssistantAnnounceFinished.parser()),
+    Pair(121, VoiceAssistantConfigurationRequest.parser()),
+    Pair(122, VoiceAssistantConfigurationResponse.parser()),
+    Pair(123, VoiceAssistantSetConfiguration.parser()),
+    Pair(124, NoiseEncryptionSetKeyRequest.parser()),
+    Pair(125, NoiseEncryptionSetKeyResponse.parser()),
+    Pair(126, BluetoothScannerStateResponse.parser()),
+    Pair(127, BluetoothScannerSetModeRequest.parser()),
+)
+
+val MESSAGE_TYPES = mapOf<Class<out Any>, Int>(
+    Pair(HelloRequest::class.java, 1),
+    Pair(HelloResponse::class.java, 2),
+    Pair(ConnectRequest::class.java, 3),
+    Pair(ConnectResponse::class.java, 4),
+    Pair(DisconnectRequest::class.java, 5),
+    Pair(DisconnectResponse::class.java, 6),
+    Pair(PingRequest::class.java, 7),
+    Pair(PingResponse::class.java, 8),
+    Pair(DeviceInfoRequest::class.java, 9),
+    Pair(DeviceInfoResponse::class.java, 10),
+    Pair(ListEntitiesRequest::class.java, 11),
+    Pair(ListEntitiesBinarySensorResponse::class.java, 12),
+    Pair(ListEntitiesCoverResponse::class.java, 13),
+    Pair(ListEntitiesFanResponse::class.java, 14),
+    Pair(ListEntitiesLightResponse::class.java, 15),
+    Pair(ListEntitiesSensorResponse::class.java, 16),
+    Pair(ListEntitiesSwitchResponse::class.java, 17),
+    Pair(ListEntitiesTextSensorResponse::class.java, 18),
+    Pair(ListEntitiesDoneResponse::class.java, 19),
+    Pair(SubscribeStatesRequest::class.java, 20),
+    Pair(BinarySensorStateResponse::class.java, 21),
+    Pair(CoverStateResponse::class.java, 22),
+    Pair(FanStateResponse::class.java, 23),
+    Pair(LightStateResponse::class.java, 24),
+    Pair(SensorStateResponse::class.java, 25),
+    Pair(SwitchStateResponse::class.java, 26),
+    Pair(TextSensorStateResponse::class.java, 27),
+    Pair(SubscribeLogsRequest::class.java, 28),
+    Pair(SubscribeLogsResponse::class.java, 29),
+    Pair(CoverCommandRequest::class.java, 30),
+    Pair(FanCommandRequest::class.java, 31),
+    Pair(LightCommandRequest::class.java, 32),
+    Pair(SwitchCommandRequest::class.java, 33),
+    Pair(SubscribeHomeassistantServicesRequest::class.java, 34),
+    Pair(HomeassistantServiceResponse::class.java, 35),
+    Pair(GetTimeRequest::class.java, 36),
+    Pair(GetTimeResponse::class.java, 37),
+    Pair(SubscribeHomeAssistantStatesRequest::class.java, 38),
+    Pair(SubscribeHomeAssistantStateResponse::class.java, 39),
+    Pair(HomeAssistantStateResponse::class.java, 40),
+    Pair(ListEntitiesServicesResponse::class.java, 41),
+    Pair(ExecuteServiceRequest::class.java, 42),
+    Pair(ListEntitiesCameraResponse::class.java, 43),
+    Pair(CameraImageResponse::class.java, 44),
+    Pair(CameraImageRequest::class.java, 45),
+    Pair(ListEntitiesClimateResponse::class.java, 46),
+    Pair(ClimateStateResponse::class.java, 47),
+    Pair(ClimateCommandRequest::class.java, 48),
+    Pair(ListEntitiesNumberResponse::class.java, 49),
+    Pair(NumberStateResponse::class.java, 50),
+    Pair(NumberCommandRequest::class.java, 51),
+    Pair(ListEntitiesSelectResponse::class.java, 52),
+    Pair(SelectStateResponse::class.java, 53),
+    Pair(SelectCommandRequest::class.java, 54),
+    Pair(ListEntitiesSirenResponse::class.java, 55),
+    Pair(SirenStateResponse::class.java, 56),
+    Pair(SirenCommandRequest::class.java, 57),
+    Pair(ListEntitiesLockResponse::class.java, 58),
+    Pair(LockStateResponse::class.java, 59),
+    Pair(LockCommandRequest::class.java, 60),
+    Pair(ListEntitiesButtonResponse::class.java, 61),
+    Pair(ButtonCommandRequest::class.java, 62),
+    Pair(ListEntitiesMediaPlayerResponse::class.java, 63),
+    Pair(MediaPlayerStateResponse::class.java, 64),
+    Pair(MediaPlayerCommandRequest::class.java, 65),
+    Pair(SubscribeBluetoothLEAdvertisementsRequest::class.java, 66),
+    Pair(BluetoothLEAdvertisementResponse::class.java, 67),
+    Pair(BluetoothDeviceRequest::class.java, 68),
+    Pair(BluetoothDeviceConnectionResponse::class.java, 69),
+    Pair(BluetoothGATTGetServicesRequest::class.java, 70),
+    Pair(BluetoothGATTGetServicesResponse::class.java, 71),
+    Pair(BluetoothGATTGetServicesDoneResponse::class.java, 72),
+    Pair(BluetoothGATTReadRequest::class.java, 73),
+    Pair(BluetoothGATTReadResponse::class.java, 74),
+    Pair(BluetoothGATTWriteRequest::class.java, 75),
+    Pair(BluetoothGATTReadDescriptorRequest::class.java, 76),
+    Pair(BluetoothGATTWriteDescriptorRequest::class.java, 77),
+    Pair(BluetoothGATTNotifyRequest::class.java, 78),
+    Pair(BluetoothGATTNotifyDataResponse::class.java, 79),
+    Pair(SubscribeBluetoothConnectionsFreeRequest::class.java, 80),
+    Pair(BluetoothConnectionsFreeResponse::class.java, 81),
+    Pair(BluetoothGATTErrorResponse::class.java, 82),
+    Pair(BluetoothGATTWriteResponse::class.java, 83),
+    Pair(BluetoothGATTNotifyResponse::class.java, 84),
+    Pair(BluetoothDevicePairingResponse::class.java, 85),
+    Pair(BluetoothDeviceUnpairingResponse::class.java, 86),
+    Pair(UnsubscribeBluetoothLEAdvertisementsRequest::class.java, 87),
+    Pair(BluetoothDeviceClearCacheResponse::class.java, 88),
+    Pair(SubscribeVoiceAssistantRequest::class.java, 89),
+    Pair(VoiceAssistantRequest::class.java, 90),
+    Pair(VoiceAssistantResponse::class.java, 91),
+    Pair(VoiceAssistantEventResponse::class.java, 92),
+    Pair(BluetoothLERawAdvertisementsResponse::class.java, 93),
+    Pair(ListEntitiesAlarmControlPanelResponse::class.java, 94),
+    Pair(AlarmControlPanelStateResponse::class.java, 95),
+    Pair(AlarmControlPanelCommandRequest::class.java, 96),
+    Pair(ListEntitiesTextResponse::class.java, 97),
+    Pair(TextStateResponse::class.java, 98),
+    Pair(TextCommandRequest::class.java, 99),
+    Pair(ListEntitiesDateResponse::class.java, 100),
+    Pair(DateStateResponse::class.java, 101),
+    Pair(DateCommandRequest::class.java, 102),
+    Pair(ListEntitiesTimeResponse::class.java, 103),
+    Pair(TimeStateResponse::class.java, 104),
+    Pair(TimeCommandRequest::class.java, 105),
+    Pair(VoiceAssistantAudio::class.java, 106),
+    Pair(ListEntitiesEventResponse::class.java, 107),
+    Pair(EventResponse::class.java, 108),
+    Pair(ListEntitiesValveResponse::class.java, 109),
+    Pair(ValveStateResponse::class.java, 110),
+    Pair(ValveCommandRequest::class.java, 111),
+    Pair(ListEntitiesDateTimeResponse::class.java, 112),
+    Pair(DateTimeStateResponse::class.java, 113),
+    Pair(DateTimeCommandRequest::class.java, 114),
+    Pair(VoiceAssistantTimerEventResponse::class.java, 115),
+    Pair(ListEntitiesUpdateResponse::class.java, 116),
+    Pair(UpdateStateResponse::class.java, 117),
+    Pair(UpdateCommandRequest::class.java, 118),
+    Pair(VoiceAssistantAnnounceRequest::class.java, 119),
+    Pair(VoiceAssistantAnnounceFinished::class.java, 120),
+    Pair(VoiceAssistantConfigurationRequest::class.java, 121),
+    Pair(VoiceAssistantConfigurationResponse::class.java, 122),
+    Pair(VoiceAssistantSetConfiguration::class.java, 123),
+    Pair(NoiseEncryptionSetKeyRequest::class.java, 124),
+    Pair(NoiseEncryptionSetKeyResponse::class.java, 125),
+    Pair(BluetoothScannerStateResponse::class.java, 126),
+    Pair(BluetoothScannerSetModeRequest::class.java, 127)
+)

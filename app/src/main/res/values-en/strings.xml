@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ava Voice Assistant</string>
+    <string name="service_name">Voice Satellite Service</string>
+    <string name="screensaver_image">Screensaver Image</string>
+    <string name="label_start_service">Start Service</string>
+    <string name="label_stop_service">Stop Service</string>
+    <string name="label_ok">OK</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="settings_coming_soon">Coming soon</string>
+    <string name="label_settings">Settings</string>
+    <string name="label_voice_satellite_name">Device Name</string>
+    <string name="label_voice_satellite_port">Service Port</string>
+    <string name="label_voice_satellite_wake_word">Wake Word</string>
+    <string name="label_voice_satellite_enable_wake_sound">Wake Sound</string>
+    <string name="description_voice_satellite_play_wake_sound">Play sound when wake word is detected</string>
+
+    <string name="validation_voice_satellite_name_empty">Name cannot be empty</string>
+    <string name="validation_voice_satellite_port_invalid">Port must be between 1 and 65535</string>
+    <string name="validation_voice_satellite_wake_word_invalid">Wake word not found</string>
+    <string name="satellite_state_stopped">Stopped</string>
+    <string name="satellite_state_disconnected">Disconnected</string>
+    <string name="satellite_state_idle">Idle</string>
+    <string name="satellite_state_listening">Listening</string>
+    <string name="satellite_state_processing">Processing</string>
+    <string name="satellite_state_responding">Responding</string>
+    <string name="satellite_state_server_error">Server error: %1$s</string>
+    
+    
+    <string name="entity_media_player">Media Player</string>
+    <string name="entity_mute_microphone">Mute Microphone</string>
+    <string name="entity_wake_sound">Wake Sound</string>
+    <string name="entity_screen_toggle">Screen Toggle</string>
+    <string name="entity_screensaver_image_url">Camera Image URL</string>
+    <string name="entity_screensaver_enable">Screensaver</string>
+    <string name="entity_screensaver_url">Screensaver URL</string>
+    <string name="entity_ha_remote_url">Remote Browser URL</string>
+    <string name="entity_restart_service">Restart Service</string>
+    <string name="entity_notification_scene">Notification Scene</string>
+    <string name="entity_scene_display_duration">Scene Display Duration</string>
+    <string name="entity_custom_scene_url">Custom Scene URL</string>
+    <string name="entity_take_snapshot">Take Snapshot</string>
+    <string name="entity_camera_snapshot">Device Snapshot</string>
+    <string name="entity_video_recording">Start Recording</string>
+    <string name="entity_camera_video">Device Recording</string>
+    
+    
+    <string name="entity_bluetooth_scan_mode">Bluetooth Proxy Scan Mode</string>
+    <string name="bluetooth_scan_mode_active">Active Scan</string>
+    <string name="bluetooth_scan_mode_passive">Passive Scan</string>
+    
+    
+    <string name="section_core_connection">Core Connection</string>
+    <string name="section_interaction_visual">Interaction &amp; Visual</string>
+    <string name="section_local_service">Local Service</string>
+    <string name="notification_sound">Notification Sound</string>
+    <string name="notification_sound_desc">Play sound when scene popup appears</string>
+    <string name="select_sound">Select Sound</string>
+    <string name="select_external_audio">+ Select External Audio</string>
+    <string name="sound_none">None</string>
+    <string name="sound_unknown">Unknown</string>
+    <string name="custom_scene_config">Custom Scene Config</string>
+    <string name="custom_scene_desc">Load notification scene configuration from remote JSON file.</string>
+    <string name="custom_scene_json_format">JSON Format Requirements:</string>
+    <string name="custom_scene_json_requirements">• Must be a valid JSON array or object with "scenes" key\n• Each scene needs title, icon, color fields\n• FontAwesome icons supported</string>
+    <string name="custom_scene_example_hint">Click "Use Example" to auto-fill a sample configuration URL for reference.</string>
+    <string name="custom_scene_use_example">Use Example</string>
+    <string name="custom_scene_i_know">Got it</string>
+    <string name="validation_range">Please enter a value between %1$d and %2$d</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_stopped">Stopped</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_error">Error</string>
+    <string name="status_working">Working</string>
+    <string name="render_hardware">Hardware</string>
+    <string name="render_software">Software</string>
+    <string name="github_project">Open Source Project</string>
+    <string name="ava_version">Ava Assistant %1$s (Beta)</string>
+    <string name="device_ip">Device IP: %1$s</string>
+    <string name="original_author">Original Author: brownard</string>
+    <string name="secondary_dev">Secondary Dev: knoop7</string>
+    
+    
+    <string name="screen_toggle_on_success">Screen on success (%1$s)</string>
+    <string name="screen_toggle_off_success">Screen off success (%1$s)</string>
+    <string name="screen_toggle_failed">Screen control failed, check Root or Shizuku permissions</string>
+    
+    
+    <string name="floating_ai_reply">AI Reply:</string>
+    <string name="weather_city">Weather City</string>
+    
+    
+    <string name="settings_experimental">Experimental</string>
+    <string name="settings_camera_enabled">Remote Camera</string>
+    <string name="settings_camera_enabled_desc">Allow Home Assistant to control camera remotely</string>
+    <string name="settings_no_camera">No camera available</string>
+    <string name="settings_camera_mode">Camera Mode</string>
+    <string name="settings_camera_mode_snapshot">Snapshot Mode</string>
+    <string name="settings_camera_mode_snapshot_desc">Trigger snapshot and get image</string>
+    <string name="settings_camera_mode_video">Video Mode</string>
+    <string name="settings_camera_mode_video_desc">Toggle recording, get video stream</string>
+    <string name="settings_video_fps">Video FPS</string>
+    <string name="settings_video_fps_desc">Lower FPS recommended for stability</string>
+    <string name="settings_video_fps_format">%d FPS</string>
+    <string name="settings_video_resolution">Video Resolution</string>
+    <string name="settings_video_resolution_240">Smooth (320×240)</string>
+    <string name="settings_video_resolution_360">SD (480×360)</string>
+    <string name="settings_video_resolution_480">HD (640×480)</string>
+    <string name="settings_video_resolution_720">FHD (960×720)</string>
+    <string name="settings_camera_position">Camera Selection</string>
+    <string name="settings_camera_back">Back Camera</string>
+    <string name="settings_camera_front">Front Camera</string>
+    <string name="settings_image_size">Image Size</string>
+    <string name="settings_image_size_original">Original (no crop)</string>
+    <string name="settings_image_size_500">500px (square crop)</string>
+    <string name="settings_image_size_720">720px (square crop)</string>
+    <string name="settings_image_size_1080">1080px (square crop)</string>
+    
+    
+    <string name="settings_group_connection">ESPHome Config</string>
+    <string name="settings_group_connection_en">Voice</string>
+    <string name="settings_group_connection_desc">Wake word · name · Port</string>
+    <string name="settings_group_interaction">Display</string>
+    <string name="settings_group_interaction_en">Display</string>
+    <string name="settings_group_interaction_desc">Conversation · Floating · Clock</string>
+    <string name="settings_group_experimental">Experimental</string>
+    <string name="settings_group_experimental_en">Labs</string>
+    <string name="settings_group_experimental_desc">Remote camera · Snapshot</string>
+    <string name="settings_group_service">Device Service</string>
+    <string name="settings_group_service_en">Service</string>
+    <string name="settings_group_service_desc">Sensors · Screen · Orientation</string>
+    <string name="settings_group_browser">Web Browser</string>
+    <string name="settings_group_browser_en">Browser</string>
+    <string name="settings_group_browser_desc">Zoom · Touch · Render</string>
+    <string name="settings_group_bluetooth">Bluetooth</string>
+    <string name="settings_group_bluetooth_en">Bluetooth</string>
+    <string name="settings_group_bluetooth_desc">Beacon · Notification</string>
+    <string name="settings_group_screensaver">Screensaver</string>
+    <string name="settings_group_screensaver_en">Screensaver</string>
+    <string name="settings_group_screensaver_desc">URL · Brightness · Motion</string>
+    
+    
+    <string name="settings_screensaver_url">Screensaver URL</string>
+    <string name="settings_screensaver_url_desc">URL to display when device is idle</string>
+    <string name="settings_screensaver_enable">Enable Screensaver</string>
+    <string name="settings_screensaver_enable_desc">Show screensaver after idle timeout</string>
+    <string name="settings_screensaver_timeout">Display Timeout</string>
+    <string name="settings_screensaver_timeout_desc">Idle time before screensaver starts (seconds)</string>
+    <string name="settings_screensaver_dark_off">Turn off in dark</string>
+    <string name="settings_screensaver_dark_off_desc">Turn off screen when darkness is detected</string>
+    <string name="settings_screensaver_background_pause">Background Pause</string>
+    <string name="settings_screensaver_background_pause_desc">Pause motion detection when another app is in foreground</string>
+    <string name="settings_screensaver_motion_on">Proximity Wake</string>
+    <string name="settings_screensaver_motion_on_desc">Turn on screen when proximity is detected</string>
+    <string name="screensaver_notification_title">Screensaver running</string>
+
+    
+    <string name="settings_browser_pull_refresh">Pull to Refresh</string>
+    <string name="settings_browser_pull_refresh_desc">Pull down to refresh the page</string>
+    <string name="settings_browser_initial_scale">Page Scale</string>
+    <string name="settings_browser_initial_scale_desc">Initial page zoom, 0 for auto-fit</string>
+    <string name="settings_browser_font_size">Font Size</string>
+    <string name="settings_browser_font_size_desc">Text size, 100 is normal</string>
+    <string name="settings_browser_settings_button">Settings Button</string>
+    <string name="settings_browser_settings_button_desc">Show gear icon in bottom right corner</string>
+    <string name="settings_browser_search_engine">Search Engine</string>
+    <string name="settings_browser_touch">Enable Touch</string>
+    <string name="settings_browser_touch_desc">Allow tapping buttons and links</string>
+    <string name="settings_browser_drag">Enable Drag</string>
+    <string name="settings_browser_drag_desc">Allow scrolling and dragging</string>
+    <string name="settings_browser_render_mode">Render Mode</string>
+    <string name="settings_browser_render_mode_desc">Switch if page displays incorrectly</string>
+    <string name="settings_browser_render_hardware">Hardware</string>
+    <string name="settings_browser_render_software">Software</string>
+    <string name="settings_browser_advanced_control">HA Remote Control</string>
+    <string name="settings_browser_advanced_control_desc">Control browser via Home Assistant, supports effects, brightness, volume</string>
+    <string name="settings_browser_back_key_hide">Back Key Hide</string>
+    <string name="settings_browser_back_key_hide_desc">Hide floating browser when back key is pressed</string>
+    <string name="advanced_control_help_title">Browser Command Service</string>
+    <string name="advanced_control_help_content" formatted="false">【How to Use】\n\nCall service in Home Assistant:\nservice: esphome.xxx_webview_command\ndata:\n  command: \'your command\'\n\n【Basic Commands】\n\nExecute JS: {\"eval\": \"code\"}\nRefresh: {\"reload\": true}\nClear cache: {\"clearCache\": true}\nOpen settings: {\"settings\": true}\nClear effects: {\"eval\": \"\"}\n\n【System Control】\n\nBrightness(0-255): {\"brightness\": 128}\nVolume(0-100): {\"volume\": 50}\nOpen camera: {\"camera\": true}\n\n【Automation】\n\nInject CSS: {\"injectCSS\": \"body{color:red}\"}\nClick element: {\"clickElement\": \"#btn\"}\nFill input: {\"fillInput\": {\"selector\": \"#input\", \"value\": \"text\"}}\n\n【AI Generate Effects】\n\nVisit AI assistant for custom effects:\nhttps://gemini.google.com/gem/ee3cb858f9d0</string>
+    <string name="advanced_control_copy">Copy to Clipboard</string>
+    <string name="advanced_control_dismiss">Got it</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    
+    
+    <string name="settings_bluetooth_detect">Device Detection</string>
+    <string name="settings_bluetooth_detect_desc">Detect nearby Bluetooth devices (presence sensing)</string>
+    <string name="settings_bluetooth_rssi_threshold">RSSI Threshold</string>
+    <string name="settings_bluetooth_rssi_threshold_desc">Left for near, right for far</string>
+    <string name="settings_bluetooth_away_delay">Away Delay</string>
+    <string name="settings_bluetooth_away_delay_desc">Time before marking as away</string>
+    <string name="settings_bluetooth_add_device">Add Bluetooth Device</string>
+    <string name="settings_bluetooth_add_device_hint">iPhone devices need to be paired first. If device cannot be detected, please pair it in system Bluetooth settings.</string>
+    
+    
+    <string name="settings_environment_sensor">Environment Sensors</string>
+    <string name="settings_environment_sensor_desc">Send light and magnetic data to Home Assistant</string>
+    <string name="settings_sensor_update_interval">Update Interval</string>
+    <string name="settings_sensor_update_interval_desc">Sensor data send frequency</string>
+    <string name="entity_light_sensor">Light Sensor</string>
+    <string name="entity_magnetic_sensor">Magnetic Sensor</string>
+    <string name="entity_proximity_sensor">Proximity Sensor</string>
+    <string name="entity_screen_brightness">Screen Brightness</string>
+    <string name="settings_proximity_threshold">Trigger Threshold</string>
+    <string name="settings_proximity_threshold_desc">Wake screen when closer than this</string>
+    <string name="settings_bluetooth_tracked_devices">Tracked Devices</string>
+    <string name="settings_bluetooth_nearby">Nearby</string>
+    <string name="settings_bluetooth_not_nearby">Not nearby</string>
+    <string name="settings_bluetooth_select_device">Select Bluetooth Device</string>
+    <string name="settings_bluetooth_searching">Searching nearby devices...</string>
+    <string name="settings_bluetooth_no_device">No devices found</string>
+    <string name="settings_bluetooth_already_added">Already added</string>
+    <string name="settings_bluetooth_paired">Paired</string>
+    <string name="settings_bluetooth_unknown_device">Unknown device</string>
+    <string name="settings_bluetooth_permission_required">Bluetooth and location permissions required</string>
+    <string name="settings_bluetooth_wifi_conflict">Bluetooth may affect WiFi performance on this device</string>
+    
+    
+    <string name="settings_group_root">Root Settings</string>
+    <string name="settings_group_root_en">Root Settings</string>
+    <string name="settings_group_root_desc">Compatibility · Permissions</string>
+    <string name="settings_shizuku_title">Shizuku Authorization</string>
+    <string name="settings_shizuku_desc">Elevate app permissions via Shizuku</string>
+    <string name="settings_shizuku_not_installed">Shizuku not installed</string>
+    <string name="settings_shizuku_not_running">Shizuku not running</string>
+    <string name="settings_shizuku_authorized">Authorized</string>
+    <string name="settings_shizuku_waiting">Waiting for authorization</string>
+    <string name="settings_shizuku_install">Install Shizuku</string>
+    <string name="settings_shizuku_start">Start Shizuku</string>
+    <string name="settings_shizuku_authorize">Authorize Shizuku</string>
+    <string name="settings_shizuku_refresh">Refresh</string>
+    <string name="settings_shizuku_guide">Guide</string>
+    <string name="settings_shizuku_guide_text">Shizuku is an open-source permission management tool.\n\nSetup steps:\n1. Download and install Shizuku from GitHub\n2. Enable via wireless debugging or ADB\n3. Return here and tap authorize\n\nAfter authorization:\n- Bluetooth scan and connect\n- Precise location (for screen-off BT scan)\n- Screen on/off control</string>
+    <string name="settings_root_status">Root Status</string>
+    <string name="settings_root_available">Root access granted</string>
+    <string name="settings_root_unavailable">Root access not available</string>
+    <string name="entity_bluetooth_rssi_threshold">Bluetooth RSSI Threshold</string>
+    <string name="entity_bluetooth_away_delay">Bluetooth Away Delay</string>
+    <string name="bluetooth_device_presence">%s Presence</string>
+    
+    
+    <string name="settings_diagnostic_sensor">Diagnostic Sensors</string>
+    <string name="settings_diagnostic_sensor_desc">Send device status to Home Assistant</string>
+    <string name="settings_diagnostic_wifi">WiFi Signal</string>
+    <string name="settings_diagnostic_wifi_desc">Show signal strength</string>
+    <string name="settings_diagnostic_ip">Device IP</string>
+    <string name="settings_diagnostic_ip_desc">Show network address</string>
+    <string name="settings_diagnostic_storage">Storage</string>
+    <string name="settings_diagnostic_storage_desc">Show remaining capacity</string>
+    <string name="settings_diagnostic_memory">Memory</string>
+    <string name="settings_diagnostic_memory_desc">Show used memory</string>
+    <string name="settings_diagnostic_uptime">Uptime</string>
+    <string name="settings_diagnostic_uptime_desc">Show running time</string>
+    <string name="entity_wifi_signal">WiFi Signal Strength</string>
+    <string name="entity_device_ip">Device IP Address</string>
+    <string name="entity_storage_free">Available Storage</string>
+    <string name="entity_memory_usage">Used Memory</string>
+    <string name="entity_device_uptime">Uptime Duration</string>
+    <string name="entity_kill_app">Kill App</string>
+    <string name="entity_reboot_device">Reboot Device</string>
+    <string name="settings_diagnostic_kill_app">Kill App</string>
+    <string name="settings_diagnostic_kill_app_desc">Force close this app</string>
+    <string name="settings_diagnostic_reboot">Reboot Device</string>
+    <string name="settings_diagnostic_reboot_desc">Reboot the entire device</string>
+    <string name="settings_diagnostic_battery_level">Battery Level</string>
+    <string name="settings_diagnostic_battery_voltage">Battery Voltage</string>
+    <string name="settings_diagnostic_charging_status">Charging Status</string>
+    <string name="settings_screensaver_url_visible">Show Screensaver URL</string>
+    <string name="settings_screensaver_url_visible_desc">Show screensaver URL entity in Home Assistant</string>
+    <string name="settings_xiaomi_wallpaper">Xiaomi Wallpaper Style</string>
+    <string name="settings_xiaomi_wallpaper_desc">Use random wallpaper as screensaver background</string>
+    
+    
+    <string name="settings_sensor_enabled">Environment Sensors</string>
+    <string name="settings_sensor_enabled_desc">Enable reading available sensors</string>
+    <string name="settings_battery_monitor">Battery Monitor</string>
+    <string name="settings_battery_monitor_desc">Monitor battery level and charging status</string>
+    <string name="settings_proximity_sensor">Proximity Sensor</string>
+    <string name="settings_proximity_sensor_desc">Enable proximity sensor</string>
+    <string name="settings_proximity_send_to_hass">Send to Home Assistant</string>
+    <string name="settings_proximity_send_to_hass_desc">Sync proximity state bidirectionally</string>
+    <string name="settings_proximity_wake_screen">Proximity Wake</string>
+    <string name="settings_proximity_wake_screen_desc">Wake screen when object is near</string>
+    <string name="settings_proximity_away_delay">Away Delay</string>
+    <string name="settings_proximity_away_delay_desc">Seconds before marking as away</string>
+    <string name="settings_keep_screen_on">Keep Screen On</string>
+    <string name="settings_keep_screen_on_desc">Prevent screen from dimming and turning off</string>
+    <string name="settings_screen_brightness">Screen Brightness</string>
+    <string name="settings_screen_brightness_desc">Sync screen brightness bidirectionally</string>
+    <string name="settings_force_orientation">Force Orientation</string>
+    <string name="settings_force_orientation_desc">Lock screen orientation (requires overlay permission)</string>
+    <string name="settings_force_orientation_mode">Orientation Mode</string>
+    <string name="settings_orientation_portrait">Portrait</string>
+    <string name="settings_orientation_landscape">Landscape</string>
+    <string name="settings_orientation_auto">Follow System</string>
+    <string name="settings_display_size">Display Resolution</string>
+    <string name="settings_display_size_desc">Adjust display resolution (requires ADB authorization)</string>
+    <string name="settings_display_scale">Display Scale</string>
+    <string name="settings_display_scale_desc">Lower value shows more content</string>
+    <string name="settings_display_size_error">Failed, please authorize WRITE_SECURE_SETTINGS</string>
+    <string name="settings_overlay_permission_required">Overlay permission required</string>
+    <string name="settings_write_settings_permission_required">Modify system settings permission required</string>
+    <string name="settings_device_not_supported">This device does not support this feature</string>
+    <string name="settings_auto_unlock">Auto Unlock Swipe Lock</string>
+    <string name="settings_auto_unlock_desc">Try to auto-unlock swipe lock (experimental)</string>
+    
+    
+    <string name="settings_category_service">Service Settings</string>
+    <string name="settings_category_display">Display Settings</string>
+    <string name="settings_category_weather">Weather Settings</string>
+    <string name="settings_port_description">Change port to avoid conflicts with multiple devices</string>
+    <string name="settings_continuous_conversation">Continuous Conversation</string>
+    <string name="settings_continuous_conversation_desc">Auto-listen after TTS ends</string>
+    <string name="settings_auto_restart">Auto Restart</string>
+    <string name="settings_auto_restart_desc">Auto-start on boot and enable service</string>
+    <string name="settings_floating_window">Floating Subtitle</string>
+    <string name="settings_floating_window_desc">Show voice conversation content</string>
+    <string name="settings_vinyl_cover">Album Cover</string>
+    <string name="settings_vinyl_cover_desc">Show fullscreen album cover when playing music</string>
+    <string name="settings_dream_clock">Dream Clock</string>
+    <string name="settings_dream_clock_desc">Show analog clock floating window</string>
+    <string name="settings_weather_overlay">Weather Overlay</string>
+    <string name="settings_weather_overlay_desc">Show immersive weather UI, swipe left to switch</string>
+    <string name="settings_weather_overlay_realtime_desc">Show real-time weather info</string>
+    <string name="settings_scene_display_duration">Scene Display Duration</string>
+    <string name="settings_scene_display_duration_desc">Notification scene display time in seconds</string>
+    <string name="settings_custom_scene_url">Custom Scene JSON</string>
+    <string name="settings_custom_scene_not_configured">Not configured</string>
+    <string name="settings_custom_scene_count">%1$d configured</string>
+    <string name="settings_custom_scene_loaded">%1$d scenes loaded</string>
+    <string name="settings_custom_scene_loading">Loading...</string>
+    <string name="settings_custom_scene_url_placeholder">Enter JSON URL</string>
+    <string name="settings_province">Province</string>
+    <string name="settings_city">City</string>
+    <string name="settings_district">District</string>
+    <string name="settings_please_select">Please select</string>
+    <string name="error_json_empty">Content is empty</string>
+    <string name="error_json_not_array">Format error: not a JSON array</string>
+    <string name="error_json_no_scenes">No scene definitions found</string>
+    <string name="error_json_parse_failed">Parse failed: %1$s</string>
+    
+    
+    <string name="settings_about">About</string>
+    <string name="settings_device_info">Device Info</string>
+    <string name="settings_author">Original Author</string>
+    <string name="settings_secondary_dev">Secondary Dev</string>
+    <string name="settings_project_url">Project URL</string>
+    <string name="more_options">More options</string>
+    <string name="back">Back</string>
+    <string name="connecting_service">Creating...</string>
+    
+    
+    <string name="welcome_title">Welcome to Ava</string>
+    <string name="welcome_subtitle">Follow us for more smart home tips</string>
+    <string name="qr_code_desc">QR Code</string>
+    <string name="wechat_account">Smart Home Tips</string>
+    <string name="auto_close_countdown">Auto close in 10 seconds</string>
+    
+    
+    <string name="update_available">New Version Available</string>
+    <string name="update_later">Later</string>
+    <string name="update_now">Update Now</string>
+    <string name="thinking">Thinking...</string>
+    
+    
+    <string name="weather_humidity">Humidity</string>
+    <string name="weather_air">Air</string>
+    <string name="weather_pressure">Pressure</string>
+    <string name="weather_wind_speed">Wind</string>
+    <string name="weather_wind_direction">Direction</string>
+    <string name="weather_north_wind">North</string>
+    <string name="weather_sunny">Sunny</string>
+    <string name="weather_cloudy">Cloudy</string>
+    <string name="weather_light_rain">Light Rain</string>
+    <string name="weather_rainy">Rainy</string>
+    <string name="weather_heavy_rain">Heavy Rain</string>
+    <string name="weather_light_snow">Light Snow</string>
+    <string name="weather_snowy">Snowy</string>
+    <string name="weather_heavy_snow">Heavy Snow</string>
+    <string name="weather_fog">Fog</string>
+    <string name="weather_haze">Haze</string>
+    <string name="weather_wind">Windy</string>
+    <string name="weather_sandstorm">Sandstorm</string>
+</resources>

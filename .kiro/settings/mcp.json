@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "interactive-feedback-mcp": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/knoopnu/interactive-feedback-mcp",
+        "run",
+        "server.py"
+      ],
+      "autoApprove": [
+        "interactive_feedback"
+      ]
+    }
+  }
+}
