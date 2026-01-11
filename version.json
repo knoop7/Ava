@@ -1,6 +1,7 @@
 {
-    "versionCode": 17,
-    "versionName": "0.1.7",
-    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.1.7/Ava-0.1.7-release.apk",
-    "changelog": "New! The wake-up tone can be replaced, now open source code, add Chinese external types, add development and user guides: https://github.com/knoop7/Ava/wiki, fix voice wake-up, Bluetooth, cache problems, remove the wake-up interface html format to prepare hand-drawn, solve known problems, fix key bugs, solve a large number of useless log errors, etc."
+    "versionCode": 18,
+    "versionName": "0.1.8",
+    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.1.8/Ava-0.1.8-release.apk",
+    "changelog": "New! I had some coffee and wrote a mountain of crap code. 喝了点咖啡，写了点屎山代码"
 }
+    
