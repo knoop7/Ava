@@ -54,6 +54,17 @@ Put your old phone or tablet at home, and it becomes a smart control panel!
 
 **System Requirements:** Android 7.0 or higher. Home Assistant connection required.
 
+> This makes Ava suitable for turning *any* phone or tablet into a native-looking Home Assistant panel, consistent with the rest of your HA ecosystem.
+
+
+
+
+> Ava does not impose a custom UI identity.
+> Instead, it deliberately follows Home Assistant’s visual language and iconography.
+>
+> This ensures that any device running Ava feels like an extension of Home Assistant itself, not a third-party layer on top.
+
+
 ---
 
 ## Quick Start
@@ -120,8 +131,6 @@ Say the wake word (default is "Hey Jarvis"), then say your command: "Turn on the
 
 **What it shows:** Temperature, Weather condition (sunny, cloudy, rain, etc.), Humidity, Wind direction and speed, Air quality.
 
-**Note:** Weather feature only supports cities in China.
-
 **Settings:** Settings → Interaction → Weather
 
 ---
@@ -168,7 +177,7 @@ data:
 
 **What is it:** Ava can play music and show beautiful album covers.
 
-**Special features:** Vinyl record style cover display. Auto-fetch NetEase Music covers. Voice announcements (TTS).
+**Special features:** Vinyl record style cover display. Auto-fetch Music covers. Voice announcements (TTS).
 
 **Settings:** Settings → Interaction
 
@@ -302,9 +311,6 @@ Donations welcome but entirely voluntary, all features available.
 
 **Check these:** 1. Is screensaver enabled? Settings → Screensaver → Enable. 2. Is overlay permission granted? Go to phone Settings → Apps → Ava → Permissions → Overlay → Allow. 3. Is timeout set? Settings → Screensaver → Timeout.
 
-### Weather not showing
-
-**Check these:** 1. Did you select a city in China? (Only supports China cities). 2. Is the city selected correctly? 3. Is network connection working?
 
 ---
 
@@ -407,4 +413,4 @@ storeFile=../my-release-key.jks
 
 ---
 
-*Last Updated: 2026-01-09*
+*Last Updated: 2026-01-16*
