@@ -61,7 +61,6 @@ Put your old phone or tablet at home, and it becomes a smart control panel!
 
 > Ava does not impose a custom UI identity.
 > Instead, it deliberately follows Home Assistant’s visual language and iconography.
->
 > This ensures that any device running Ava feels like an extension of Home Assistant itself, not a third-party layer on top.
 
 
@@ -104,7 +103,7 @@ Say the wake word (default is "Hey Jarvis"), then say your command: "Turn on the
 | Wake Sound | Prompt sound when recording starts | Optional |
 | Mute | Turn off microphone | Off |
 
-**Supported Wake Words:** Hey Jarvis, Alexa, Hey Google, OK Google, And more...
+**Supported Wake Words:** Hey Jarvis, Alexa, OK Nabu...
 
 ---
 
