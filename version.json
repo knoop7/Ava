@@ -1,7 +1,7 @@
 {
-    "versionCode": 20,
-    "versionName": "0.2.0",
-    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.0/Ava-0.2.0-release.apk",
-    "changelog": "New! I suggest you update; otherwise, you won't be able to play with this toy. "         
+    "versionCode": 21,
+    "versionName": "0.2.1",
+    "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.1/Ava-0.2.1-release.apk",
+    "changelog": "What’s New\nWake word highlights: Wake Word 1 glows bright green, Wake Word 2 glows bright blue. (No custom colors or disable option for now.)\n\nAndroid Intent Launch: Found under Advanced Features → Intents → Enable Display. When enabled, diagnostic log entities and services will appear.\nUse in Home Assistant:\naction: esphome.<device_name>_launch_intent\nintent_uri: "spotify://"\nSupported formats:\n- Open app: spotify:\n- Package: com.spotify.music\n- System settings (must end with ; end):\n Settings: intent:#Intent; action=android.settings.SETTINGS; end\n Developer: intent:#Intent; action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS; end\n Wi-Fi: intent:#Intent; action=android.settings.WIFI_SETTINGS; end\n Bluetooth: intent:#Intent; action=android.settings.BLUETOOTH_SETTINGS; end\n\nFixes\n- Bluetooth works after service restart\n- Screen recording switch retains state\n- Main icons display correctly\n- Unified instruction format for clarity\n\nComing Soon\nTimers and alarm clock are still in design. "         
 }
          
