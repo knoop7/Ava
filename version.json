@@ -1,6 +1,6 @@
 {
-  "versionCode": 22,
-  "versionName": "0.2.2",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.2/Ava-0.2.2-release.apk",
-  "changelog": "New: UDP smart-discovery keeps only one device answering, ending multi-device chaos. Face & gender recognition onboard—accuracy + confidence score ready (enable via https://wallpanel.xyz/docs). UI: weather & clock no longer jumble; dialogs cleaner; inputs sync instantly to entities. Under the hood: memory leaks plugged, middle layer restored, pesky crashes gone. Smaller, faster, ready for your wall."
+  "versionCode": 23,
+  "versionName": "0.2.3",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.3/Ava-0.2.3-release.apk",
+  "changelog": "New: Dark mode auto-switches with your wall; hide the top-left label for a cleaner canvas. Fixed: Bluetooth stack rewritten—pairing drops, reconnect loops & audio glitches gone. Weather & clock panels stay in sync; browser container now exits fully; stray label typos erased. Leaner, stabler, ready to run all night."
 }
