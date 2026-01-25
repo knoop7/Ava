@@ -1,6 +1,6 @@
 {
-  "versionCode": 23,
-  "versionName": "0.2.3",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.3/Ava-0.2.3-release.apk",
-  "changelog": "New: Dark mode auto-switches with your wall; hide the top-left label for a cleaner canvas. Fixed: Bluetooth stack rewritten—pairing drops, reconnect loops & audio glitches gone. Weather & clock panels stay in sync; browser container now exits fully; stray label typos erased. Leaner, stabler, ready to run all night."
+  "versionCode": 24,
+  "versionName": "0.2.4",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.4/Ava-0.2.4-release.apk",
+  "changelog": "New: Bluetooth fully rebuilt—BTHOME & whole-house encrypted mesh online, zero legacy bugs. UDP keeps every device an independent island. Remote wake-word wake-up works from anywhere. Tiny on-device VAD spots your voice before the cloud. Fixed: wake freezes gone, multi-device races silenced, UI colors flattened to one modern palette. Just talk, it listens."
 }
