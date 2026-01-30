@@ -1,6 +1,6 @@
 {
-  "versionCode": 25,
-  "versionName": "0.2.5",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.5/Ava-0.2.5-release.apk",
-  "changelog": "New: live labels for lights, switches & buttons—show or hide in Interface Settings. Enhanced: aggressive background keep-alive tuned for every major Chinese ROM. Patched: last Bluetooth gremlins erased. Fixed: weather panel re-centered, diagnostic sensors refresh live, wake-up chime back, plus assorted crashes swept away. Cleaner, snappier, always awake."
+  "versionCode": 26,
+  "versionName": "0.2.6",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.6/Ava-0.2.6-release.apk",
+  "changelog": "New: inject Greasemonkey-style user scripts (some may need a quick Gemini polish at https://gemini.google.com/gem/e087b34309a4). Added: custom browser UA string; root-free activity starter. Fixed: browser tab-switch clashes gone, Bluetooth power naps tamed, stodgy labels cleaned, wake-word reliability up, voice race-conditions quiet. Smoother surfing, steadier talking."
 }
