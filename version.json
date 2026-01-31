@@ -1,6 +1,6 @@
 {
-  "versionCode": 26,
-  "versionName": "0.2.6",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.6/Ava-0.2.6-release.apk",
-  "changelog": "New: inject Greasemonkey-style user scripts (some may need a quick Gemini polish at https://gemini.google.com/gem/e087b34309a4). Added: custom browser UA string; root-free activity starter. Fixed: browser tab-switch clashes gone, Bluetooth power naps tamed, stodgy labels cleaned, wake-word reliability up, voice race-conditions quiet. Smoother surfing, steadier talking."
+  "versionCode": 27,
+  "versionName": "0.2.7",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.7/Ava-0.2.7-release.apk",
+  "changelog": "Fix: 1-hour crash that killed HA Companion App. WakeLock now auto-renews every 30 min. Bluetooth scan jobs stop cleanly; GlobalScope coroutines replaced with structured concurrency; nested GATT launches removed. WebView gets 3-crash/1-min brake and 2-s rebuild delay; onDestroy wipes all dialogs to stop window leaks. UDP socket closed before job cancel, plus full exception logs. Runs overnight without a hiccup."
 }
