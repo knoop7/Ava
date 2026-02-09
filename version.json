@@ -2,5 +2,5 @@
   "versionCode": 28,
   "versionName": "0.2.8",
   "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.8/Ava-0.2.8-release.apk",
-  "changelog": "mwon StemDock floating dashboard—pin up to 6 HA devices, tap to toggle, long-press to reorder. Auto-grid flips portrait/landscape, 22-tone palette, live sensors. Enable in Display settings or fill slots via HA entities (ava_quick_entity_slot_1-6). Fixed: unified toggles, dark-mode colors, muted wake bug, nav-bar on Android ≤11, memory leaks, 15-fps clock, swipe-unlock, screensaver triggers, audio contention, proximity loops, Vietnamese support, plus 10+ papercuts. Cooler, cleaner, faster."
+  "changelog": "mwon StemDock floating dashboard—pin up to 6 HA devices, tap to toggle, long-press to reorder. Auto-grid flips portrait/landscape, 22-tone palette."
 }
