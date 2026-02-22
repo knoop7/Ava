@@ -1,6 +1,6 @@
 {
-  "versionCode": 28,
-  "versionName": "0.2.8",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.8/Ava-0.2.8-release.apk",
-  "changelog": "New! StemDock floating dashboard—pin up to 6 HA devices, tap to toggle, long-press to reorder. Auto-grid flips portrait/landscape, 22-tone palette."
+  "versionCode": 29,
+  "versionName": "0.2.9",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.9/Ava-0.2.9-release.apk",
+  "changelog": "New! AI Sphere—new voice-visual UI with mood animations. Enable under Floating Subtitles in Settings. External Control API—broadcast commands for service, mic, wake, stop. Works with Tasker, ADB. STT/TTS text exposed as HA sensors. Bermuda bluetooth proxy rebuilt, dead scanners fixed. Browser/Screensaver switching stabilized for Immich-kiosk—no more loading failures or freezes after repeated switches. Media resumes after voice, karaoke text sync with char-weighted switching, breathing glow effect, per-device gradients. Camera tweaks for Samsung Tab A8."
 }
