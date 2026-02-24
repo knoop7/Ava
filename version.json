@@ -1,6 +1,6 @@
 {
-  "versionCode": 30,
-  "versionName": "0.3.0",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.3.0/Ava-0.3.0-release.apk",
-  "changelog": "HA media player recovery—pause+play restores external audio after TTS. Smooth volume duck/unDuck with gradient animation. TTS race fixed: runStart triggers old callback first, removed redundant player.init(). Floating subtitles use lazy bringToFront for better layering. Reply text gets shadow layer for readability. ESPHome bumped to 2026.2.1. TTS delay optimized—init() moved to play(). BLE watchdog auto-detects scan failures on low-end 4.0 chips and recovers dynamically by power mode."
+  "versionCode": 31,
+  "versionName": "0.3.1",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.3.1/Ava-0.3.1-release.apk",
+  "changelog": "HOTFIX: critical crash resolved, app now runs normally. Overlay permission check added—static methods verify canDrawOverlays before service start. Fixed floating window flash on init. WakeWordArbiter port binding fixed with reuseAddress. ClientConnection resources close cleanly. Floating status labels rebuilt inside EsperSphereView, auto-follow sphere. Text cards hug bottom, max 20% height, nav-bar aware. Removed card header status, wave icons, redundant BLE logs. General optimizations throughout. Thanks @ohjables, @zaiahgaming."
 }
