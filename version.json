@@ -1,6 +1,6 @@
 {
-  "versionCode": 29,
-  "versionName": "0.2.9",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.2.9/Ava-0.2.9-release.apk",
-  "changelog": "New! AI Sphere—new voice-visual UI with mood animations. Enable under Floating Subtitles in Settings. External Control API—broadcast commands for service, mic, wake, stop. Works with Tasker, ADB. STT/TTS text exposed as HA sensors. Bermuda bluetooth proxy rebuilt, dead scanners fixed. Browser/Screensaver switching stabilized for Immich-kiosk—no more loading failures or freezes after repeated switches. Media resumes after voice, karaoke text sync with char-weighted switching, breathing glow effect, per-device gradients. Camera tweaks for Samsung Tab A8."
+  "versionCode": 30,
+  "versionName": "0.3.0",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.3.0/Ava-0.3.0-release.apk",
+  "changelog": "HA media player recovery—pause+play restores external audio after TTS. Smooth volume duck/unDuck with gradient animation. TTS race fixed: runStart triggers old callback first, removed redundant player.init(). Floating subtitles use lazy bringToFront for better layering. Reply text gets shadow layer for readability. ESPHome bumped to 2026.2.1. TTS delay optimized—init() moved to play(). BLE watchdog auto-detects scan failures on low-end 4.0 chips and recovers dynamically by power mode."
 }
