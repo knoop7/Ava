@@ -10,7 +10,14 @@ This project is based on [brownard/Ava](https://github.com/brownard/Ava) with ex
 
 ## Core Philosophy
 
-**No Extra Integrations** - No MQTT, no HACS. Devices are natively discovered by Home Assistant, just like ESPHome devices. **Low-End Device Friendly** - Supports Android 7-16, including 32-bit devices. Cheap tablets, old phones all work. Why not Android 4-6? Some features have compatibility issues - better to not support than half-support.
+**No Extra Integrations**
+No MQTT, no HACS. Devices are discovered natively by Home Assistant, just like ESPHome nodes.
+
+**Built for Low-End Hardware**
+Supports Android 7–16, including 32-bit devices. Cheap tablets and old phones work reliably.
+
+**Expanding to Android 4.4–6**
+Earlier Android versions are currently under active development. The goal is full BLE proxy compatibility without compromises
 
 ---
 
