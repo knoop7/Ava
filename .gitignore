@@ -22,8 +22,7 @@ local.properties
 /.kotlin/
 /.windsurf/
 
-# 屏蔽文档和测试目录
-/docs/
+# 屏蔽测试目录
 /test/
 
 # 屏蔽根目录html文件
