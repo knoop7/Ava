@@ -1,12 +1,12 @@
-# Ava 语音助手链路架构文档
+# Ava Voice Assistant Pipeline Architecture Documentation
 
-## 概述
+## Overview
 
-本文档详细描述 Ava 语音助手的完整语音处理链路，包括从麦克风输入到 Home Assistant 响应的全流程。
+This document describes the complete voice processing pipeline of the Ava voice assistant, including the full flow from microphone input to Home Assistant response.
 
 ---
 
-## 1. 架构总览
+## 1. Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -15,13 +15,13 @@
 │                                                                              │
 │  ┌──────────────┐    ┌─────────────────────┐    ┌──────────────────────┐   │
 │  │ MicrophoneInput│───▶│VoiceSatelliteAudioInput│───▶│   VoiceSatellite    │   │
-│  │  (16kHz PCM)  │    │  (唤醒词检测/音频流)   │    │   (状态机/协议)     │   │
+│  │  (16kHz PCM)  │    │  (Wake word/Audio stream)│    │   (State machine)   │   │
 │  └──────────────┘    └─────────────────────┘    └──────────┬───────────┘   │
 │                                                              │               │
 │                                                              ▼               │
 │  ┌──────────────┐    ┌─────────────────────┐    ┌──────────────────────┐   │
 │  │  TtsPlayer   │◀───│VoiceSatellitePlayer │◀───│VoiceSatelliteStateMachine│
-│  │  (TTS播放)   │    │   (音频播放管理)     │    │    (事件处理)        │   │
+│  │  (TTS playback)│    │   (Audio playback)   │    │    (Event handling)   │   │
 │  └──────────────┘    └─────────────────────┘    └──────────────────────┘   │
 │                                                                              │
 │                              ┌─────────────┐                                │
@@ -38,18 +38,18 @@
 ├─────────────────────────────────────────────────────────────────────────────┤
 │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────────────┐ │
 │  │ ESPHome Add-on  │───▶│ Assist Pipeline │───▶│ STT/Intent/TTS Engines  │ │
-│  │ (协议解析)       │    │ (语音管道)       │    │ (Whisper/OpenAI/EdgeTTS)│ │
+│  │ (Protocol parse) │    │ (Voice pipeline) │    │ (Whisper/OpenAI/EdgeTTS)│ │
 │  └─────────────────┘    └─────────────────┘    └─────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. 核心组件详解
+## 2. Core Component Details
 
 ### 2.1 MicrophoneInput (`audio/MicrophoneInput.kt`)
 
-**职责**: 原始音频采集
+**Responsibility**: Raw audio capture
 
 ```kotlin
 // 音频参数

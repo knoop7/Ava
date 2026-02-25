@@ -1,27 +1,27 @@
-**StemDock 快捷实体仪表盘**
+**StemDock Quick Entity Dashboard**
 
-全屏悬浮面板，最多放 6 个智能家居设备，一眼看状态，一点就控制。
+Full-screen floating panel that displays up to 6 smart home devices - see status at a glance, control with a tap.
 
-**在哪里找到**
-屏幕显示 -> 快捷实体面板 -> 打开总开关 -> 最下面添加设备 ID。
-也可以开启子开关「HA 端插槽配置」，直接在 Home Assistant 里填写设备 ID 来配置面板。
+**Where to Find**
+Screen Display -> Quick Entity Panel -> Enable main switch -> Add device IDs at the bottom.
+You can also enable "HA Slot Configuration" to configure the panel directly from Home Assistant by entering device IDs.
 
-**操作方式**
-**点一下** = 开关设备
-**长按拖动** = 调整卡片位置
-**长按空白区域** = 隐藏面板
+**Controls**
+**Single tap** = Toggle device
+**Long press and drag** = Rearrange card position
+**Long press empty area** = Hide panel
 
-**自动排版**
-1-6 个设备自动排列成对应宫格，横屏竖屏自动适配。
+**Auto Layout**
+1-6 devices automatically arrange into corresponding grid, adapts to landscape and portrait orientation.
 
-**颜色和图标**
-每个设备自动分配柔和颜色（22 种色调），灯光固定暖黄色。图标根据设备名称自动匹配，也可以用色轮手动选色。设备名称自动从 HA 获取中文名。
+**Colors and Icons**
+Each device gets auto-assigned soft colors (22 color tones), lights use fixed warm yellow. Icons auto-match based on device name, or manually select color using color wheel. Device names are automatically fetched from HA.
 
-**传感器**
-温度湿度等数值实时更新，小数最多 2 位，单位自动获取。
+**Sensors**
+Temperature, humidity and other values update in real-time, up to 2 decimal places, units auto-fetched.
 
-**HA 端配置**
-打开「HA 端插槽配置」开关后，HA 里会出现 6 个文本输入框（ava_quick_entity_slot_1 到 6），填入设备 ID 即可。清空所有插槽面板自动关闭，填入任意一个自动打开。
+**HA Configuration**
+After enabling "HA Slot Configuration", 6 text input fields appear in HA (ava_quick_entity_slot_1 to 6), enter device IDs. Clear all slots to auto-close panel, fill any slot to auto-open.
 
-**支持的设备**
-灯光、开关、风扇、窗帘、按钮、脚本、场景、传感器。
+**Supported Devices**
+Lights, switches, fans, covers, buttons, scripts, scenes, sensors.

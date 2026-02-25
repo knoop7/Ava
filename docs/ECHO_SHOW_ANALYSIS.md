@@ -1,69 +1,69 @@
-# Echo Show 8 (crown) 硬件分析
+# Echo Show 8 (crown) Hardware Analysis
 
-## 设备信息
-- **代号**: crown
-- **SoC**: MediaTek MT8163 (ARM64 Cortex-A53 四核)
-- **系统**: LineageOS 18.1 (Android 11)
-- **内核**: Linux 4.x
+## Device Information
+- **Codename**: crown
+- **SoC**: MediaTek MT8163 (ARM64 Cortex-A53 Quad-core)
+- **System**: LineageOS 18.1 (Android 11)
+- **Kernel**: Linux 4.x
 
-## 源码仓库
-- **设备树**: https://github.com/amazon-oss/android_device_amazon_crown
-- **内核**: https://github.com/amazon-oss/android_kernel_amazon_mt8163
-- **通用配置**: https://github.com/amazon-oss/android_device_amazon_mt8163-common
-- **硬件HAL**: https://github.com/amazon-oss/android_hardware_amazon
+## Source Repositories
+- **Device Tree**: https://github.com/amazon-oss/android_device_amazon_crown
+- **Kernel**: https://github.com/amazon-oss/android_kernel_amazon_mt8163
+- **Common Config**: https://github.com/amazon-oss/android_device_amazon_mt8163-common
+- **Hardware HAL**: https://github.com/amazon-oss/android_hardware_amazon
 - **Releases**: https://github.com/amazon-oss/releases
 
-## 显示/背光
+## Display/Backlight
 
-### 面板
-- **LCM驱动**: `lcm,lcm_dts_jd936x_crown` (JD936x)
-- **触摸屏**: Focaltech
+### Panel
+- **LCM Driver**: `lcm,lcm_dts_jd936x_crown` (JD936x)
+- **Touchscreen**: Focaltech
 
-### 背光控制
+### Backlight Control
 ```
 lcd-backlight {
     compatible = "mediatek,lcd-backlight";
-    led_mode = <0x05>;  // PWM模式
+    led_mode = <0x05>;  // PWM mode
     gpios = <GPIO 43>;
 }
 ```
 
-- **控制方式**: PWM (DISP_PWM0/PWM1)
-- **亮度范围**: 0-255 (系统设置)
-- **最小亮度限制**: LineageOS限制最小为10
+- **Control Method**: PWM (DISP_PWM0/PWM1)
+- **Brightness Range**: 0-255 (system settings)
+- **Minimum Brightness Limit**: LineageOS limits minimum to 10
 
-### 已知问题
-- 亮度设为0时触摸屏可能失效
-- 需要使用最小亮度1-10保持触摸响应
+### Known Issues
+- Touchscreen may become unresponsive when brightness is set to 0
+- Use minimum brightness 1-10 to maintain touch response
 
-## 蓝牙
+## Bluetooth
 
-### 芯片
-- **类型**: MT8163内置CONSYS (WiFi/BT组合芯片)
-- **驱动**: `mediatek,mt8163-consys`
+### Chip
+- **Type**: MT8163 built-in CONSYS (WiFi/BT combo chip)
+- **Driver**: `mediatek,mt8163-consys`
 
-### 音频
+### Audio
 ```
 audio_bt_cvsd {
     compatible = "mediatek,mt8163-audio_bt_cvsd";
-    // 蓝牙语音CVSD编解码
+    // Bluetooth voice CVSD codec
 }
 ```
 
-### GPIO配置
-- `wifi_pwr_on/off`: WiFi电源控制
-- `bgf_int`: 蓝牙/GPS/FM中断
-- `pmu_pw_en`: 电源管理
+### GPIO Configuration
+- `wifi_pwr_on/off`: WiFi power control
+- `bgf_int`: Bluetooth/GPS/FM interrupt
+- `pmu_pw_en`: Power management
 
-### 蓝牙代理问题 (Issue #18)
-**现象**: 蓝牙代理在Bermuda中显示为死亡状态，扫描器2-3秒后变成骷髅图标
+### Bluetooth Proxy Issue (Issue #18)
+**Symptom**: Bluetooth proxy shows as dead in Bermuda, scanner turns to skull icon after 2-3 seconds
 
-**可能原因**:
-1. MT8163 CONSYS芯片的BLE扫描有限制
-2. LineageOS蓝牙驱动不完善
-3. 需要特殊的扫描参数配置
+**Possible Causes**:
+1. MT8163 CONSYS chip has BLE scanning limitations
+2. LineageOS Bluetooth driver is incomplete
+3. Special scan parameter configuration needed
 
-**内核信息**:
+**Kernel Info**:
 ```
 consys@18070000 {
     compatible = "mediatek,mt8163-consys";
@@ -71,88 +71,88 @@ consys@18070000 {
 }
 ```
 
-**内核分析结果**:
-- crown_defconfig中**没有CONFIG_BT**配置
-- 蓝牙通过**用户空间驱动**实现，不是内核蓝牙子系统
-- 仅有`CONFIG_MTK_BTCVSD=y`（音频编解码）和`CONFIG_SND_BT_SCO_I2S=y`
-- 这可能导致Android BLE扫描API与MT8163用户空间蓝牙驱动不完全兼容
+**Kernel Analysis Results**:
+- crown_defconfig has **no CONFIG_BT** configuration
+- Bluetooth implemented via **userspace driver**, not kernel Bluetooth subsystem
+- Only `CONFIG_MTK_BTCVSD=y` (audio codec) and `CONFIG_SND_BT_SCO_I2S=y`
+- This may cause Android BLE scanning API to be incompatible with MT8163 userspace Bluetooth driver
 
-**蓝牙HAL分析** (来源: `mt8163-dev/android_hardware_mediatek`):
-- 蓝牙通过UART (`/dev/stpbt`) 与CONSYS芯片通信
-- chipId `0x8163` 使用 `stBtDefault_consys` 配置
-- HAL通过 `COMBO_IOCTL_*` 与内核驱动交互
-- BLE扫描由Android蓝牙栈处理，HAL只负责底层通信
+**Bluetooth HAL Analysis** (source: `mt8163-dev/android_hardware_mediatek`):
+- Bluetooth communicates with CONSYS chip via UART (`/dev/stpbt`)
+- chipId `0x8163` uses `stBtDefault_consys` configuration
+- HAL interacts with kernel driver via `COMBO_IOCTL_*`
+- BLE scanning handled by Android Bluetooth stack, HAL only handles low-level communication
 
-**可能的BLE扫描问题原因**:
-1. CONSYS芯片固件可能有BLE扫描频率限制
-2. 用户空间驱动可能不完全支持连续BLE扫描
-3. 需要调整扫描参数（interval/window）以适配硬件限制
+**Possible BLE Scanning Issue Causes**:
+1. CONSYS chip firmware may have BLE scan frequency limitations
+2. Userspace driver may not fully support continuous BLE scanning
+3. Need to adjust scan parameters (interval/window) to accommodate hardware limitations
 
-**建议调试步骤**:
+**Recommended Debug Steps**:
 ```bash
-# 检查蓝牙设备节点
+# Check Bluetooth device node
 adb shell ls -la /dev/stpbt
 
-# 查看蓝牙HAL日志
+# View Bluetooth HAL logs
 adb logcat -s bt_mtk:V
 
-# 检查蓝牙固件加载
+# Check Bluetooth firmware loading
 adb shell dmesg | grep -i "wmt\|consys\|bt"
 
-# 测试BLE扫描（需要root）
+# Test BLE scanning (requires root)
 adb shell "echo 1 > /sys/kernel/debug/bluetooth/hci0/features"
 ```
 
-## 已知问题和解决方案
+## Known Issues and Solutions
 
-### 1. 应用崩溃 (NPE)
-**问题**: `FloatingWindowService$EsperSphereView.stopAnimations`中的handler为null
-**状态**: 已在最新版本修复
+### 1. App Crash (NPE)
+**Issue**: handler is null in `FloatingWindowService$EsperSphereView.stopAnimations`
+**Status**: Fixed in latest version
 
-### 2. 悬浮窗权限无法获取
-**问题**: LineageOS在Echo Show上可能没有标准的悬浮窗设置界面
-**解决方案**: 通过ADB授权
+### 2. Cannot Obtain Overlay Permission
+**Issue**: LineageOS on Echo Show may not have standard overlay settings interface
+**Solution**: Grant via ADB
 
-### 3. 屏幕关闭后无法恢复
-**问题**: 亮度设为0时触摸屏失效
-**解决方案**: 使用最小亮度10
+### 3. Screen Cannot Recover After Turning Off
+**Issue**: Touchscreen becomes unresponsive when brightness is set to 0
+**Solution**: Use minimum brightness 10
 
-## ADB命令
+## ADB Commands
 
-### 悬浮窗权限授权（必须）
+### Grant Overlay Permission (Required)
 ```bash
 adb shell appops set com.example.ava SYSTEM_ALERT_WINDOW allow
 ```
 
-如果上面命令不生效，试试：
+If the above command doesn't work, try:
 ```bash
 adb shell pm grant com.example.ava android.permission.SYSTEM_ALERT_WINDOW
 ```
 
-### 屏幕控制
+### Screen Control
 ```bash
-# 设置亮度 (0-255)
+# Set brightness (0-255)
 adb shell settings put system screen_brightness 128
 
-# 设置屏幕超时
+# Set screen timeout
 adb shell settings put system screen_off_timeout 1800000
 
-# 深色模式
+# Dark mode
 adb shell cmd uimode night yes
 ```
 
-### 禁用不需要的应用
+### Disable Unnecessary Apps
 ```bash
 adb shell pm disable-user com.android.contacts
 adb shell pm disable-user org.lineageos.recorder
 adb shell pm disable-user com.android.calculator2
 ```
 
-## Root方式
-1. 通过TWRP刷入Magisk ZIP
-2. 重启后在Magisk应用中完成安装
+## Root Method
+1. Flash Magisk ZIP via TWRP
+2. Complete installation in Magisk app after reboot
 
-## 参考链接
-- [XDA Jailbreak帖子](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-show-8-1st-gen-2019-crown.4766687/)
-- [XDA LineageOS帖子](https://xdaforums.com/t/rom-unofficial-11-crown-lineageos-18-1-for-the-amazon-echo-show-8-2019.4766709/)
-- [完整安装指南](https://www.derekseaman.com/2025/11/home-assistant-hacking-your-echo-show-5-and-8.html)
+## Reference Links
+- [XDA Jailbreak Thread](https://xdaforums.com/t/unlock-root-twrp-unbrick-amazon-echo-show-8-1st-gen-2019-crown.4766687/)
+- [XDA LineageOS Thread](https://xdaforums.com/t/rom-unofficial-11-crown-lineageos-18-1-for-the-amazon-echo-show-8-2019.4766709/)
+- [Complete Installation Guide](https://www.derekseaman.com/2025/11/home-assistant-hacking-your-echo-show-5-and-8.html)
