@@ -14,25 +14,18 @@
 .cxx
 local.properties
 
-# 屏蔽隐藏目录
-/.claude/
-/.github/
-/.idea/
-/.kiro/
-/.kotlin/
-/.windsurf/
 
-# 屏蔽测试目录
+# Test directory
 /test/
 
-# 屏蔽根目录html文件
+# Root HTML files
 /*.html
 
-# 屏蔽本地脚本和发布说明
+# Local scripts and release notes
 /RELEASE_*.md
 /*.sh
 
-# 屏蔽蓝牙相关代码
+# Bluetooth related code
 app/src/main/java/com/example/ava/bluetooth/
 app/src/main/java/com/example/ava/esphome/voicesatellite/VoiceSatelliteBluetooth.kt
 app/src/main/java/com/example/ava/ui/screens/settings/BluetoothSettingsScreen.kt
@@ -44,7 +37,7 @@ app/src/main/java/com/example/ava/ui/screens/settings/RootSettingsScreen.kt
 app/src/main/java/com/example/ava/ui/components/MdiIconMapper.kt
 app/src/main/java/com/example/ava/esphome/voicesatellite/VoiceSatellite.kt
 
-# 屏蔽蓝牙相关资源
+# Bluetooth related resources
 app/src/main/res/drawable/mdi_bluetooth.xml
 app/src/main/res/drawable/bluetooth_24px.xml
 app/src/main/res/drawable/ic_bluetooth_proxy_24px.xml
