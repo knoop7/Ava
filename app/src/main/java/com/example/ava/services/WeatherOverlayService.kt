@@ -14,9 +14,9 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import com.example.ava.R
 import com.example.ava.settings.playerSettingsStore
+import com.example.ava.weather.WeatherData
 import com.example.ava.weather.WeatherService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,17 +34,43 @@ class WeatherOverlayService : Service() {
 
     private var windowManager: WindowManager? = null
     private var weatherView: WeatherOverlayView? = null
+    private var windowParams: WindowManager.LayoutParams? = null
     private val handler = Handler(Looper.getMainLooper())
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var isWeatherEnabled = false
     private var isWeatherVisible = true
+    @Volatile private var isServiceRunning = true
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    private val weatherListener: (WeatherData) -> Unit = { weather ->
+        android.os.Handler(android.os.Looper.getMainLooper()).post {
+            weatherView?.updateWeather(weather)
+        }
+    }
+    
     override fun onCreate() {
         super.onCreate()
+        instance = this
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        
+        WeatherService.addWeatherListener(weatherListener)
+    }
+    
+    private fun bringToFront() {
+        if (!isWeatherEnabled || !isWeatherVisible) return
+        weatherView?.let { view ->
+            windowParams?.let { params ->
+                try {
+
+                    if (view.isAttachedToWindow) {
+                        windowManager?.removeView(view)
+                        windowManager?.addView(view, params)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to bring weather to front", e)
+                }
+            }
+        }
     }
     
     private fun ensureWeatherViewCreated() {
@@ -54,44 +80,27 @@ class WeatherOverlayService : Service() {
         }
     }
 
-    private var lastCity: String = ""
-    
     private fun fetchWeather() {
         serviceScope.launch {
             try {
                 val settings = playerSettingsStore.data.first()
-                val city = settings.weatherCity
-                if (city.isBlank()) {
-                    Log.w(TAG, "No city configured, skipping weather fetch")
+                val weatherEntity = settings.haWeatherEntity
+                if (weatherEntity.isBlank()) {
+                    Log.w(TAG, "No HA weather entity configured, skipping weather fetch")
                     return@launch
                 }
-                lastCity = city
-                val weather = WeatherService.getWeather(city)
-                weatherView?.updateWeather(weather)
+
+                val weather = WeatherService.getCachedWeather()
+                if (weather != null) {
+                    weatherView?.updateWeather(weather)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to fetch weather: ${e.message}")
             }
         }
         
-        handler.postDelayed({ fetchWeather() }, 60 * 1000L)
-    }
-    
-    
-    private fun checkAndRefreshIfSettingsChanged() {
-        serviceScope.launch {
-            try {
-                val settings = playerSettingsStore.data.first()
-                val city = settings.weatherCity
-                
-                
-                if (city != lastCity && city.isNotBlank()) {
-                    lastCity = city
-                    val weather = WeatherService.getWeather(city)
-                    weatherView?.updateWeather(weather)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to check settings change: ${e.message}")
-            }
+        if (isServiceRunning) {
+            handler.postDelayed({ fetchWeather() }, 60 * 1000L)
         }
     }
 
@@ -116,7 +125,7 @@ class WeatherOverlayService : Service() {
         val realWidth = realMetrics.widthPixels
         val realHeight = realMetrics.heightPixels
 
-        val params = WindowManager.LayoutParams(
+        windowParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
             layoutType,
@@ -148,10 +157,8 @@ class WeatherOverlayService : Service() {
         }
 
         try {
-            windowManager?.addView(weatherView, params)
-            weatherView?.startAnimation()
-            isWeatherEnabled = true
-            isWeatherVisible = true
+            windowManager?.addView(weatherView, windowParams)
+            weatherView?.visibility = View.GONE
         } catch (e: Exception) {
             Log.e(TAG, "Failed to add weather window", e)
         }
@@ -161,15 +168,19 @@ class WeatherOverlayService : Service() {
         if (!isWeatherEnabled) return
         
         if (isWeatherVisible) {
-            
             weatherView?.stopAnimation()
             weatherView?.visibility = View.GONE
             isWeatherVisible = false
+            serviceScope.launch {
+                playerSettingsStore.updateData { it.copy(enableWeatherOverlayVisible = false) }
+            }
         } else {
-            
             weatherView?.visibility = View.VISIBLE
             weatherView?.startAnimation()
             isWeatherVisible = true
+            serviceScope.launch {
+                playerSettingsStore.updateData { it.copy(enableWeatherOverlayVisible = true) }
+            }
         }
     }
 
@@ -196,10 +207,10 @@ class WeatherOverlayService : Service() {
             ACTION_SHOW -> {
                 ensureWeatherViewCreated()
                 isWeatherEnabled = true
+                isWeatherVisible = true
+                bringToFront()
                 weatherView?.visibility = View.VISIBLE
                 weatherView?.startAnimation()
-                isWeatherVisible = true
-                checkAndRefreshIfSettingsChanged()
             }
             ACTION_HIDE -> {
                 isWeatherEnabled = false
@@ -212,13 +223,31 @@ class WeatherOverlayService : Service() {
                     toggleVisibility()
                 }
             }
+            ACTION_SET_VISIBLE -> {
+                if (isWeatherEnabled) {
+                    val visible = intent.getBooleanExtra(EXTRA_VISIBLE, true)
+                    if (visible && !isWeatherVisible) {
+                        weatherView?.visibility = View.VISIBLE
+                        weatherView?.startAnimation()
+                        isWeatherVisible = true
+                    } else if (!visible && isWeatherVisible) {
+                        weatherView?.stopAnimation()
+                        weatherView?.visibility = View.GONE
+                        isWeatherVisible = false
+                    }
+                }
+            }
+            "com.example.ava.ACTION_BRING_TO_FRONT" -> {
+                bringToFront()
+            }
         }
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        
+        isServiceRunning = false
+        WeatherService.removeWeatherListener(weatherListener)
         handler.removeCallbacksAndMessages(null)
         serviceScope.cancel()
         weatherView?.stopAnimation()
@@ -231,9 +260,15 @@ class WeatherOverlayService : Service() {
 
     companion object {
         private const val TAG = "WeatherOverlayService"
+        private var instance: WeatherOverlayService? = null
+        
         const val ACTION_SHOW = "com.example.ava.SHOW_WEATHER"
         const val ACTION_HIDE = "com.example.ava.HIDE_WEATHER"
         const val ACTION_TOGGLE = "com.example.ava.TOGGLE_WEATHER"
+        
+        fun bringToFrontStatic() {
+            instance?.bringToFront()
+        }
 
         fun show(context: Context) {
             val intent = Intent(context, WeatherOverlayService::class.java).apply {
@@ -255,6 +290,17 @@ class WeatherOverlayService : Service() {
             }
             context.startService(intent)
         }
+        
+        const val ACTION_SET_VISIBLE = "com.example.ava.SET_WEATHER_VISIBLE"
+        const val EXTRA_VISIBLE = "visible"
+        
+        fun setVisible(context: Context, visible: Boolean) {
+            val intent = Intent(context, WeatherOverlayService::class.java).apply {
+                action = ACTION_SET_VISIBLE
+                putExtra(EXTRA_VISIBLE, visible)
+            }
+            context.startService(intent)
+        }
     }
 }
 
@@ -264,19 +310,6 @@ class WeatherOverlayView(
     private var screenWidth: Int,
     private var screenHeight: Int
 ) : View(context) {
-
-    private fun isChineseLocale(): Boolean {
-        val locale = java.util.Locale.getDefault()
-        val language = locale.language.lowercase()
-        val country = locale.country.uppercase()
-        val timezone = java.util.TimeZone.getDefault().id
-        return language.startsWith("zh") || 
-            country in listOf("CN", "TW", "HK", "MO") ||
-            timezone.startsWith("Asia/Shanghai") || 
-            timezone.startsWith("Asia/Chongqing") ||
-            timezone.startsWith("Asia/Hong_Kong") ||
-            timezone.startsWith("Asia/Taipei")
-    }
 
     init {
         
@@ -312,12 +345,13 @@ class WeatherOverlayView(
     private var temperature = 0
     private var condition = ""
     private var humidity = 0
-    private var windLevel = "--"
+    private var windSpeed = 0f
     private var windDirection = ""    
     private var windDirectionEn = ""  
     private var aqi = 0
     private var pm25 = 0
     private var visibility = 0f
+    private var pressure = 0f
     private var cityName = ""
     private var isDay = true
 
@@ -328,7 +362,7 @@ class WeatherOverlayView(
             "heavy_rain", "sandstorm" -> 100
             "light_rain", "heavy_snow" -> 60
             "light_snow" -> 35
-            "wind" -> 50
+            "wind" -> 30
             "fog" -> 30
             "haze" -> 50
             else -> 40
@@ -368,21 +402,26 @@ class WeatherOverlayView(
     fun setOnSwipeRight(callback: () -> Unit) { onSwipeRight = callback }
 
     fun updateWeather(data: com.example.ava.weather.WeatherData) {
+        val oldCondition = condition
+        
         temperature = data.temperature
         condition = data.condition
         humidity = data.humidity
-        windLevel = com.example.ava.weather.WeatherService.getWindLevel(data.windSpeed)
+        windSpeed = data.windSpeed
         windDirection = data.windDirection
         windDirectionEn = data.windDirectionEn
         aqi = data.aqi
         pm25 = data.pm25
         visibility = data.visibility
+        pressure = data.pressure
         cityName = data.city
         
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         isDay = hour in 6..18
         
-        initParticles()
+        if (oldCondition != condition || particles.isEmpty()) {
+            initParticles()
+        }
         postInvalidate()
     }
 
@@ -439,11 +478,11 @@ class WeatherOverlayView(
                 p.isLine = false
             }
             "wind" -> {
-                p.x = if (initial) Random.nextFloat() * screenWidth else -80f
+                p.x = if (initial) Random.nextFloat() * screenWidth else -50f
                 p.y = Random.nextFloat() * screenHeight
-                p.vx = 8f + Random.nextFloat() * 6f
+                p.vx = 6f + Random.nextFloat() * 4f
                 p.vy = (Random.nextFloat() - 0.5f) * 0.3f
-                p.length = 60f + Random.nextFloat() * 50f
+                p.length = 30f + Random.nextFloat() * 20f
                 p.isLine = true
             }
             "fog" -> {
@@ -480,7 +519,15 @@ class WeatherOverlayView(
             updateParticles()
             invalidate()
             scheduleUpdate()
-        }, 16) 
+        }, frameIntervalMs())
+    }
+    
+    private fun frameIntervalMs(): Long {
+        return when (condition) {
+            "heavy_rain", "sandstorm" -> 33L
+            "wind" -> 24L
+            else -> 16L
+        }
     }
 
     private fun updateParticles() {
@@ -500,6 +547,10 @@ class WeatherOverlayView(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         
+        if (width > 0 && height > 0) {
+            screenWidth = width
+            screenHeight = height
+        }
         
         drawSkyBackground(canvas)
         
@@ -507,18 +558,22 @@ class WeatherOverlayView(
         drawExposureLayer(canvas)
         
         
-        if (condition == "sunny" && isDay) {
+        if (condition == "sunny") {
             drawSunAssembly(canvas)
+            val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            if (hour in 6..8) {
+                drawMorningBubbles(canvas)
+            }
+        } else if (condition == "clear_night") {
+            drawMoonGlow(canvas)
         }
         
-        
-        if (condition in listOf("cloudy", "light_rain", "heavy_rain", "light_snow", "heavy_snow", "fog")) {
+        if (condition in listOf("cloudy", "partly_cloudy", "light_rain", "heavy_rain", "light_snow", "heavy_snow", "fog")) {
             drawClouds(canvas)
         }
         
         
-        drawCoreGlow(canvas)
-        
+                
         
         drawParticles(canvas)
         
@@ -527,20 +582,81 @@ class WeatherOverlayView(
     }
 
     private fun drawSkyBackground(canvas: Canvas) {
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        val isVeryDeepNight = hour in 0..3 || hour >= 23
+        val isDeepNight = hour in 4..4 || hour in 22..22
+        val isNight = hour in 5..5 || hour in 19..21
+        val isMorning = hour in 6..8
+        val isEvening = hour in 17..18
+        
         val colors = when (condition) {
-            
-            "sunny" -> if (isDay) intArrayOf(Color.parseColor("#0284c7"), Color.parseColor("#0369a1"))
-                       else intArrayOf(Color.parseColor("#1e3a5f"), Color.parseColor("#0f172a"))
-            "cloudy" -> if (isDay) intArrayOf(Color.parseColor("#0ea5e9"), Color.parseColor("#0284c7"))
-                        else intArrayOf(Color.parseColor("#334155"), Color.parseColor("#1e293b"))
-            "rainy", "light_rain" -> intArrayOf(Color.parseColor("#64748b"), Color.parseColor("#475569"))
-            "heavy_rain" -> intArrayOf(Color.parseColor("#334155"), Color.parseColor("#1e293b"))
-            "snowy", "light_snow", "heavy_snow" -> intArrayOf(Color.parseColor("#94a3b8"), Color.parseColor("#64748b"))
-            "fog" -> intArrayOf(Color.parseColor("#d1d5db"), Color.parseColor("#9ca3af"))
-            "haze" -> intArrayOf(Color.parseColor("#a8a29e"), Color.parseColor("#78716c"))
-            "wind" -> intArrayOf(Color.parseColor("#2c3e50"), Color.parseColor("#bdc3c7"))
-            "sandstorm" -> intArrayOf(Color.parseColor("#5d4037"), Color.parseColor("#3e2723"))
-            else -> intArrayOf(Color.parseColor("#0284c7"), Color.parseColor("#0369a1"))
+            "sunny" -> when {
+                isMorning -> intArrayOf(Color.parseColor("#7dd3fc"), Color.parseColor("#38bdf8"))
+                isEvening -> intArrayOf(Color.parseColor("#0ea5e9"), Color.parseColor("#0284c7"))
+                else -> intArrayOf(Color.parseColor("#0284c7"), Color.parseColor("#0369a1"))
+            }
+            "clear_night" -> when {
+                isVeryDeepNight -> intArrayOf(Color.parseColor("#000308"), Color.parseColor("#020610"))
+                isDeepNight -> intArrayOf(Color.parseColor("#010410"), Color.parseColor("#050918"))
+                else -> intArrayOf(Color.parseColor("#0a1628"), Color.parseColor("#0f1d35"))
+            }
+            "cloudy" -> when {
+                isVeryDeepNight -> intArrayOf(Color.parseColor("#0a0f18"), Color.parseColor("#050810"))
+                isDeepNight -> intArrayOf(Color.parseColor("#1e293b"), Color.parseColor("#0f172a"))
+                isNight -> intArrayOf(Color.parseColor("#334155"), Color.parseColor("#1e293b"))
+                else -> intArrayOf(Color.parseColor("#0ea5e9"), Color.parseColor("#0284c7"))
+            }
+            "partly_cloudy" -> when {
+                isVeryDeepNight -> intArrayOf(Color.parseColor("#050810"), Color.parseColor("#020408"))
+                isDeepNight -> intArrayOf(Color.parseColor("#0f172a"), Color.parseColor("#020617"))
+                isNight -> intArrayOf(Color.parseColor("#1e3a5f"), Color.parseColor("#0f172a"))
+                else -> intArrayOf(Color.parseColor("#38bdf8"), Color.parseColor("#0ea5e9"))
+            }
+            "rainy", "light_rain" -> when {
+                isDeepNight -> intArrayOf(Color.parseColor("#334155"), Color.parseColor("#1e293b"))
+                else -> intArrayOf(Color.parseColor("#64748b"), Color.parseColor("#475569"))
+            }
+            "heavy_rain" -> when {
+                isVeryDeepNight -> intArrayOf(Color.parseColor("#1a1f2e"), Color.parseColor("#0f1318"))
+                isDeepNight -> intArrayOf(Color.parseColor("#252d3a"), Color.parseColor("#1a2028"))
+                isNight -> intArrayOf(Color.parseColor("#334155"), Color.parseColor("#1e293b"))
+                else -> intArrayOf(Color.parseColor("#475569"), Color.parseColor("#334155"))
+            }
+            "snowy", "light_snow", "heavy_snow" -> when {
+                isVeryDeepNight -> intArrayOf(Color.parseColor("#2a2f3a"), Color.parseColor("#1a1f28"))
+                isDeepNight -> intArrayOf(Color.parseColor("#3a4050"), Color.parseColor("#2a3040"))
+                isNight -> intArrayOf(Color.parseColor("#64748b"), Color.parseColor("#475569"))
+                else -> intArrayOf(Color.parseColor("#94a3b8"), Color.parseColor("#64748b"))
+            }
+            "fog" -> when {
+                isVeryDeepNight -> intArrayOf(Color.parseColor("#1a1a2e"), Color.parseColor("#16213e"))
+                isDeepNight -> intArrayOf(Color.parseColor("#2d3436"), Color.parseColor("#1e272e"))
+                isNight -> intArrayOf(Color.parseColor("#4a5568"), Color.parseColor("#2d3748"))
+                else -> intArrayOf(Color.parseColor("#d1d5db"), Color.parseColor("#9ca3af"))
+            }
+            "haze" -> when {
+                isVeryDeepNight -> intArrayOf(Color.parseColor("#1a1510"), Color.parseColor("#0f0d08"))
+                isDeepNight -> intArrayOf(Color.parseColor("#3d3428"), Color.parseColor("#2a2318"))
+                isNight -> intArrayOf(Color.parseColor("#5c5346"), Color.parseColor("#3d3428"))
+                else -> intArrayOf(Color.parseColor("#a8a29e"), Color.parseColor("#78716c"))
+            }
+            "wind" -> when {
+                isVeryDeepNight -> intArrayOf(Color.parseColor("#0a1520"), Color.parseColor("#050a10"))
+                isDeepNight -> intArrayOf(Color.parseColor("#1a2530"), Color.parseColor("#0f1820"))
+                isNight -> intArrayOf(Color.parseColor("#2c3e50"), Color.parseColor("#1a2530"))
+                else -> intArrayOf(Color.parseColor("#94a3b8"), Color.parseColor("#64748b"))
+            }
+            "sandstorm" -> when {
+                isVeryDeepNight -> intArrayOf(Color.parseColor("#1a1510"), Color.parseColor("#0f0a05"))
+                isDeepNight -> intArrayOf(Color.parseColor("#2a2015"), Color.parseColor("#1a1510"))
+                isNight -> intArrayOf(Color.parseColor("#3e2723"), Color.parseColor("#2a2015"))
+                else -> intArrayOf(Color.parseColor("#5d4037"), Color.parseColor("#3e2723"))
+            }
+            else -> when {
+                isDeepNight -> intArrayOf(Color.parseColor("#020617"), Color.parseColor("#0f0a1e"))
+                isNight -> intArrayOf(Color.parseColor("#0f172a"), Color.parseColor("#1e1b4b"))
+                else -> intArrayOf(Color.parseColor("#0284c7"), Color.parseColor("#0369a1"))
+            }
         }
         
         bgPaint.shader = LinearGradient(
@@ -549,10 +665,6 @@ class WeatherOverlayView(
         )
         canvas.drawRect(0f, 0f, screenWidth.toFloat(), screenHeight.toFloat(), bgPaint)
         
-        
-        if (condition == "sunny" && isDay) {
-            drawSunnyLightBlobs(canvas)
-        }
     }
     
     
@@ -590,42 +702,138 @@ class WeatherOverlayView(
         
         cloudPaint.maskFilter = null
     }
-
-    private fun drawExposureLayer(canvas: Canvas) {
-        if (isDay) {
+    
+    private fun drawMorningBubbles(canvas: Canvas) {
+        val bubblePaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        bubblePaint.style = Paint.Style.FILL
+        
+        val vmin = minOf(screenWidth, screenHeight).toFloat()
+        val time = System.currentTimeMillis()
+        
+        val bubbles = listOf(
+            Triple(0.15f, 0.7f, 0.02f),
+            Triple(0.25f, 0.8f, 0.015f),
+            Triple(0.35f, 0.75f, 0.018f),
+            Triple(0.55f, 0.85f, 0.012f),
+            Triple(0.65f, 0.72f, 0.016f),
+            Triple(0.75f, 0.78f, 0.014f),
+            Triple(0.85f, 0.82f, 0.02f),
+            Triple(0.45f, 0.9f, 0.01f),
+            Triple(0.2f, 0.65f, 0.013f),
+            Triple(0.8f, 0.68f, 0.017f)
+        )
+        
+        for ((i, bubble) in bubbles.withIndex()) {
+            val baseX = bubble.first
+            val baseY = bubble.second
+            val radius = bubble.third
             
-            glowPaint.shader = RadialGradient(
-                screenWidth * 0.8f, screenHeight * 0.2f, screenWidth * 0.7f,
-                intArrayOf(Color.argb(89, 255, 255, 255), Color.TRANSPARENT),
-                null, Shader.TileMode.CLAMP
-            )
-        } else {
+            val speed = 0.00002f + (i % 3) * 0.00001f
+            val yOffset = ((time * speed) % 1f)
+            val y = (baseY - yOffset + 1f) % 1f
             
-            glowPaint.shader = RadialGradient(
-                screenWidth * 0.5f, screenHeight * 0.5f, screenWidth * 0.5f,
-                intArrayOf(Color.TRANSPARENT, Color.argb(77, 0, 0, 0)),
-                null, Shader.TileMode.CLAMP
+            val xOffset = (Math.sin((time / 2000.0) + i) * 0.02f).toFloat()
+            val x = baseX + xOffset
+            
+            val alpha = (40 + (i % 4) * 10)
+            bubblePaint.color = Color.argb(alpha, 255, 255, 255)
+            bubblePaint.maskFilter = BlurMaskFilter(vmin * 0.01f, BlurMaskFilter.Blur.NORMAL)
+            
+            canvas.drawCircle(screenWidth * x, screenHeight * y, vmin * radius, bubblePaint)
+            
+            bubblePaint.color = Color.argb(alpha / 2, 255, 255, 255)
+            canvas.drawCircle(
+                screenWidth * x - vmin * radius * 0.3f,
+                screenHeight * y - vmin * radius * 0.3f,
+                vmin * radius * 0.3f,
+                bubblePaint
             )
         }
-        canvas.drawRect(0f, 0f, screenWidth.toFloat(), screenHeight.toFloat(), glowPaint)
+        
+        bubblePaint.maskFilter = null
     }
 
+    private fun drawExposureLayer(canvas: Canvas) {
+        if (condition == "sunny" || condition == "clear_night") {
+            return
+        }
+        
+        val vmin = minOf(screenWidth, screenHeight).toFloat()
+        
+        if (isDay) {
+            glowPaint.shader = RadialGradient(
+                vmin * 0.2f, vmin * 0.2f, vmin * 0.5f,
+                intArrayOf(Color.argb(40, 255, 255, 255), Color.TRANSPARENT),
+                null, Shader.TileMode.CLAMP
+            )
+            canvas.drawRect(0f, 0f, screenWidth.toFloat(), screenHeight.toFloat(), glowPaint)
+        } else {
+            val cx = screenWidth / 2f
+            val cy = screenHeight / 2f
+            val radius = maxOf(screenWidth, screenHeight) * 0.7f
+            
+            glowPaint.shader = RadialGradient(
+                cx, cy, radius,
+                intArrayOf(Color.TRANSPARENT, Color.argb(80, 0, 0, 0)),
+                floatArrayOf(0.5f, 1f),
+                Shader.TileMode.CLAMP
+            )
+            canvas.drawRect(0f, 0f, screenWidth.toFloat(), screenHeight.toFloat(), glowPaint)
+        }
+    }
+
+    private var sunAnimTime = 0L
+    
     private fun drawSunAssembly(canvas: Canvas) {
-        val sunX = screenWidth - 100f
-        val sunY = 100f
-        val sunRadius = 250f
+        val vmin = minOf(screenWidth, screenHeight).toFloat()
+        val sunX = -vmin * 0.4f
+        val sunY = -vmin * 0.4f
+        
+        sunAnimTime = System.currentTimeMillis()
+        val breathPhase = (sunAnimTime % 12000) / 12000.0
+        val breathScale = 1f + (Math.sin(breathPhase * Math.PI * 2) * 0.12f).toFloat()
+        
+        val sunRadius = vmin * 2.5f * breathScale
         
         glowPaint.shader = RadialGradient(
             sunX, sunY, sunRadius,
             intArrayOf(
-                Color.argb(153, 255, 250, 240),
-                Color.argb(51, 255, 230, 200),
+                Color.argb(80, 255, 250, 210),
+                Color.argb(45, 255, 240, 190),
+                Color.argb(20, 255, 235, 170),
                 Color.TRANSPARENT
             ),
-            floatArrayOf(0f, 0.4f, 1f),
+            floatArrayOf(0f, 0.2f, 0.5f, 1f),
             Shader.TileMode.CLAMP
         )
         canvas.drawCircle(sunX, sunY, sunRadius, glowPaint)
+    }
+    
+    private var moonAnimTime = 0L
+    
+    private fun drawMoonGlow(canvas: Canvas) {
+        val vmin = minOf(screenWidth, screenHeight).toFloat()
+        val moonX = -vmin * 0.4f
+        val moonY = -vmin * 0.4f
+        
+        moonAnimTime = System.currentTimeMillis()
+        val breathPhase = (moonAnimTime % 12000) / 12000.0
+        val breathScale = 1f + (Math.sin(breathPhase * Math.PI * 2) * 0.12f).toFloat()
+        
+        val moonRadius = vmin * 2.5f * breathScale
+        
+        glowPaint.shader = RadialGradient(
+            moonX, moonY, moonRadius,
+            intArrayOf(
+                Color.argb(70, 255, 245, 190),
+                Color.argb(40, 255, 240, 170),
+                Color.argb(15, 255, 235, 150),
+                Color.TRANSPARENT
+            ),
+            floatArrayOf(0f, 0.2f, 0.5f, 1f),
+            Shader.TileMode.CLAMP
+        )
+        canvas.drawCircle(moonX, moonY, moonRadius, glowPaint)
     }
 
     
@@ -633,7 +841,8 @@ class WeatherOverlayView(
     
     private fun drawClouds(canvas: Canvas) {
         val cloudAlpha = when (condition) {
-            "cloudy" -> 45
+            "cloudy" -> 55
+            "partly_cloudy" -> 45
             "light_rain", "light_snow" -> 40
             "heavy_rain", "heavy_snow" -> 35
             "fog" -> 55
@@ -658,9 +867,10 @@ class WeatherOverlayView(
         val offset3Y = (Math.cos(t3 * 0.7) * 8 + Math.sin(t3 * 1.5) * 10).toFloat()
         
         
+        val vmin = minOf(screenWidth, screenHeight).toFloat()
         val cloudPaint = Paint(Paint.ANTI_ALIAS_FLAG)
         cloudPaint.style = Paint.Style.FILL
-        cloudPaint.maskFilter = BlurMaskFilter(80f, BlurMaskFilter.Blur.NORMAL)
+        cloudPaint.maskFilter = BlurMaskFilter(vmin * 0.08f, BlurMaskFilter.Blur.NORMAL)
         
         
         cloudPaint.shader = LinearGradient(
@@ -698,13 +908,81 @@ class WeatherOverlayView(
         canvas.drawRect(screenWidth * 0.2f - 30f, screenHeight * 0.1f - 20f, screenWidth * 0.8f + 30f, screenHeight * 0.35f, cloudPaint)
         canvas.restore()
         
+        if (condition == "cloudy" || condition == "partly_cloudy") {
+            val extraAlpha = if (condition == "cloudy") cloudAlpha else cloudAlpha * 4 / 5
+            
+
+            val t4 = cloudAnimTime / 10000.0
+            val offset4X = (Math.sin(t4 + 2.0) * 20 + Math.cos(t4 * 1.3) * 15).toFloat()
+            val offset4Y = (Math.cos(t4 * 0.6) * 8).toFloat()
+            
+            cloudPaint.shader = LinearGradient(
+                0f, -screenHeight * 0.05f, 0f, screenHeight * 0.45f,
+                intArrayOf(Color.argb(extraAlpha, 245, 245, 250), Color.argb(extraAlpha * 2 / 3, 235, 235, 240), Color.argb(extraAlpha / 3, 225, 225, 230), Color.TRANSPARENT),
+                floatArrayOf(0f, 0.3f, 0.6f, 1f),
+                Shader.TileMode.CLAMP
+            )
+            canvas.save()
+            canvas.translate(offset4X, offset4Y)
+            canvas.drawRect(-50f, -50f, screenWidth * 0.55f, screenHeight * 0.45f, cloudPaint)
+            canvas.restore()
+            
+
+            val t5 = cloudAnimTime / 14000.0
+            val offset5X = (Math.cos(t5 + 1.0) * 25 + Math.sin(t5 * 1.1) * 12).toFloat()
+            val offset5Y = (Math.sin(t5 * 0.5) * 6).toFloat()
+            
+            cloudPaint.shader = LinearGradient(
+                0f, -screenHeight * 0.03f, 0f, screenHeight * 0.4f,
+                intArrayOf(Color.argb(extraAlpha, 240, 240, 248), Color.argb(extraAlpha * 2 / 3, 230, 230, 238), Color.argb(extraAlpha / 4, 220, 220, 228), Color.TRANSPARENT),
+                floatArrayOf(0f, 0.35f, 0.65f, 1f),
+                Shader.TileMode.CLAMP
+            )
+            canvas.save()
+            canvas.translate(offset5X, offset5Y)
+            canvas.drawRect(screenWidth * 0.35f, -50f, screenWidth + 50f, screenHeight * 0.4f, cloudPaint)
+            canvas.restore()
+            
+
+            val t6 = cloudAnimTime / 18000.0
+            val offset6X = (Math.sin(t6 + 3.5) * 30 + Math.cos(t6 * 0.9) * 18).toFloat()
+            val offset6Y = (Math.cos(t6 * 0.4) * 5).toFloat()
+            
+            cloudPaint.shader = LinearGradient(
+                0f, screenHeight * 0.1f, 0f, screenHeight * 0.5f,
+                intArrayOf(Color.argb(extraAlpha * 3 / 4, 238, 238, 245), Color.argb(extraAlpha / 2, 228, 228, 235), Color.TRANSPARENT),
+                floatArrayOf(0f, 0.5f, 1f),
+                Shader.TileMode.CLAMP
+            )
+            canvas.save()
+            canvas.translate(offset6X, offset6Y)
+            canvas.drawRect(screenWidth * 0.15f, screenHeight * 0.08f, screenWidth * 0.85f, screenHeight * 0.5f, cloudPaint)
+            canvas.restore()
+            
+
+            val t7 = cloudAnimTime / 22000.0
+            val offset7X = (Math.cos(t7 + 0.5) * 15).toFloat()
+            val offset7Y = (Math.sin(t7 * 0.3) * 4).toFloat()
+            
+            cloudPaint.shader = LinearGradient(
+                0f, screenHeight * 0.25f, 0f, screenHeight * 0.55f,
+                intArrayOf(Color.argb(extraAlpha / 2, 235, 235, 242), Color.argb(extraAlpha / 4, 225, 225, 232), Color.TRANSPARENT),
+                floatArrayOf(0f, 0.4f, 1f),
+                Shader.TileMode.CLAMP
+            )
+            canvas.save()
+            canvas.translate(offset7X, offset7Y)
+            canvas.drawRect(-30f, screenHeight * 0.2f, screenWidth + 30f, screenHeight * 0.55f, cloudPaint)
+            canvas.restore()
+        }
+        
         cloudPaint.maskFilter = null
     }
 
     private fun drawCoreGlow(canvas: Canvas) {
         val cx = screenWidth / 2f
         val cy = screenHeight / 2f
-        
+        val vmin = minOf(screenWidth, screenHeight).toFloat()
         
         val glowColor = when (condition) {
             "sunny" -> if (isDay) intArrayOf(Color.argb(80, 255, 230, 200), Color.argb(40, 255, 240, 220), Color.TRANSPARENT)
@@ -720,9 +998,8 @@ class WeatherOverlayView(
                     else intArrayOf(Color.argb(50, 220, 230, 255), Color.argb(25, 200, 210, 240), Color.TRANSPARENT)
         }
         
-        
-        val radius = if (!isDay && (condition == "sunny" || condition == "cloudy" || condition.isEmpty())) 450f else 420f
-        val blurRadius = 180f  
+        val radius = if (!isDay && (condition == "sunny" || condition == "cloudy" || condition.isEmpty())) vmin * 0.35f else vmin * 0.32f
+        val blurRadius = vmin * 0.14f
         
         val stops = floatArrayOf(0f, 0.5f, 1f)
         glowPaint.shader = RadialGradient(cx, cy, radius, glowColor, stops, Shader.TileMode.CLAMP)
@@ -740,7 +1017,7 @@ class WeatherOverlayView(
                 "snowy", "light_snow" -> Color.argb((p.opacity * 0.8f * 255).toInt(), 255, 255, 255)
                 "heavy_snow" -> Color.argb((p.opacity * 255).toInt(), 255, 255, 255)
                 "sandstorm" -> Color.argb((p.opacity * 255).toInt(), 210, 160, 100)
-                "wind" -> Color.argb((p.opacity * 0.35f * 255).toInt(), 255, 255, 255)
+                "wind" -> Color.argb((p.opacity * 0.4f * 255).toInt(), 255, 255, 255)
                 "fog" -> Color.argb((p.opacity * 0.3f * 255).toInt(), 255, 255, 255)
                 "haze" -> Color.argb((p.opacity * 0.5f * 255).toInt(), 180, 160, 130)
                 else -> Color.argb((p.opacity * 255).toInt(), 255, 255, 255)
@@ -748,10 +1025,11 @@ class WeatherOverlayView(
             
             particlePaint.color = color
             if (p.isLine) {
-                particlePaint.strokeWidth = 1f
                 particlePaint.style = Paint.Style.STROKE
-                val endY = if (condition == "wind") p.y + 1 else p.y + p.length
-                canvas.drawLine(p.x, p.y, p.x + p.vx, endY, particlePaint)
+                particlePaint.strokeWidth = 1f
+                val endY = if (condition == "wind") p.y + p.vy * 3 else p.y + p.length
+                val endX = if (condition == "wind") p.x + p.length else p.x + p.vx
+                canvas.drawLine(p.x, p.y, endX, endY, particlePaint)
             } else {
                 particlePaint.style = Paint.Style.FILL
                 canvas.drawCircle(p.x, p.y, p.radius, particlePaint)
@@ -760,19 +1038,21 @@ class WeatherOverlayView(
     }
 
     private fun drawUILayer(canvas: Canvas) {
-        
-        val isSmallSquareScreen = kotlin.math.abs(screenWidth - screenHeight) < 50 && screenWidth <= 500
-        val vmin = minOf(screenWidth, screenHeight).toFloat()
-        val padding = if (isSmallSquareScreen) screenWidth * 0.1f else screenWidth * 0.06f
+        val actualWidth = width
+        val actualHeight = height
+        val isSmallSquareScreen = kotlin.math.abs(actualWidth - actualHeight) < 50 && actualWidth <= 500
+        val isLandscape = actualWidth > actualHeight * 1.2f
+        val vmin = minOf(actualWidth, actualHeight).toFloat()
+        val padding = if (isSmallSquareScreen) actualWidth * 0.1f else actualWidth * 0.06f
         
         
         val maskPaint = Paint()
         maskPaint.shader = LinearGradient(
-            0f, screenHeight * 0.75f, 0f, screenHeight.toFloat(),
+            0f, actualHeight * 0.75f, 0f, actualHeight.toFloat(),
             Color.TRANSPARENT, Color.argb(153, 0, 0, 0),
             Shader.TileMode.CLAMP
         )
-        canvas.drawRect(0f, screenHeight * 0.75f, screenWidth.toFloat(), screenHeight.toFloat(), maskPaint)
+        canvas.drawRect(0f, actualHeight * 0.75f, actualWidth.toFloat(), actualHeight.toFloat(), maskPaint)
         
         
         if (isDay) {
@@ -782,48 +1062,22 @@ class WeatherOverlayView(
         }
         
         
-        if (!isSmallSquareScreen) {
-            val topBarY = padding + vmin * 0.05f
-            val iconSize = (vmin * 0.045f).toInt()  
-            
-            
-            val locationIcon = ContextCompat.getDrawable(context, R.drawable.mdi_map_marker)
-            locationIcon?.let {
-                val iconLeft = (padding + 40f).toInt()
-                val iconTop = (topBarY - iconSize * 0.75f).toInt()  
-                it.setBounds(iconLeft, iconTop, iconLeft + iconSize, iconTop + iconSize)
-                it.draw(canvas)
-            }
-            
-            
-            textPaint.color = Color.WHITE
-            textPaint.textSize = vmin * 0.04f
-            textPaint.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
-            textPaint.letterSpacing = 0.02f
-            textPaint.textAlign = Paint.Align.LEFT
-            val cityX = padding + 40f + iconSize + vmin * 0.015f  
-            canvas.drawText(cityName, cityX, topBarY, textPaint)
-            
-            
-            val cityWidth = textPaint.measureText(cityName)
-            val conditionText = " · ${getConditionText(condition)}"
-            textPaint.alpha = 180
-            canvas.drawText(conditionText, cityX + cityWidth, topBarY, textPaint)
-            textPaint.alpha = 255
-            
-            
-            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-            val timeStr = timeFormat.format(Date())
-            textPaint.textAlign = Paint.Align.RIGHT
-            textPaint.textSize = vmin * 0.05f
-            textPaint.typeface = rajdhaniSemibold
-            textPaint.alpha = 230
-            canvas.drawText(timeStr, screenWidth - padding - 40f, topBarY, textPaint)
-            textPaint.alpha = 255
+
+        val logoSize = (actualWidth * 0.05f).toInt()
+        val logoMargin = (actualWidth * 0.04f).toInt()
+        val haLogoBitmap = try {
+            context.assets.open("ha_logo.png").use { android.graphics.BitmapFactory.decodeStream(it) }
+        } catch (e: Exception) { null }
+        haLogoBitmap?.let {
+            val iconRight = actualWidth - logoMargin
+            val iconTop = logoMargin
+            val logoPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { alpha = 64 }
+            val destRect = android.graphics.Rect(iconRight - logoSize, iconTop, iconRight, iconTop + logoSize)
+            canvas.drawBitmap(it, null, destRect, logoPaint)
         }
         
         
-        val tempY = if (isSmallSquareScreen) screenHeight * 0.45f - 40f else screenHeight * 0.35f - 20f
+        val tempY = if (isSmallSquareScreen) actualHeight * 0.45f - 40f else actualHeight * 0.35f - 20f
         val tempSize = if (isSmallSquareScreen) vmin * 0.55f else vmin * 0.4f
         
         textPaint.textAlign = Paint.Align.CENTER
@@ -836,7 +1090,7 @@ class WeatherOverlayView(
         
         val digitCount = tempText.replace("-", "").length + (if (temperature < 0) 1 else 0)
         val offsetX = if (isSmallSquareScreen && digitCount > 1) vmin * 0.04f * (digitCount - 1) else 0f
-        val tempX = screenWidth / 2f - offsetX
+        val tempX = actualWidth / 2f - offsetX
         canvas.drawText(tempText, tempX, tempY + textPaint.textSize * 0.35f, textPaint)
         
         
@@ -854,15 +1108,16 @@ class WeatherOverlayView(
         textPaint.alpha = 255
         
         
-        drawDashboard(canvas, padding, isSmallSquareScreen)
+        drawDashboard(canvas, padding, isSmallSquareScreen, actualWidth, actualHeight)
     }
 
-    private fun drawDashboard(canvas: Canvas, padding: Float, isSmallSquareScreen: Boolean) {
-        val vmin = minOf(screenWidth, screenHeight).toFloat()
+    private fun drawDashboard(canvas: Canvas, padding: Float, isSmallSquareScreen: Boolean, actualWidth: Int, actualHeight: Int) {
+        val vmin = minOf(actualWidth, actualHeight).toFloat()
+        val isLandscape = actualWidth > actualHeight * 1.2f
         
         
         val gridLeft = padding
-        val gridRight = screenWidth - padding
+        val gridRight = actualWidth - padding
         val gridWidth = gridRight - gridLeft
         val cellWidth = gridWidth / 3f
         val cellHeight = if (isSmallSquareScreen) vmin * 0.14f else vmin * 0.16f
@@ -870,7 +1125,12 @@ class WeatherOverlayView(
         
         
         val gridHeight = cellHeight * 2 + rowGap
-        val gridBottom = screenHeight - padding - (if (isSmallSquareScreen) 10f else 0f)
+        val bottomPadding = when {
+            isSmallSquareScreen -> padding + 10f
+            isLandscape -> padding
+            else -> actualHeight * 0.08f
+        }
+        val gridBottom = actualHeight - bottomPadding
         val gridTop = gridBottom - gridHeight
         
         
@@ -906,14 +1166,13 @@ class WeatherOverlayView(
         }
         
         
-        val isCN = isChineseLocale()
         val cards = listOf(
-            Triple(if (isCN) "湿度" else "Humidity", "$humidity", "%"),
-            Triple(if (isCN) "空气" else "Air", "$aqi", "AQI"),
-            Triple(if (isCN) "气压" else "Pressure", "0", "HPA"),
-            Triple(if (isCN) "风速" else "Wind", "${String.format("%.1f", windLevel.replace("级", "").replace("-", ".").toFloatOrNull() ?: 3f)}", "KM/H"),
+            Triple(context.getString(R.string.weather_humidity), "$humidity", "%"),
+            Triple(context.getString(R.string.weather_air), "$aqi", "AQI"),
+            Triple(context.getString(R.string.weather_pressure), "${pressure.toInt()}", "hPa"),
             Triple("PM2.5", "$pm25", "μg"),
-            Triple(if (isCN) "风向" else "Dir", windDirectionEn.ifEmpty { "N" }, "")
+            Triple(context.getString(R.string.weather_wind_speed), String.format("%.1f", windSpeed), "km/h"),
+            Triple(context.getString(R.string.weather_wind_direction), getLocalizedWindDirection(windDirectionEn.ifEmpty { "N" }), "N")
         )
         
         cards.forEachIndexed { index, (label, value, unit) ->
@@ -945,13 +1204,16 @@ class WeatherOverlayView(
         textPaint.color = Color.WHITE
         textPaint.alpha = 255
         
-        val valueY = if (isChinese) y + vmin * 0.005f else y - vmin * 0.005f
+        val valueY = y - vmin * 0.005f
         canvas.drawText(value, x, valueY, textPaint)
         
         
-        textPaint.textSize = if (isSmall) vmin * 0.022f else vmin * 0.025f
-        textPaint.alpha = 120
-        canvas.drawText(unit, x, y + vmin * 0.035f, textPaint)
+        if (unit.isNotEmpty()) {
+            textPaint.textSize = if (isSmall) vmin * 0.022f else vmin * 0.026f
+            textPaint.alpha = 100
+            val unitY = if (isChinese) y + vmin * 0.038f else y + vmin * 0.032f
+            canvas.drawText(unit, x, unitY, textPaint)
+        }
         
         
         textPaint.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
@@ -1008,22 +1270,37 @@ class WeatherOverlayView(
     )
     
     
+    private fun getLocalizedWindDirection(dirEn: String): String {
+        return when (dirEn) {
+            "N" -> context.getString(R.string.weather_wind_n)
+            "NE" -> context.getString(R.string.weather_wind_ne)
+            "E" -> context.getString(R.string.weather_wind_e)
+            "SE" -> context.getString(R.string.weather_wind_se)
+            "S" -> context.getString(R.string.weather_wind_s)
+            "SW" -> context.getString(R.string.weather_wind_sw)
+            "W" -> context.getString(R.string.weather_wind_w)
+            "NW" -> context.getString(R.string.weather_wind_nw)
+            else -> dirEn
+        }
+    }
+    
     private fun getConditionText(condition: String): String {
-        val isCN = isChineseLocale()
         return when (condition) {
-            "sunny" -> if (isCN) "晴" else "Sunny"
-            "cloudy" -> if (isCN) "多云" else "Cloudy"
-            "light_rain" -> if (isCN) "小雨" else "Light Rain"
-            "rainy" -> if (isCN) "雨" else "Rain"
-            "heavy_rain" -> if (isCN) "大雨" else "Heavy Rain"
-            "light_snow" -> if (isCN) "小雪" else "Light Snow"
-            "snowy" -> if (isCN) "雪" else "Snow"
-            "heavy_snow" -> if (isCN) "大雪" else "Heavy Snow"
-            "fog" -> if (isCN) "雾" else "Fog"
-            "haze" -> if (isCN) "霾" else "Haze"
-            "wind" -> if (isCN) "大风" else "Windy"
-            "sandstorm" -> if (isCN) "沙尘暴" else "Sandstorm"
-            else -> if (isCN) "晴" else "Sunny"
+            "sunny" -> context.getString(R.string.weather_sunny)
+            "clear_night" -> context.getString(R.string.weather_clear_night)
+            "cloudy" -> context.getString(R.string.weather_cloudy)
+            "partly_cloudy" -> context.getString(R.string.weather_partly_cloudy)
+            "light_rain" -> context.getString(R.string.weather_light_rain)
+            "rainy" -> context.getString(R.string.weather_rainy)
+            "heavy_rain" -> context.getString(R.string.weather_heavy_rain)
+            "light_snow" -> context.getString(R.string.weather_light_snow)
+            "snowy" -> context.getString(R.string.weather_snowy)
+            "heavy_snow" -> context.getString(R.string.weather_heavy_snow)
+            "fog" -> context.getString(R.string.weather_fog)
+            "haze" -> context.getString(R.string.weather_haze)
+            "wind" -> context.getString(R.string.weather_wind)
+            "sandstorm" -> context.getString(R.string.weather_sandstorm)
+            else -> context.getString(R.string.weather_sunny)
         }
     }
 }

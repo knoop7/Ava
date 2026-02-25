@@ -1,0 +1,1624 @@
+{
+  "scenes": [
+    {
+      "id": "morning",
+      "icon": "fa-sun",
+      "iconColor": "text-amber-200",
+      "title": "早安，新的一天",
+      "desc": "起床时间到了",
+      "subDesc": "窗帘已自动打开",
+      "themeColors": [
+        "#f59e0b",
+        "#d97706",
+        "#92400e",
+        "#78350f"
+      ],
+      "beamColor": "rgba(251, 191, 36, 0.8)",
+      "dividerColor": "rgba(251, 191, 36, 0.8)",
+      "dotColor": "bg-amber-300",
+      "animation": "sun-rise 3s ease-in-out infinite"
+    },
+    {
+      "id": "doorbell",
+      "icon": "fa-bell",
+      "iconColor": "text-amber-300",
+      "title": "有人按门铃",
+      "desc": "门铃传感器",
+      "subDesc": "检测到访客按下",
+      "themeColors": [
+        "#fbbf24",
+        "#f59e0b",
+        "#b45309",
+        "#78350f"
+      ],
+      "beamColor": "rgba(251, 191, 36, 0.8)",
+      "dividerColor": "rgba(251, 191, 36, 0.8)",
+      "dotColor": "bg-amber-400",
+      "animation": "bell-ring 1s ease-in-out infinite"
+    },
+    {
+      "id": "door_open",
+      "icon": "fa-door-open",
+      "iconColor": "text-green-300",
+      "title": "门窗已打开",
+      "desc": "门窗传感器",
+      "subDesc": "检测到开启状态",
+      "themeColors": [
+        "#22c55e",
+        "#16a34a",
+        "#15803d",
+        "#166534"
+      ],
+      "beamColor": "rgba(34, 197, 94, 0.8)",
+      "dividerColor": "rgba(34, 197, 94, 0.8)",
+      "dotColor": "bg-green-400",
+      "animation": ""
+    },
+    {
+      "id": "water_leak",
+      "icon": "fa-droplet",
+      "iconColor": "text-cyan-300",
+      "title": "漏水警报",
+      "desc": "水浸传感器",
+      "subDesc": "检测到异常湿度",
+      "themeColors": [
+        "#06b6d4",
+        "#0891b2",
+        "#0e7490",
+        "#155e75"
+      ],
+      "beamColor": "rgba(6, 182, 212, 0.8)",
+      "dividerColor": "rgba(6, 182, 212, 0.8)",
+      "dotColor": "bg-cyan-400",
+      "animation": "pulse 1.5s infinite"
+    },
+    {
+      "id": "smoke",
+      "icon": "fa-fire",
+      "iconColor": "text-red-400",
+      "title": "烟雾警报",
+      "desc": "烟雾传感器",
+      "subDesc": "检测到烟雾浓度升高",
+      "themeColors": [
+        "#ef4444",
+        "#dc2626",
+        "#b91c1c",
+        "#991b1b"
+      ],
+      "beamColor": "rgba(239, 68, 68, 0.8)",
+      "dividerColor": "rgba(239, 68, 68, 0.8)",
+      "dotColor": "bg-red-500",
+      "animation": "pulse 0.8s infinite"
+    },
+    {
+      "id": "motion",
+      "icon": "fa-person-walking",
+      "iconColor": "text-blue-300",
+      "title": "检测到移动",
+      "desc": "人体传感器",
+      "subDesc": "识别到人员靠近",
+      "themeColors": [
+        "#3b82f6",
+        "#2563eb",
+        "#1d4ed8",
+        "#1e40af"
+      ],
+      "beamColor": "rgba(59, 130, 246, 0.8)",
+      "dividerColor": "rgba(59, 130, 246, 0.8)",
+      "dotColor": "bg-blue-400",
+      "animation": ""
+    },
+    {
+      "id": "temp_high",
+      "icon": "fa-temperature-high",
+      "iconColor": "text-orange-400",
+      "title": "温度过高",
+      "desc": "温度传感器",
+      "subDesc": "请注意室内温度",
+      "themeColors": [
+        "#f97316",
+        "#ea580c",
+        "#c2410c",
+        "#9a3412"
+      ],
+      "beamColor": "rgba(249, 115, 22, 0.8)",
+      "dividerColor": "rgba(249, 115, 22, 0.8)",
+      "dotColor": "bg-orange-500",
+      "animation": ""
+    },
+    {
+      "id": "battery_low",
+      "icon": "fa-battery-quarter",
+      "iconColor": "text-yellow-300",
+      "title": "电量不足",
+      "desc": "设备电池",
+      "subDesc": "请及时充电或更换",
+      "themeColors": [
+        "#eab308",
+        "#ca8a04",
+        "#a16207",
+        "#854d0e"
+      ],
+      "beamColor": "rgba(234, 179, 8, 0.8)",
+      "dividerColor": "rgba(234, 179, 8, 0.8)",
+      "dotColor": "bg-yellow-400",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "package",
+      "icon": "fa-box",
+      "iconColor": "text-purple-300",
+      "title": "快递到达",
+      "desc": "摄像头",
+      "subDesc": "检测到包裹投放",
+      "themeColors": [
+        "#a855f7",
+        "#9333ea",
+        "#7e22ce",
+        "#6b21a8"
+      ],
+      "beamColor": "rgba(168, 85, 247, 0.8)",
+      "dividerColor": "rgba(168, 85, 247, 0.8)",
+      "dotColor": "bg-purple-400",
+      "animation": ""
+    },
+    {
+      "id": "goodnight",
+      "icon": "fa-moon",
+      "iconColor": "text-indigo-300",
+      "title": "晚安，好梦",
+      "desc": "睡眠模式已启动",
+      "subDesc": "灯光已关闭",
+      "themeColors": [
+        "#6366f1",
+        "#4f46e5",
+        "#4338ca",
+        "#3730a3"
+      ],
+      "beamColor": "rgba(99, 102, 241, 0.8)",
+      "dividerColor": "rgba(99, 102, 241, 0.8)",
+      "dotColor": "bg-indigo-400",
+      "animation": ""
+    },
+    {
+      "id": "ac_on",
+      "icon": "fa-snowflake",
+      "iconColor": "text-sky-300",
+      "title": "空调已开启",
+      "desc": "空调设备",
+      "subDesc": "正在调节温度",
+      "themeColors": [
+        "#0ea5e9",
+        "#0284c7",
+        "#0369a1",
+        "#075985"
+      ],
+      "beamColor": "rgba(14, 165, 233, 0.8)",
+      "dividerColor": "rgba(14, 165, 233, 0.8)",
+      "dotColor": "bg-sky-400",
+      "animation": "spin-slow 8s linear infinite"
+    },
+    {
+      "id": "laundry_done",
+      "icon": "fa-shirt",
+      "iconColor": "text-lime-300",
+      "title": "洗衣机已完成",
+      "desc": "洗衣机",
+      "subDesc": "请取出衣物晒干",
+      "themeColors": [
+        "#84cc16",
+        "#65a30d",
+        "#4d7c0f",
+        "#3f6212"
+      ],
+      "beamColor": "rgba(132, 204, 22, 0.8)",
+      "dividerColor": "rgba(132, 204, 22, 0.8)",
+      "dotColor": "bg-lime-400",
+      "animation": ""
+    },
+    {
+      "id": "garage",
+      "icon": "fa-warehouse",
+      "iconColor": "text-slate-300",
+      "title": "车库门已开启",
+      "desc": "车库门传感器",
+      "subDesc": "检测到开启状态",
+      "themeColors": [
+        "#64748b",
+        "#475569",
+        "#334155",
+        "#1e293b"
+      ],
+      "beamColor": "rgba(100, 116, 139, 0.8)",
+      "dividerColor": "rgba(100, 116, 139, 0.8)",
+      "dotColor": "bg-slate-400",
+      "animation": ""
+    },
+    {
+      "id": "security",
+      "icon": "fa-shield-halved",
+      "iconColor": "text-cyan-200",
+      "title": "安防已布防",
+      "desc": "安防系统",
+      "subDesc": "离家模式已启动",
+      "themeColors": [
+        "#22d3ee",
+        "#06b6d4",
+        "#0891b2",
+        "#0e7490"
+      ],
+      "beamColor": "rgba(34, 211, 238, 0.8)",
+      "dividerColor": "rgba(34, 211, 238, 0.8)",
+      "dotColor": "bg-cyan-300",
+      "animation": ""
+    },
+    {
+      "id": "vacuum",
+      "icon": "fa-robot",
+      "iconColor": "text-teal-300",
+      "title": "扫地机工作中",
+      "desc": "扫地机器人",
+      "subDesc": "正在清扫房间",
+      "themeColors": [
+        "#2dd4bf",
+        "#14b8a6",
+        "#0d9488",
+        "#0f766e"
+      ],
+      "beamColor": "rgba(45, 212, 191, 0.8)",
+      "dividerColor": "rgba(45, 212, 191, 0.8)",
+      "dotColor": "bg-teal-400",
+      "animation": "spin-slow 4s linear infinite"
+    },
+    {
+      "id": "weather",
+      "icon": "fa-cloud-bolt",
+      "iconColor": "text-gray-300",
+      "title": "恶劣天气预警",
+      "desc": "天气服务",
+      "subDesc": "请注意天气变化",
+      "themeColors": [
+        "#6b7280",
+        "#4b5563",
+        "#374151",
+        "#1f2937"
+      ],
+      "beamColor": "rgba(107, 114, 128, 0.8)",
+      "dividerColor": "rgba(107, 114, 128, 0.8)",
+      "dotColor": "bg-gray-400",
+      "animation": "pulse 1.5s infinite"
+    },
+    {
+      "id": "baby",
+      "icon": "fa-baby",
+      "iconColor": "text-orange-200",
+      "title": "宝宝醒了",
+      "desc": "婴儿监控",
+      "subDesc": "检测到活动",
+      "themeColors": [
+        "#fb923c",
+        "#f97316",
+        "#ea580c",
+        "#c2410c"
+      ],
+      "beamColor": "rgba(251, 146, 60, 0.8)",
+      "dividerColor": "rgba(251, 146, 60, 0.8)",
+      "dotColor": "bg-orange-300",
+      "animation": "pulse 1s infinite"
+    },
+    {
+      "id": "pet",
+      "icon": "fa-paw",
+      "iconColor": "text-amber-400",
+      "title": "宠物活动",
+      "desc": "摄像头设备",
+      "subDesc": "检测到宠物活动",
+      "themeColors": [
+        "#d97706",
+        "#b45309",
+        "#92400e",
+        "#78350f"
+      ],
+      "beamColor": "rgba(217, 119, 6, 0.8)",
+      "dividerColor": "rgba(217, 119, 6, 0.8)",
+      "dotColor": "bg-amber-500",
+      "animation": ""
+    },
+    {
+      "id": "tv",
+      "icon": "fa-tv",
+      "iconColor": "text-violet-300",
+      "title": "电视已开启",
+      "desc": "电视设备",
+      "subDesc": "正在播放节目",
+      "themeColors": [
+        "#8b5cf6",
+        "#7c3aed",
+        "#6d28d9",
+        "#5b21b6"
+      ],
+      "beamColor": "rgba(139, 92, 246, 0.8)",
+      "dividerColor": "rgba(139, 92, 246, 0.8)",
+      "dotColor": "bg-violet-400",
+      "animation": ""
+    },
+    {
+      "id": "gas_leak",
+      "icon": "fa-biohazard",
+      "iconColor": "text-red-300",
+      "title": "燃气泄漏警报",
+      "desc": "燃气传感器",
+      "subDesc": "请立即检查",
+      "themeColors": [
+        "#f87171",
+        "#ef4444",
+        "#dc2626",
+        "#b91c1c"
+      ],
+      "beamColor": "rgba(248, 113, 113, 0.8)",
+      "dividerColor": "rgba(248, 113, 113, 0.8)",
+      "dotColor": "bg-red-400",
+      "animation": "pulse 0.5s infinite"
+    },
+    {
+      "id": "offline",
+      "icon": "fa-plug-circle-xmark",
+      "iconColor": "text-gray-400",
+      "title": "设备已离线",
+      "desc": "网关设备",
+      "subDesc": "失去连接",
+      "themeColors": [
+        "#9ca3af",
+        "#6b7280",
+        "#4b5563",
+        "#374151"
+      ],
+      "beamColor": "rgba(156, 163, 175, 0.8)",
+      "dividerColor": "rgba(156, 163, 175, 0.8)",
+      "dotColor": "bg-gray-500",
+      "animation": ""
+    },
+    {
+      "id": "new_year",
+      "icon": "fa-champagne-glasses",
+      "iconColor": "text-yellow-200",
+      "title": "元旦快乐",
+      "desc": "新年伊始",
+      "subDesc": "祝您万事如意",
+      "themeColors": [
+        "#fef08a",
+        "#fde047",
+        "#facc15",
+        "#eab308"
+      ],
+      "beamColor": "rgba(253, 224, 71, 0.8)",
+      "dividerColor": "rgba(253, 224, 71, 0.8)",
+      "dotColor": "bg-yellow-300",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "spring_festival",
+      "icon": "fa-horse",
+      "iconColor": "text-red-500",
+      "title": "新年快乐",
+      "desc": "马年大吉",
+      "subDesc": "马到成功 万事如意",
+      "themeColors": [
+        "#fca5a5",
+        "#f87171",
+        "#ef4444",
+        "#dc2626"
+      ],
+      "beamColor": "rgba(248, 113, 113, 0.8)",
+      "dividerColor": "rgba(248, 113, 113, 0.8)",
+      "dotColor": "bg-red-400",
+      "animation": "pulse 1.5s infinite"
+    },
+    {
+      "id": "birthday",
+      "icon": "fa-cake-candles",
+      "iconColor": "text-pink-300",
+      "title": "生日快乐",
+      "desc": "特别的日子",
+      "subDesc": "愿您心想事成",
+      "themeColors": [
+        "#f9a8d4",
+        "#f472b6",
+        "#ec4899",
+        "#db2777"
+      ],
+      "beamColor": "rgba(244, 114, 182, 0.8)",
+      "dividerColor": "rgba(244, 114, 182, 0.8)",
+      "dotColor": "bg-pink-400",
+      "animation": "pulse 1s infinite"
+    },
+    {
+      "id": "coffee",
+      "icon": "fa-mug-hot",
+      "iconColor": "text-amber-600",
+      "title": "咖啡已就绪",
+      "desc": "咖啡机",
+      "subDesc": "您的咖啡已煮好",
+      "themeColors": [
+        "#92400e",
+        "#78350f",
+        "#451a03",
+        "#292524"
+      ],
+      "beamColor": "rgba(146, 64, 14, 0.8)",
+      "dividerColor": "rgba(146, 64, 14, 0.8)",
+      "dotColor": "bg-amber-700",
+      "animation": ""
+    },
+    {
+      "id": "window_open",
+      "icon": "fa-house-chimney-window",
+      "iconColor": "text-sky-200",
+      "title": "窗户已打开",
+      "desc": "窗户传感器",
+      "subDesc": "检测到通风状态",
+      "themeColors": [
+        "#7dd3fc",
+        "#38bdf8",
+        "#0ea5e9",
+        "#0284c7"
+      ],
+      "beamColor": "rgba(125, 211, 252, 0.8)",
+      "dividerColor": "rgba(125, 211, 252, 0.8)",
+      "dotColor": "bg-sky-300",
+      "animation": ""
+    },
+    {
+      "id": "water_heater",
+      "icon": "fa-hot-tub-person",
+      "iconColor": "text-rose-300",
+      "title": "热水已备好",
+      "desc": "热水器",
+      "subDesc": "可以开始沐浴",
+      "themeColors": [
+        "#fda4af",
+        "#fb7185",
+        "#f43f5e",
+        "#e11d48"
+      ],
+      "beamColor": "rgba(253, 164, 175, 0.8)",
+      "dividerColor": "rgba(253, 164, 175, 0.8)",
+      "dotColor": "bg-rose-400",
+      "animation": ""
+    },
+    {
+      "id": "air_purifier",
+      "icon": "fa-wind",
+      "iconColor": "text-emerald-200",
+      "title": "空气净化中",
+      "desc": "空气净化器",
+      "subDesc": "正在改善空气质量",
+      "themeColors": [
+        "#a7f3d0",
+        "#6ee7b7",
+        "#34d399",
+        "#10b981"
+      ],
+      "beamColor": "rgba(167, 243, 208, 0.8)",
+      "dividerColor": "rgba(167, 243, 208, 0.8)",
+      "dotColor": "bg-emerald-300",
+      "animation": "spin-slow 6s linear infinite"
+    },
+    {
+      "id": "humidifier",
+      "icon": "fa-smog",
+      "iconColor": "text-blue-200",
+      "title": "加湿器运行中",
+      "desc": "智能加湿器",
+      "subDesc": "正在调节湿度",
+      "themeColors": [
+        "#bfdbfe",
+        "#93c5fd",
+        "#60a5fa",
+        "#3b82f6"
+      ],
+      "beamColor": "rgba(191, 219, 254, 0.8)",
+      "dividerColor": "rgba(191, 219, 254, 0.8)",
+      "dotColor": "bg-blue-300",
+      "animation": "pulse 3s infinite"
+    },
+    {
+      "id": "rice_cooker",
+      "icon": "fa-fire-burner",
+      "iconColor": "text-stone-200",
+      "title": "米饭已煮好",
+      "desc": "电饭煲",
+      "subDesc": "保温中请享用",
+      "themeColors": [
+        "#e7e5e4",
+        "#d6d3d1",
+        "#a8a29e",
+        "#78716c"
+      ],
+      "beamColor": "rgba(231, 229, 228, 0.8)",
+      "dividerColor": "rgba(231, 229, 228, 0.8)",
+      "dotColor": "bg-stone-300",
+      "animation": ""
+    },
+    {
+      "id": "microwave",
+      "icon": "fa-radiation",
+      "iconColor": "text-yellow-400",
+      "title": "微波炉完成",
+      "desc": "微波炉",
+      "subDesc": "食物已加热完毕",
+      "themeColors": [
+        "#fef08a",
+        "#fde047",
+        "#facc15",
+        "#eab308"
+      ],
+      "beamColor": "rgba(254, 240, 138, 0.8)",
+      "dividerColor": "rgba(254, 240, 138, 0.8)",
+      "dotColor": "bg-yellow-400",
+      "animation": ""
+    },
+    {
+      "id": "router",
+      "icon": "fa-tower-broadcast",
+      "iconColor": "text-cyan-400",
+      "title": "网络已连接",
+      "desc": "路由器",
+      "subDesc": "网络状态正常",
+      "themeColors": [
+        "#22d3ee",
+        "#06b6d4",
+        "#0891b2",
+        "#0e7490"
+      ],
+      "beamColor": "rgba(34, 211, 238, 0.8)",
+      "dividerColor": "rgba(34, 211, 238, 0.8)",
+      "dotColor": "bg-cyan-400",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "nas",
+      "icon": "fa-hard-drive",
+      "iconColor": "text-slate-400",
+      "title": "NAS备份完成",
+      "desc": "存储服务器",
+      "subDesc": "数据已安全备份",
+      "themeColors": [
+        "#94a3b8",
+        "#64748b",
+        "#475569",
+        "#334155"
+      ],
+      "beamColor": "rgba(148, 163, 184, 0.8)",
+      "dividerColor": "rgba(148, 163, 184, 0.8)",
+      "dotColor": "bg-slate-500",
+      "animation": ""
+    },
+    {
+      "id": "printer",
+      "icon": "fa-print",
+      "iconColor": "text-neutral-300",
+      "title": "打印已完成",
+      "desc": "打印机",
+      "subDesc": "文档已打印完毕",
+      "themeColors": [
+        "#d4d4d4",
+        "#a3a3a3",
+        "#737373",
+        "#525252"
+      ],
+      "beamColor": "rgba(212, 212, 212, 0.8)",
+      "dividerColor": "rgba(212, 212, 212, 0.8)",
+      "dotColor": "bg-neutral-400",
+      "animation": ""
+    },
+    {
+      "id": "projector",
+      "icon": "fa-film",
+      "iconColor": "text-fuchsia-300",
+      "title": "投影仪已开启",
+      "desc": "家庭影院",
+      "subDesc": "准备观影",
+      "themeColors": [
+        "#f0abfc",
+        "#e879f9",
+        "#d946ef",
+        "#c026d3"
+      ],
+      "beamColor": "rgba(240, 171, 252, 0.8)",
+      "dividerColor": "rgba(240, 171, 252, 0.8)",
+      "dotColor": "bg-fuchsia-400",
+      "animation": ""
+    },
+    {
+      "id": "speaker",
+      "icon": "fa-volume-high",
+      "iconColor": "text-orange-300",
+      "title": "音箱播放中",
+      "desc": "智能音箱",
+      "subDesc": "正在播放音乐",
+      "themeColors": [
+        "#fdba74",
+        "#fb923c",
+        "#f97316",
+        "#ea580c"
+      ],
+      "beamColor": "rgba(253, 186, 116, 0.8)",
+      "dividerColor": "rgba(253, 186, 116, 0.8)",
+      "dotColor": "bg-orange-400",
+      "animation": "pulse 1.5s infinite"
+    },
+    {
+      "id": "door_lock",
+      "icon": "fa-lock",
+      "iconColor": "text-emerald-400",
+      "title": "门锁已上锁",
+      "desc": "智能门锁",
+      "subDesc": "安全状态良好",
+      "themeColors": [
+        "#4ade80",
+        "#22c55e",
+        "#16a34a",
+        "#15803d"
+      ],
+      "beamColor": "rgba(74, 222, 128, 0.8)",
+      "dividerColor": "rgba(74, 222, 128, 0.8)",
+      "dotColor": "bg-emerald-500",
+      "animation": ""
+    },
+    {
+      "id": "door_unlock",
+      "icon": "fa-lock-open",
+      "iconColor": "text-red-400",
+      "title": "门锁已解锁",
+      "desc": "智能门锁",
+      "subDesc": "请注意门户安全",
+      "themeColors": [
+        "#f87171",
+        "#ef4444",
+        "#dc2626",
+        "#b91c1c"
+      ],
+      "beamColor": "rgba(248, 113, 113, 0.8)",
+      "dividerColor": "rgba(248, 113, 113, 0.8)",
+      "dotColor": "bg-red-500",
+      "animation": "pulse 1s infinite"
+    },
+    {
+      "id": "curtain_open",
+      "icon": "fa-bars-staggered",
+      "iconColor": "text-amber-200",
+      "title": "窗帘已打开",
+      "desc": "智能窗帘",
+      "subDesc": "享受阳光",
+      "themeColors": [
+        "#fde68a",
+        "#fcd34d",
+        "#fbbf24",
+        "#f59e0b"
+      ],
+      "beamColor": "rgba(253, 230, 138, 0.8)",
+      "dividerColor": "rgba(253, 230, 138, 0.8)",
+      "dotColor": "bg-amber-300",
+      "animation": ""
+    },
+    {
+      "id": "curtain_close",
+      "icon": "fa-bars-staggered",
+      "iconColor": "text-indigo-300",
+      "title": "窗帘已关闭",
+      "desc": "智能窗帘",
+      "subDesc": "隐私模式已开启",
+      "themeColors": [
+        "#a5b4fc",
+        "#818cf8",
+        "#6366f1",
+        "#4f46e5"
+      ],
+      "beamColor": "rgba(165, 180, 252, 0.8)",
+      "dividerColor": "rgba(165, 180, 252, 0.8)",
+      "dotColor": "bg-indigo-400",
+      "animation": ""
+    },
+    {
+      "id": "floor_heating",
+      "icon": "fa-temperature-arrow-up",
+      "iconColor": "text-red-400",
+      "title": "地暖已开启",
+      "desc": "地暖系统",
+      "subDesc": "正在升温中",
+      "themeColors": [
+        "#f87171",
+        "#ef4444",
+        "#dc2626",
+        "#b91c1c"
+      ],
+      "beamColor": "rgba(248, 113, 113, 0.8)",
+      "dividerColor": "rgba(248, 113, 113, 0.8)",
+      "dotColor": "bg-red-500",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "fresh_air",
+      "icon": "fa-leaf",
+      "iconColor": "text-green-300",
+      "title": "新风系统运行中",
+      "desc": "新风机",
+      "subDesc": "正在换气通风",
+      "themeColors": [
+        "#86efac",
+        "#4ade80",
+        "#22c55e",
+        "#16a34a"
+      ],
+      "beamColor": "rgba(134, 239, 172, 0.8)",
+      "dividerColor": "rgba(134, 239, 172, 0.8)",
+      "dotColor": "bg-green-400",
+      "animation": "spin-slow 8s linear infinite"
+    },
+    {
+      "id": "water_purifier",
+      "icon": "fa-faucet-drip",
+      "iconColor": "text-blue-300",
+      "title": "净水器工作中",
+      "desc": "净水器",
+      "subDesc": "水质状态良好",
+      "themeColors": [
+        "#93c5fd",
+        "#60a5fa",
+        "#3b82f6",
+        "#2563eb"
+      ],
+      "beamColor": "rgba(147, 197, 253, 0.8)",
+      "dividerColor": "rgba(147, 197, 253, 0.8)",
+      "dotColor": "bg-blue-400",
+      "animation": ""
+    },
+    {
+      "id": "ev_charging",
+      "icon": "fa-charging-station",
+      "iconColor": "text-lime-400",
+      "title": "电动车充电中",
+      "desc": "充电桩",
+      "subDesc": "预计充满时间",
+      "themeColors": [
+        "#a3e635",
+        "#84cc16",
+        "#65a30d",
+        "#4d7c0f"
+      ],
+      "beamColor": "rgba(163, 230, 53, 0.8)",
+      "dividerColor": "rgba(163, 230, 53, 0.8)",
+      "dotColor": "bg-lime-500",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "ev_charged",
+      "icon": "fa-bolt",
+      "iconColor": "text-yellow-300",
+      "title": "电动车充电完成",
+      "desc": "充电桩",
+      "subDesc": "已充满可出行",
+      "themeColors": [
+        "#fde047",
+        "#facc15",
+        "#eab308",
+        "#ca8a04"
+      ],
+      "beamColor": "rgba(253, 224, 71, 0.8)",
+      "dividerColor": "rgba(253, 224, 71, 0.8)",
+      "dotColor": "bg-yellow-400",
+      "animation": ""
+    },
+    {
+      "id": "locker",
+      "icon": "fa-mailbox",
+      "iconColor": "text-blue-400",
+      "title": "快递柜有包裹",
+      "desc": "快递柜通知",
+      "subDesc": "请及时取件",
+      "themeColors": [
+        "#60a5fa",
+        "#3b82f6",
+        "#2563eb",
+        "#1d4ed8"
+      ],
+      "beamColor": "rgba(96, 165, 250, 0.8)",
+      "dividerColor": "rgba(96, 165, 250, 0.8)",
+      "dotColor": "bg-blue-500",
+      "animation": ""
+    },
+    {
+      "id": "visitor",
+      "icon": "fa-user",
+      "iconColor": "text-violet-300",
+      "title": "访客到来",
+      "desc": "门禁系统",
+      "subDesc": "有访客等待确认",
+      "themeColors": [
+        "#c4b5fd",
+        "#a78bfa",
+        "#8b5cf6",
+        "#7c3aed"
+      ],
+      "beamColor": "rgba(196, 181, 253, 0.8)",
+      "dividerColor": "rgba(196, 181, 253, 0.8)",
+      "dotColor": "bg-violet-400",
+      "animation": "pulse 1s infinite"
+    },
+    {
+      "id": "meeting",
+      "icon": "fa-calendar-check",
+      "iconColor": "text-blue-300",
+      "title": "会议即将开始",
+      "desc": "日程提醒",
+      "subDesc": "请准时参加",
+      "themeColors": [
+        "#93c5fd",
+        "#60a5fa",
+        "#3b82f6",
+        "#2563eb"
+      ],
+      "beamColor": "rgba(147, 197, 253, 0.8)",
+      "dividerColor": "rgba(147, 197, 253, 0.8)",
+      "dotColor": "bg-blue-400",
+      "animation": ""
+    },
+    {
+      "id": "workout",
+      "icon": "fa-person-running",
+      "iconColor": "text-orange-400",
+      "title": "运动时间到",
+      "desc": "健康提醒",
+      "subDesc": "该活动一下了",
+      "themeColors": [
+        "#fb923c",
+        "#f97316",
+        "#ea580c",
+        "#c2410c"
+      ],
+      "beamColor": "rgba(251, 146, 60, 0.8)",
+      "dividerColor": "rgba(251, 146, 60, 0.8)",
+      "dotColor": "bg-orange-500",
+      "animation": ""
+    },
+    {
+      "id": "sleep_report",
+      "icon": "fa-bed",
+      "iconColor": "text-indigo-200",
+      "title": "睡眠报告",
+      "desc": "睡眠监测",
+      "subDesc": "查看昨晚睡眠质量",
+      "themeColors": [
+        "#c7d2fe",
+        "#a5b4fc",
+        "#818cf8",
+        "#6366f1"
+      ],
+      "beamColor": "rgba(199, 210, 254, 0.8)",
+      "dividerColor": "rgba(199, 210, 254, 0.8)",
+      "dotColor": "bg-indigo-300",
+      "animation": ""
+    },
+    {
+      "id": "alarm",
+      "icon": "fa-clock",
+      "iconColor": "text-rose-400",
+      "title": "闹钟响了",
+      "desc": "起床闹钟",
+      "subDesc": "新的一天开始了",
+      "themeColors": [
+        "#fb7185",
+        "#f43f5e",
+        "#e11d48",
+        "#be123c"
+      ],
+      "beamColor": "rgba(251, 113, 133, 0.8)",
+      "dividerColor": "rgba(251, 113, 133, 0.8)",
+      "dotColor": "bg-rose-500",
+      "animation": "bell-ring 0.5s ease-in-out infinite"
+    },
+    {
+      "id": "power_usage",
+      "icon": "fa-bolt",
+      "iconColor": "text-yellow-400",
+      "title": "用电量提醒",
+      "desc": "能耗监测",
+      "subDesc": "本月用电量较高",
+      "themeColors": [
+        "#fde047",
+        "#facc15",
+        "#eab308",
+        "#ca8a04"
+      ],
+      "beamColor": "rgba(253, 224, 71, 0.8)",
+      "dividerColor": "rgba(253, 224, 71, 0.8)",
+      "dotColor": "bg-yellow-500",
+      "animation": ""
+    },
+    {
+      "id": "traffic_limit",
+      "icon": "fa-car",
+      "iconColor": "text-red-300",
+      "title": "今日限行提醒",
+      "desc": "交通提醒",
+      "subDesc": "请注意尾号限行",
+      "themeColors": [
+        "#fca5a5",
+        "#f87171",
+        "#ef4444",
+        "#dc2626"
+      ],
+      "beamColor": "rgba(252, 165, 165, 0.8)",
+      "dividerColor": "rgba(252, 165, 165, 0.8)",
+      "dotColor": "bg-red-400",
+      "animation": ""
+    },
+    {
+      "id": "typhoon",
+      "icon": "fa-hurricane",
+      "iconColor": "text-cyan-300",
+      "title": "台风预警",
+      "desc": "气象预警",
+      "subDesc": "请做好防风准备",
+      "themeColors": [
+        "#67e8f9",
+        "#22d3ee",
+        "#06b6d4",
+        "#0891b2"
+      ],
+      "beamColor": "rgba(103, 232, 249, 0.8)",
+      "dividerColor": "rgba(103, 232, 249, 0.8)",
+      "dotColor": "bg-cyan-400",
+      "animation": "spin-slow 2s linear infinite"
+    },
+    {
+      "id": "earthquake",
+      "icon": "fa-house-crack",
+      "iconColor": "text-orange-500",
+      "title": "地震预警",
+      "desc": "地震监测",
+      "subDesc": "请注意安全",
+      "themeColors": [
+        "#f97316",
+        "#ea580c",
+        "#c2410c",
+        "#9a3412"
+      ],
+      "beamColor": "rgba(249, 115, 22, 0.8)",
+      "dividerColor": "rgba(249, 115, 22, 0.8)",
+      "dotColor": "bg-orange-600",
+      "animation": "pulse 0.3s infinite"
+    },
+    {
+      "id": "eco_mode",
+      "icon": "fa-seedling",
+      "iconColor": "text-green-400",
+      "title": "节能模式已启动",
+      "desc": "能源管理",
+      "subDesc": "智能省电中",
+      "themeColors": [
+        "#4ade80",
+        "#22c55e",
+        "#16a34a",
+        "#15803d"
+      ],
+      "beamColor": "rgba(74, 222, 128, 0.8)",
+      "dividerColor": "rgba(74, 222, 128, 0.8)",
+      "dotColor": "bg-green-500",
+      "animation": ""
+    },
+    {
+      "id": "party_mode",
+      "icon": "fa-champagne-glasses",
+      "iconColor": "text-fuchsia-400",
+      "title": "派对模式",
+      "desc": "场景切换",
+      "subDesc": "灯光音乐已开启",
+      "themeColors": [
+        "#e879f9",
+        "#d946ef",
+        "#c026d3",
+        "#a21caf"
+      ],
+      "beamColor": "rgba(232, 121, 249, 0.8)",
+      "dividerColor": "rgba(232, 121, 249, 0.8)",
+      "dotColor": "bg-fuchsia-500",
+      "animation": "pulse 0.8s infinite"
+    },
+    {
+      "id": "printer_3d",
+      "icon": "fa-print",
+      "iconColor": "text-cyan-400",
+      "title": "3D打印完成",
+      "desc": "3D打印机",
+      "subDesc": "模型已打印完毕",
+      "themeColors": [
+        "#22d3ee",
+        "#06b6d4",
+        "#0891b2",
+        "#0e7490"
+      ],
+      "beamColor": "rgba(34, 211, 238, 0.8)",
+      "dividerColor": "rgba(34, 211, 238, 0.8)",
+      "dotColor": "bg-cyan-400",
+      "animation": ""
+    },
+    {
+      "id": "cinema_mode",
+      "icon": "fa-clapperboard",
+      "iconColor": "text-fuchsia-300",
+      "title": "影院模式已开启",
+      "desc": "家庭影院",
+      "subDesc": "灯光已调暗，享受电影",
+      "themeColors": [
+        "#f0abfc",
+        "#e879f9",
+        "#d946ef",
+        "#c026d3"
+      ],
+      "beamColor": "rgba(240, 171, 252, 0.8)",
+      "dividerColor": "rgba(240, 171, 252, 0.8)",
+      "dotColor": "bg-fuchsia-400",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "reading_mode",
+      "icon": "fa-book-open",
+      "iconColor": "text-amber-200",
+      "title": "阅读模式已开启",
+      "desc": "场景切换",
+      "subDesc": "灯光已调至阅读色温",
+      "themeColors": [
+        "#fde68a",
+        "#fcd34d",
+        "#fbbf24",
+        "#f59e0b"
+      ],
+      "beamColor": "rgba(253, 230, 138, 0.8)",
+      "dividerColor": "rgba(253, 230, 138, 0.8)",
+      "dotColor": "bg-amber-300",
+      "animation": ""
+    },
+    {
+      "id": "gaming_mode",
+      "icon": "fa-gamepad",
+      "iconColor": "text-violet-400",
+      "title": "游戏模式已开启",
+      "desc": "娱乐场景",
+      "subDesc": "灯光和音响已优化",
+      "themeColors": [
+        "#a78bfa",
+        "#8b5cf6",
+        "#7c3aed",
+        "#6d28d9"
+      ],
+      "beamColor": "rgba(167, 139, 250, 0.8)",
+      "dividerColor": "rgba(167, 139, 250, 0.8)",
+      "dotColor": "bg-violet-500",
+      "animation": "pulse 1.5s infinite"
+    },
+    {
+      "id": "dishwasher",
+      "icon": "fa-sink",
+      "iconColor": "text-sky-300",
+      "title": "洗碗机完成",
+      "desc": "智能洗碗机",
+      "subDesc": "餐具已清洗烘干",
+      "themeColors": [
+        "#7dd3fc",
+        "#38bdf8",
+        "#0ea5e9",
+        "#0284c7"
+      ],
+      "beamColor": "rgba(125, 211, 252, 0.8)",
+      "dividerColor": "rgba(125, 211, 252, 0.8)",
+      "dotColor": "bg-sky-300",
+      "animation": ""
+    },
+    {
+      "id": "garbage_day",
+      "icon": "fa-trash-can",
+      "iconColor": "text-stone-400",
+      "title": "垃圾收集提醒",
+      "desc": "生活助手",
+      "subDesc": "请将垃圾放到门口",
+      "themeColors": [
+        "#a8a29e",
+        "#78716c",
+        "#57534e",
+        "#44403c"
+      ],
+      "beamColor": "rgba(168, 162, 158, 0.8)",
+      "dividerColor": "rgba(168, 162, 158, 0.8)",
+      "dotColor": "bg-stone-400",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "medicine_reminder",
+      "icon": "fa-pills",
+      "iconColor": "text-pink-400",
+      "title": "用药提醒",
+      "desc": "健康关怀",
+      "subDesc": "该服药了",
+      "themeColors": [
+        "#f472b6",
+        "#ec4899",
+        "#db2777",
+        "#be185d"
+      ],
+      "beamColor": "rgba(244, 114, 182, 0.8)",
+      "dividerColor": "rgba(244, 114, 182, 0.8)",
+      "dotColor": "bg-pink-500",
+      "animation": "pulse 1s infinite"
+    },
+    {
+      "id": "hydration_reminder",
+      "icon": "fa-glass-water",
+      "iconColor": "text-blue-300",
+      "title": "喝水提醒",
+      "desc": "健康助手",
+      "subDesc": "该补充水分了",
+      "themeColors": [
+        "#93c5fd",
+        "#60a5fa",
+        "#3b82f6",
+        "#2563eb"
+      ],
+      "beamColor": "rgba(147, 197, 253, 0.8)",
+      "dividerColor": "rgba(147, 197, 253, 0.8)",
+      "dotColor": "bg-blue-400",
+      "animation": "pulse 3s infinite"
+    },
+    {
+      "id": "weight_scale",
+      "icon": "fa-weight-scale",
+      "iconColor": "text-emerald-300",
+      "title": "体重已记录",
+      "desc": "智能体重秤",
+      "subDesc": "健康数据已同步",
+      "themeColors": [
+        "#6ee7b7",
+        "#34d399",
+        "#10b981",
+        "#059669"
+      ],
+      "beamColor": "rgba(110, 231, 183, 0.8)",
+      "dividerColor": "rgba(110, 231, 183, 0.8)",
+      "dotColor": "bg-emerald-400",
+      "animation": ""
+    },
+    {
+      "id": "karaoke_mode",
+      "icon": "fa-microphone",
+      "iconColor": "text-rose-400",
+      "title": "K歌模式已开启",
+      "desc": "家庭娱乐",
+      "subDesc": "音响效果已优化",
+      "themeColors": [
+        "#fb7185",
+        "#f43f5e",
+        "#e11d48",
+        "#be123c"
+      ],
+      "beamColor": "rgba(251, 113, 133, 0.8)",
+      "dividerColor": "rgba(251, 113, 133, 0.8)",
+      "dotColor": "bg-rose-500",
+      "animation": "pulse 1.2s infinite"
+    },
+    {
+      "id": "air_quality_warning",
+      "icon": "fa-smog",
+      "iconColor": "text-yellow-400",
+      "title": "空气质量警告",
+      "desc": "环境监测",
+      "subDesc": "空气污染指数较高",
+      "themeColors": [
+        "#facc15",
+        "#eab308",
+        "#ca8a04",
+        "#a16207"
+      ],
+      "beamColor": "rgba(250, 204, 21, 0.8)",
+      "dividerColor": "rgba(250, 204, 21, 0.8)",
+      "dotColor": "bg-yellow-500",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "welcome_home",
+      "icon": "fa-house-user",
+      "iconColor": "text-green-300",
+      "title": "主人您辛苦了",
+      "desc": "智能场景",
+      "subDesc": "欢迎回家温馨相伴",
+      "themeColors": [
+        "#86efac",
+        "#4ade80",
+        "#22c55e",
+        "#16a34a"
+      ],
+      "beamColor": "rgba(134, 239, 172, 0.8)",
+      "dividerColor": "rgba(134, 239, 172, 0.8)",
+      "dotColor": "bg-green-400",
+      "animation": ""
+    },
+    {
+      "id": "movie_time",
+      "icon": "fa-clapperboard",
+      "iconColor": "text-purple-300",
+      "title": "观影时间",
+      "desc": "智能场景",
+      "subDesc": "灯光已调暗",
+      "themeColors": [
+        "#c4b5fd",
+        "#a78bfa",
+        "#8b5cf6",
+        "#7c3aed"
+      ],
+      "beamColor": "rgba(196, 181, 253, 0.8)",
+      "dividerColor": "rgba(196, 181, 253, 0.8)",
+      "dotColor": "bg-violet-400",
+      "animation": ""
+    },
+    {
+      "id": "computer_reminder",
+      "icon": "fa-desktop",
+      "iconColor": "text-blue-300",
+      "title": "休息一下吧",
+      "desc": "健康提醒",
+      "subDesc": "请休息一下眼睛",
+      "themeColors": [
+        "#93c5fd",
+        "#60a5fa",
+        "#3b82f6",
+        "#2563eb"
+      ],
+      "beamColor": "rgba(147, 197, 253, 0.8)",
+      "dividerColor": "rgba(147, 197, 253, 0.8)",
+      "dotColor": "bg-blue-400",
+      "animation": "pulse 3s infinite"
+    },
+    {
+      "id": "phone_reminder",
+      "icon": "fa-mobile-screen",
+      "iconColor": "text-orange-300",
+      "title": "娃，放下手机吧",
+      "desc": "健康提醒",
+      "subDesc": "少看手机多休息",
+      "themeColors": [
+        "#fdba74",
+        "#fb923c",
+        "#f97316",
+        "#ea580c"
+      ],
+      "beamColor": "rgba(253, 186, 116, 0.8)",
+      "dividerColor": "rgba(253, 186, 116, 0.8)",
+      "dotColor": "bg-orange-400",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "love_reminder",
+      "icon": "fa-heart",
+      "iconColor": "text-pink-300",
+      "title": "宝，想你了",
+      "desc": "恋爱日记",
+      "subDesc": "今天记得说我爱你",
+      "themeColors": [
+        "#f9a8d4",
+        "#f472b6",
+        "#ec4899",
+        "#db2777"
+      ],
+      "beamColor": "rgba(249, 168, 212, 0.8)",
+      "dividerColor": "rgba(249, 168, 212, 0.8)",
+      "dotColor": "bg-pink-400",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "anniversary",
+      "icon": "fa-ring",
+      "iconColor": "text-rose-300",
+      "title": "宝，结婚纪念日",
+      "desc": "特别日子",
+      "subDesc": "愿爱情长长久久",
+      "themeColors": [
+        "#fda4af",
+        "#fb7185",
+        "#f43f5e",
+        "#e11d48"
+      ],
+      "beamColor": "rgba(253, 164, 175, 0.8)",
+      "dividerColor": "rgba(253, 164, 175, 0.8)",
+      "dotColor": "bg-rose-400",
+      "animation": "pulse 1.5s infinite"
+    },
+    {
+      "id": "dating_anniversary",
+      "icon": "fa-heart-circle-check",
+      "iconColor": "text-red-300",
+      "title": "宝，恋爱纪念日",
+      "desc": "特别日子",
+      "subDesc": "感谢遇见你",
+      "themeColors": [
+        "#fca5a5",
+        "#f87171",
+        "#ef4444",
+        "#dc2626"
+      ],
+      "beamColor": "rgba(252, 165, 165, 0.8)",
+      "dividerColor": "rgba(252, 165, 165, 0.8)",
+      "dotColor": "bg-red-400",
+      "animation": "pulse 1.5s infinite"
+    },
+    {
+      "id": "sleep_reminder",
+      "icon": "fa-bed",
+      "iconColor": "text-indigo-300",
+      "title": "该睡啦，晚安",
+      "desc": "健康提醒",
+      "subDesc": "早睡早起身体好",
+      "themeColors": [
+        "#a5b4fc",
+        "#818cf8",
+        "#6366f1",
+        "#4f46e5"
+      ],
+      "beamColor": "rgba(165, 180, 252, 0.8)",
+      "dividerColor": "rgba(165, 180, 252, 0.8)",
+      "dotColor": "bg-indigo-400",
+      "animation": ""
+    },
+    {
+      "id": "go_out_reminder",
+      "icon": "fa-door-open",
+      "iconColor": "text-amber-300",
+      "title": "出门啦，注意安全",
+      "desc": "智能助手",
+      "subDesc": "别忘了带钥匙和钱包",
+      "themeColors": [
+        "#fcd34d",
+        "#fbbf24",
+        "#f59e0b",
+        "#d97706"
+      ],
+      "beamColor": "rgba(252, 211, 77, 0.8)",
+      "dividerColor": "rgba(252, 211, 77, 0.8)",
+      "dotColor": "bg-amber-400",
+      "animation": ""
+    },
+    {
+      "id": "phone_charging",
+      "icon": "fa-battery-half",
+      "iconColor": "text-red-300",
+      "title": "要充电啦",
+      "desc": "手机电量",
+      "subDesc": "电量不足请及时充电",
+      "themeColors": [
+        "#fca5a5",
+        "#f87171",
+        "#ef4444",
+        "#dc2626"
+      ],
+      "beamColor": "rgba(252, 165, 165, 0.8)",
+      "dividerColor": "rgba(252, 165, 165, 0.8)",
+      "dotColor": "bg-red-400",
+      "animation": "pulse 2s infinite"
+    },
+    {
+      "id": "weather_change",
+      "icon": "fa-umbrella",
+      "iconColor": "text-sky-300",
+      "title": "记得带伞",
+      "desc": "天气服务",
+      "subDesc": "今天可能下雨带伞",
+      "themeColors": [
+        "#7dd3fc",
+        "#38bdf8",
+        "#0ea5e9",
+        "#0284c7"
+      ],
+      "beamColor": "rgba(125, 211, 252, 0.8)",
+      "dividerColor": "rgba(125, 211, 252, 0.8)",
+      "dotColor": "bg-sky-400",
+      "animation": ""
+    },
+    {
+      "id": "food_delivery",
+      "icon": "fa-motorcycle",
+      "iconColor": "text-orange-300",
+      "title": "主人，外卖到啦",
+      "desc": "外卖服务",
+      "subDesc": "您的外卖已送达",
+      "themeColors": [
+        "#fdba74",
+        "#fb923c",
+        "#f97316",
+        "#ea580c"
+      ],
+      "beamColor": "rgba(253, 186, 116, 0.8)",
+      "dividerColor": "rgba(253, 186, 116, 0.8)",
+      "dotColor": "bg-orange-400",
+      "animation": ""
+    },
+    {
+      "id": "focus_time",
+      "icon": "fa-bullseye",
+      "iconColor": "text-violet-300",
+      "title": "牛马，我爱工作",
+      "desc": "效率助手",
+      "subDesc": "开启专注请勿打扰",
+      "themeColors": [
+        "#c4b5fd",
+        "#a78bfa",
+        "#8b5cf6",
+        "#7c3aed"
+      ],
+      "beamColor": "rgba(196, 181, 253, 0.8)",
+      "dividerColor": "rgba(196, 181, 253, 0.8)",
+      "dotColor": "bg-violet-400",
+      "animation": ""
+    },
+    {
+      "id": "break_reminder",
+      "icon": "fa-mug-saucer",
+      "iconColor": "text-green-300",
+      "title": "主人，该歇歇了",
+      "desc": "番茄钟",
+      "subDesc": "工作25分钟该休息了",
+      "themeColors": [
+        "#86efac",
+        "#4ade80",
+        "#22c55e",
+        "#16a34a"
+      ],
+      "beamColor": "rgba(134, 239, 172, 0.8)",
+      "dividerColor": "rgba(134, 239, 172, 0.8)",
+      "dotColor": "bg-green-400",
+      "animation": ""
+    },
+    {
+      "id": "stand_reminder",
+      "icon": "fa-person",
+      "iconColor": "text-lime-300",
+      "title": "起来走走",
+      "desc": "健康助手",
+      "subDesc": "久坐了请起来走走",
+      "themeColors": [
+        "#bef264",
+        "#a3e635",
+        "#84cc16",
+        "#65a30d"
+      ],
+      "beamColor": "rgba(190, 242, 100, 0.8)",
+      "dividerColor": "rgba(190, 242, 100, 0.8)",
+      "dotColor": "bg-lime-400",
+      "animation": ""
+    },
+    {
+      "id": "eye_protection",
+      "icon": "fa-eye",
+      "iconColor": "text-emerald-300",
+      "title": "看看诗和远方",
+      "desc": "健康助手",
+      "subDesc": "远眺一下缓解疲劳",
+      "themeColors": [
+        "#6ee7b7",
+        "#34d399",
+        "#10b981",
+        "#059669"
+      ],
+      "beamColor": "rgba(110, 231, 183, 0.8)",
+      "dividerColor": "rgba(110, 231, 183, 0.8)",
+      "dotColor": "bg-emerald-400",
+      "animation": ""
+    },
+    {
+      "id": "posture_reminder",
+      "icon": "fa-person-arrow-up-from-line",
+      "iconColor": "text-cyan-300",
+      "title": "娃，坐直了",
+      "desc": "健康助手",
+      "subDesc": "注意坐姿保护脊椎",
+      "themeColors": [
+        "#67e8f9",
+        "#22d3ee",
+        "#06b6d4",
+        "#0891b2"
+      ],
+      "beamColor": "rgba(103, 232, 249, 0.8)",
+      "dividerColor": "rgba(103, 232, 249, 0.8)",
+      "dotColor": "bg-cyan-400",
+      "animation": ""
+    },
+    {
+      "id": "bath_reminder",
+      "icon": "fa-shower",
+      "iconColor": "text-blue-200",
+      "title": "我爱洗澡，奥力给",
+      "desc": "生活助手",
+      "subDesc": "热水已准备好",
+      "themeColors": [
+        "#bfdbfe",
+        "#93c5fd",
+        "#60a5fa",
+        "#3b82f6"
+      ],
+      "beamColor": "rgba(191, 219, 254, 0.8)",
+      "dividerColor": "rgba(191, 219, 254, 0.8)",
+      "dotColor": "bg-blue-300",
+      "animation": ""
+    },
+    {
+      "id": "shopping_reminder",
+      "icon": "fa-cart-shopping",
+      "iconColor": "text-pink-300",
+      "title": "要购物啦",
+      "desc": "生活助手",
+      "subDesc": "今天需要采购啦",
+      "themeColors": [
+        "#f9a8d4",
+        "#f472b6",
+        "#ec4899",
+        "#db2777"
+      ],
+      "beamColor": "rgba(249, 168, 212, 0.8)",
+      "dividerColor": "rgba(249, 168, 212, 0.8)",
+      "dotColor": "bg-pink-400",
+      "animation": ""
+    },
+    {
+      "id": "cooking_time",
+      "icon": "fa-utensils",
+      "iconColor": "text-orange-200",
+      "title": "做饭啦",
+      "desc": "生活助手",
+      "subDesc": "该准备大餐了",
+      "themeColors": [
+        "#fed7aa",
+        "#fdba74",
+        "#fb923c",
+        "#f97316"
+      ],
+      "beamColor": "rgba(254, 215, 170, 0.8)",
+      "dividerColor": "rgba(254, 215, 170, 0.8)",
+      "dotColor": "bg-orange-300",
+      "animation": ""
+    },
+    {
+      "id": "self_care",
+      "icon": "fa-hand-sparkles",
+      "iconColor": "text-purple-300",
+      "title": "主人，放松时间",
+      "desc": "私密时刻",
+      "subDesc": "给自己放松一下",
+      "themeColors": [
+        "#d8b4fe",
+        "#c084fc",
+        "#a855f7",
+        "#9333ea"
+      ],
+      "beamColor": "rgba(216, 180, 254, 0.8)",
+      "dividerColor": "rgba(216, 180, 254, 0.8)",
+      "dotColor": "bg-purple-400",
+      "animation": ""
+    },
+    {
+      "id": "intimate_time",
+      "icon": "fa-heart-pulse",
+      "iconColor": "text-rose-300",
+      "title": "主人，甜蜜时光",
+      "desc": "私密时刻",
+      "subDesc": "享受二人世界",
+      "themeColors": [
+        "#fda4af",
+        "#fb7185",
+        "#f43f5e",
+        "#e11d48"
+      ],
+      "beamColor": "rgba(253, 164, 175, 0.8)",
+      "dividerColor": "rgba(253, 164, 175, 0.8)",
+      "dotColor": "bg-rose-400",
+      "animation": "pulse 2s infinite"
+    }
+  ]
+}

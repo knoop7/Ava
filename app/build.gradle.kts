@@ -21,9 +21,9 @@ android {
             abiFilters.add("armeabi-v7a")
         }
         versionCode = if (project.ext.has("versionCode"))
-            project.ext.get("versionCode").toString().toInt() else 17
+            project.ext.get("versionCode").toString().toInt() else 31
         versionName = if (project.ext.has("versionName"))
-            project.ext.get("versionName").toString() else "0.1.7"
+            project.ext.get("versionName").toString() else "0.3.1"
         base.archivesName = "Ava-$versionName"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -40,7 +40,11 @@ android {
 
     buildTypes {
         debug {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         release {
             isMinifyEnabled = true
@@ -72,6 +76,7 @@ android {
             pickFirsts.add("**/libjsc.so")
         }
     }
+
 }
 
 dependencies {
@@ -87,6 +92,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material)
+    implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.navigation.compose)
     implementation(libs.gson)
     implementation(libs.kotlinx.serialization.json)
@@ -102,6 +108,7 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer-hls:1.8.0")
     implementation("androidx.media3:media3-session:1.8.0")
     implementation(libs.material3)
+    implementation(libs.colorpicker.compose)
     
     implementation("androidx.camera:camera-core:1.4.2")
     implementation("androidx.camera:camera-camera2:1.4.2")
@@ -111,6 +118,8 @@ dependencies {
     implementation("dev.rikka.shizuku:provider:13.1.5")
     
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

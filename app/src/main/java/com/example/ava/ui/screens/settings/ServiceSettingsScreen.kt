@@ -53,11 +53,14 @@ fun ServiceSettingsScreen(
     
     fun restartService() {
         context.stopService(Intent(context, VoiceSatelliteService::class.java))
-        val intent = Intent(context, VoiceSatelliteService::class.java)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            context.startForegroundService(intent)
-        } else {
-            context.startService(intent)
+        coroutineScope.launch {
+            kotlinx.coroutines.delay(600)
+            val intent = Intent(context, VoiceSatelliteService::class.java)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
         }
     }
     
@@ -91,7 +94,7 @@ fun ServiceSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 
                 val hasWriteSettings = android.provider.Settings.System.canWrite(context)
@@ -120,7 +123,7 @@ fun ServiceSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 
                 val diagnosticEnabled = experimentalState?.diagnosticSensorEnabled ?: false
@@ -152,13 +155,13 @@ fun ServiceSettingsScreen(
                                 restartService()
                             }
                             if (enabled) {
-                                navController.navigate(com.example.ava.ui.Screen.SETTINGS_DIAGNOSTIC)
+                                navController.navigate(com.example.ava.ui.Screen.SETTINGS_DIAGNOSTIC) { launchSingleTop = true }
                             }
                         }
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 
                 val hasEnvironmentSensor = DeviceCapabilities.hasAnyEnvironmentSensor(context)
@@ -188,7 +191,7 @@ fun ServiceSettingsScreen(
                 
                 
                 if (experimentalState?.environmentSensorEnabled == true) {
-                    HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                    SettingsDivider()
                     
                     val sensorInterval = experimentalState?.sensorUpdateInterval ?: 35
                     
@@ -205,18 +208,18 @@ fun ServiceSettingsScreen(
                                     text = stringResource(R.string.settings_sensor_update_interval),
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = Color(0xFF1E293B)
+                                    color = getTitleColor()
                                 )
                                 Text(
                                     text = stringResource(R.string.settings_sensor_update_interval_desc),
                                     fontSize = 13.sp,
-                                    color = Color(0xFF64748B)
+                                    color = Color(0xFF94A3B8)
                                 )
                             }
                             Text(
                                 text = "${sensorInterval}s",
                                 fontSize = 14.sp,
-                                color = Color(0xFF4F46E5),
+                                color = getAccentColor(),
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -230,16 +233,18 @@ fun ServiceSettingsScreen(
                             valueRange = 10f..60f,
                             steps = 4,
                             colors = SliderDefaults.colors(
-                                thumbColor = Color(0xFF4F46E5),
-                                activeTrackColor = Color(0xFF4F46E5),
-                                inactiveTrackColor = Color(0xFFE2E8F0)
+                                thumbColor = getAccentColor(),
+                                activeTrackColor = getAccentColor(),
+                                inactiveTrackColor = getSliderInactiveColor(),
+                                activeTickColor = getAccentColor(),
+                                inactiveTickColor = getSliderInactiveColor()
                             ),
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
                     }
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 
                 val hasProximitySensor = DeviceCapabilities.hasProximitySensor(context)
@@ -268,7 +273,7 @@ fun ServiceSettingsScreen(
                 
                 
                 if (experimentalState?.proximitySensorEnabled == true) {
-                    HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                    SettingsDivider()
                     
                     
                     SettingRow(
@@ -286,7 +291,7 @@ fun ServiceSettingsScreen(
                         )
                     }
                     
-                    HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                    SettingsDivider()
                     
                     
                     SettingRow(
@@ -303,7 +308,7 @@ fun ServiceSettingsScreen(
                         )
                     }
                     
-                    HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                    SettingsDivider()
                     
                     
                     val proximityAwayDelay = experimentalState?.proximityAwayDelay ?: 30
@@ -321,18 +326,18 @@ fun ServiceSettingsScreen(
                                     text = stringResource(R.string.settings_proximity_away_delay),
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = Color(0xFF1E293B)
+                                    color = getTitleColor()
                                 )
                                 Text(
                                     text = stringResource(R.string.settings_proximity_away_delay_desc),
                                     fontSize = 13.sp,
-                                    color = Color(0xFF64748B)
+                                    color = Color(0xFF94A3B8)
                                 )
                             }
                             Text(
                                 text = "${proximityAwayDelay}s",
                                 fontSize = 14.sp,
-                                color = Color(0xFF4F46E5),
+                                color = getAccentColor(),
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -346,9 +351,11 @@ fun ServiceSettingsScreen(
                             valueRange = 10f..120f,
                             steps = 10,
                             colors = SliderDefaults.colors(
-                                thumbColor = Color(0xFF4F46E5),
-                                activeTrackColor = Color(0xFF4F46E5),
-                                inactiveTrackColor = Color(0xFFE2E8F0)
+                                thumbColor = getAccentColor(),
+                                activeTrackColor = getAccentColor(),
+                                inactiveTrackColor = getSliderInactiveColor(),
+                                activeTickColor = getAccentColor(),
+                                inactiveTickColor = getSliderInactiveColor()
                             ),
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
@@ -366,8 +373,12 @@ fun ServiceSettingsScreen(
                     label = stringResource(R.string.settings_auto_unlock),
                     subLabel = stringResource(R.string.settings_auto_unlock_desc)
                 ) {
+                    val proximityWakeEnabled = experimentalState?.proximityWakeScreen != false
+                    val proximitySensorEnabled = experimentalState?.proximitySensorEnabled == true
+                    val autoUnlockAvailable = proximityWakeEnabled && proximitySensorEnabled
                     ModernSwitch(
-                        checked = experimentalState?.proximityAutoUnlock ?: false,
+                        checked = autoUnlockAvailable && (experimentalState?.proximityAutoUnlock == true),
+                        enabled = autoUnlockAvailable,
                         onCheckedChange = { 
                             coroutineScope.launch {
                                 viewModel.saveProximityAutoUnlock(it)
@@ -376,7 +387,7 @@ fun ServiceSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 
                 val hasOverlayPermission = android.provider.Settings.canDrawOverlays(context)
@@ -388,7 +399,7 @@ fun ServiceSettingsScreen(
                         stringResource(R.string.settings_overlay_permission_required)
                 ) {
                     ModernSwitch(
-                        checked = experimentalState?.forceOrientationEnabled ?: false,
+                        checked = (experimentalState?.forceOrientationEnabled == true) && hasOverlayPermission,
                         onCheckedChange = { enabled ->
                             if (enabled && !hasOverlayPermission) {
                                 val intent = android.content.Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
@@ -406,7 +417,7 @@ fun ServiceSettingsScreen(
                 
                 
                 if (experimentalState?.forceOrientationEnabled == true) {
-                    HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                    SettingsDivider()
                     
                     val currentMode = experimentalState?.forceOrientationMode ?: "portrait"
                     val portraitLabel = stringResource(R.string.settings_orientation_portrait)
@@ -426,7 +437,7 @@ fun ServiceSettingsScreen(
                                 text = stringResource(R.string.settings_force_orientation_mode),
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color(0xFF1E293B)
+                                color = getTitleColor()
                             )
                         }
                         Row(
@@ -447,14 +458,14 @@ fun ServiceSettingsScreen(
                                             }
                                         },
                                     shape = RoundedCornerShape(8.dp),
-                                    color = if (isSelected) Color(0xFF4F46E5) else Color(0xFFF1F5F9)
+                                    color = if (isSelected) getAccentColor() else getSliderInactiveColor()
                                 ) {
                                     Text(
                                         text = label,
                                         modifier = Modifier.padding(vertical = 12.dp),
                                         textAlign = TextAlign.Center,
                                         fontSize = 14.sp,
-                                        color = if (isSelected) Color.White else Color(0xFF64748B)
+                                        color = if (isSelected) Color.White else Color(0xFF94A3B8)
                                     )
                                 }
                             }
@@ -465,4 +476,3 @@ fun ServiceSettingsScreen(
         }
     }
 }
-

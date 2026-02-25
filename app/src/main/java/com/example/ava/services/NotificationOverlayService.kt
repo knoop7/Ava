@@ -585,7 +585,11 @@ class NotificationOverlayService : Service() {
             val lp = FrameLayout.LayoutParams(iconSize, iconSize)
             lp.gravity = Gravity.CENTER
             layoutParams = lp
-            setImageResource(com.example.ava.R.drawable.ic_home_assistant)
+            try {
+                assets.open("ha_logo.png").use { inputStream ->
+                    setImageBitmap(android.graphics.BitmapFactory.decodeStream(inputStream))
+                }
+            } catch (e: Exception) { }
             scaleType = ImageView.ScaleType.FIT_CENTER
             
             translationY = (-logoSize * 0.02f)

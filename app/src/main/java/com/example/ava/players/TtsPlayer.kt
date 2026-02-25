@@ -8,7 +8,6 @@ import androidx.media3.common.util.UnstableApi
 class TtsPlayer
     (private val player: AudioPlayer) : AutoCloseable {
 
-    private var ttsStreamUrl: String? = null
     private var _ttsPlayed: Boolean = false
     val ttsPlayed: Boolean
         get() = _ttsPlayed
@@ -22,7 +21,40 @@ class TtsPlayer
             player.onPlaybackEnded = value
         }
 
+    var onTtsDurationReady: ((Long) -> Unit)? = null
+    var onTtsPlaybackStarted: (() -> Unit)? = null
+    var onTtsProgressUpdate: ((currentMs: Long, totalMs: Long) -> Unit)? = null
+    
+    private var progressHandler: android.os.Handler? = null
+    private var progressRunnable: Runnable? = null
+    
+    private fun startProgressTracking() {
+        stopProgressTracking()
+        progressHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        progressRunnable = object : Runnable {
+            override fun run() {
+                if (isPlaying) {
+                    val current = currentPosition
+                    val total = duration
+                    if (total > 0) {
+                        onTtsProgressUpdate?.invoke(current, total)
+                    }
+                    progressHandler?.postDelayed(this, 100)
+                }
+            }
+        }
+        progressHandler?.post(progressRunnable!!)
+    }
+    
+    private fun stopProgressTracking() {
+        progressRunnable?.let { progressHandler?.removeCallbacks(it) }
+        progressRunnable = null
+        progressHandler = null
+    }
+
     val isPlaying get() = player.isPlaying
+    val currentPosition: Long get() = player.currentPosition
+    val duration: Long get() = player.duration
 
     var volume
         get() = player.volume
@@ -30,35 +62,50 @@ class TtsPlayer
             player.volume = value
         }
 
-    fun runStart(ttsStreamUrl: String?, onCompletion: () -> Unit) {
-        this.ttsStreamUrl = ttsStreamUrl
+    fun runStart(onCompletion: () -> Unit) {
         this.onCompletion = onCompletion
         _ttsPlayed = false
-        
-        
         player.init()
     }
 
     fun runEnd() {
-        
-        
-        
         if (!_ttsPlayed) {
             fireAndRemoveCompletionHandler()
         }
         _ttsPlayed = false
-        ttsStreamUrl = null
+        stopProgressTracking()
+        onTtsDurationReady = null
+        onTtsPlaybackStarted = null
+        onTtsProgressUpdate = null
     }
 
-    fun streamTts() {
-        if (ttsStreamUrl != null)
-            playTts(ttsStreamUrl)
+    fun markAsPlayed() {
+        _ttsPlayed = true
     }
-
+    
+    fun triggerCompletion() {
+        fireAndRemoveCompletionHandler()
+    }
+    
     fun playTts(ttsUrl: String?) {
+        Log.d(TAG, "playTts called: url=$ttsUrl")
         if (!ttsUrl.isNullOrBlank()) {
             _ttsPlayed = true
+            player.onDurationChanged = { durationMs ->
+                Log.d(TAG, "onDurationChanged: $durationMs ms")
+                onTtsDurationReady?.invoke(durationMs)
+                player.onDurationChanged = null
+            }
+            player.onPlaybackStarted = {
+                Log.d(TAG, "onPlaybackStarted triggered")
+                onTtsPlaybackStarted?.invoke()
+                startProgressTracking()
+                player.onPlaybackStarted = null
+            }
             player.play(ttsUrl) {
+                stopProgressTracking()
+                player.onDurationChanged = null
+                player.onPlaybackStarted = null
                 fireAndRemoveCompletionHandler()
             }
         } else {
@@ -89,7 +136,6 @@ class TtsPlayer
     fun stop() {
         onCompletion = null
         _ttsPlayed = false
-        ttsStreamUrl = null
         player.stop()
     }
 

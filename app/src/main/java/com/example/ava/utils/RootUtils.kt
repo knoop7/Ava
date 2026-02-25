@@ -5,10 +5,13 @@ import java.io.File
 
 object RootUtils {
     private var rootAvailable: Boolean? = null
-    private var cachedBacklightBrightness: Int = -1
+    private var cachedBacklightBrightness: Int = 128
     private var detectedBacklightPath: String? = null
     @Volatile private var targetScreenState: Boolean? = null
     private val executor = java.util.concurrent.Executors.newSingleThreadExecutor()
+    @Volatile private var lastToggleToastState: Boolean? = null
+    
+    private fun getMinBrightness(): Int = EchoShowSupport.getMinBrightness()
 
     fun isRootAvailable(): Boolean = rootAvailable ?: runCatching {
         Runtime.getRuntime().exec("su -c ls").waitFor() == 0
@@ -74,7 +77,7 @@ object RootUtils {
         takeIf { isRootAvailable() }?.let {
             val cmd = "ls /sys/class/leds/*/brightness /sys/class/backlight/*/brightness 2>/dev/null | grep -E 'lcd|backlight' | head -1"
             val process = Runtime.getRuntime().exec(arrayOf("su", "-c", cmd))
-            process.inputStream.bufferedReader().readText().trim().also { process.waitFor() }
+            process.inputStream.bufferedReader().use { it.readText() }.trim().also { process.waitFor() }
                 .takeIf { it.isNotEmpty() && it.contains("brightness") }
                 ?.also { detectedBacklightPath = it }
         }
@@ -83,7 +86,7 @@ object RootUtils {
     fun readBacklightBrightness(): Int = runCatching {
         findBacklightPath()?.let { path ->
             val process = Runtime.getRuntime().exec(arrayOf("su", "-c", "cat $path"))
-            process.inputStream.bufferedReader().readText().trim().also { process.waitFor() }.toIntOrNull()
+            process.inputStream.bufferedReader().use { it.readText() }.trim().also { process.waitFor() }.toIntOrNull()
         }
     }.getOrNull() ?: -1
 
@@ -96,16 +99,30 @@ object RootUtils {
     fun executeDisplayToggle(context: Context, screenOn: Boolean, brightnessPercent: Int = -1) {
         targetScreenState = screenOn
         executor.execute {
-            takeIf { targetScreenState == screenOn && isRootAvailable() }?.runCatching {
-                when (screenOn) {
-                    true -> {
-                        writeBacklightBrightness(cachedBacklightBrightness.takeIf { it > 0 } ?: 128)
-                        Runtime.getRuntime().exec(arrayOf("su", "-c", "settings put system screen_brightness_mode 1")).waitFor()
+            takeIf { targetScreenState == screenOn }?.runCatching {
+                if (DeviceCapabilities.isA64Device() || isQuadCoreA64Device()) {
+                    if (screenOn) {
+                        val brightness = cachedBacklightBrightness.takeIf { it > 0 } ?: 128
+                        Runtime.getRuntime().exec(arrayOf("su", "-c", "settings put system screen_brightness $brightness")).waitFor()
+                    } else {
+                        val currentBrightness = runCatching {
+                            val p = Runtime.getRuntime().exec(arrayOf("su", "-c", "settings get system screen_brightness"))
+                            p.inputStream.bufferedReader().use { it.readText() }.trim().also { p.waitFor() }.toIntOrNull()
+                        }.getOrNull() ?: -1
+                        if (currentBrightness > 0) cachedBacklightBrightness = currentBrightness
+                        Runtime.getRuntime().exec(arrayOf("su", "-c", "settings put system screen_brightness ${getMinBrightness()}")).waitFor()
                     }
-                    false -> {
-                        Runtime.getRuntime().exec(arrayOf("su", "-c", "settings put system screen_brightness_mode 0")).waitFor()
-                        readBacklightBrightness().takeIf { it > 0 }?.let { cachedBacklightBrightness = it }
-                        writeBacklightBrightness(0)
+                } else if (isRootAvailable()) {
+                    when (screenOn) {
+                        true -> {
+                            writeBacklightBrightness(cachedBacklightBrightness.takeIf { it > 0 } ?: 128)
+                            Runtime.getRuntime().exec(arrayOf("su", "-c", "settings put system screen_brightness_mode 1")).waitFor()
+                        }
+                        false -> {
+                            Runtime.getRuntime().exec(arrayOf("su", "-c", "settings put system screen_brightness_mode 0")).waitFor()
+                            readBacklightBrightness().takeIf { it > 0 }?.let { cachedBacklightBrightness = it }
+                            writeBacklightBrightness(getMinBrightness())
+                        }
                     }
                 }
             }
@@ -113,6 +130,25 @@ object RootUtils {
     }
 
     fun executeScreenToggle(context: Context, screenOn: Boolean) = Thread {
+        if (DeviceCapabilities.isA64Device() || isQuadCoreA64Device()) {
+            val success = runCatching {
+                if (screenOn) {
+                    val brightness = cachedBacklightBrightness.takeIf { it > 0 } ?: 128
+                    Runtime.getRuntime().exec(arrayOf("su", "-c", "settings put system screen_brightness $brightness")).waitFor() == 0
+                } else {
+                    val currentBrightness = runCatching {
+                        val p = Runtime.getRuntime().exec(arrayOf("su", "-c", "settings get system screen_brightness"))
+                        p.inputStream.bufferedReader().use { it.readText() }.trim().also { p.waitFor() }.toIntOrNull()
+                    }.getOrNull() ?: -1
+                    if (currentBrightness > 0) cachedBacklightBrightness = currentBrightness
+                    Runtime.getRuntime().exec(arrayOf("su", "-c", "settings put system screen_brightness ${getMinBrightness()}")).waitFor() == 0
+                }
+            }.getOrDefault(false)
+            val result = if (success) "brightness" else null
+            showToggleResult(context, screenOn, result)
+            return@Thread
+        }
+        
         val mode = if (screenOn) 2 else 0
         val result = tryDexToggle(context, mode) ?: tryShizukuToggle(mode) ?: tryBacklightToggle(screenOn)
         showToggleResult(context, screenOn, result)
@@ -136,10 +172,14 @@ object RootUtils {
     }.getOrNull()
 
     private fun tryBacklightToggle(screenOn: Boolean): String? = runCatching {
-        "backlight".takeIf { findBacklightPath() != null && writeBacklightBrightness(if (screenOn) 128 else 0) }
+        "backlight".takeIf { findBacklightPath() != null && writeBacklightBrightness(if (screenOn) 128 else getMinBrightness()) }
     }.getOrNull()
 
     private fun showToggleResult(context: Context, screenOn: Boolean, method: String?) {
+        if (lastToggleToastState == screenOn) {
+            return
+        }
+        lastToggleToastState = screenOn
         val msgResId = when {
             method != null && screenOn -> com.example.ava.R.string.screen_toggle_on_success
             method != null -> com.example.ava.R.string.screen_toggle_off_success
@@ -159,4 +199,51 @@ object RootUtils {
             }
         }
     }.start()
+    
+    fun grantBluetoothLocationPermission(packageName: String): Boolean = runCatching {
+        if (!isRootAvailable()) return@runCatching false
+        val commands = listOf(
+            "pm grant $packageName android.permission.ACCESS_FINE_LOCATION",
+            "pm grant $packageName android.permission.ACCESS_COARSE_LOCATION",
+            "pm grant $packageName android.permission.BLUETOOTH_PRIVILEGED",
+            "settings put secure location_mode 3",
+            "settings put global ble_scan_always_enabled 1"
+        )
+        commands.all { 
+            Runtime.getRuntime().exec(arrayOf("su", "-c", it)).waitFor() == 0 
+        }
+    }.getOrDefault(false)
+    
+    fun resetBluetoothAdapter(): Boolean = runCatching {
+        if (!isRootAvailable()) return@runCatching false
+        Runtime.getRuntime().exec(arrayOf("su", "-c", "service call bluetooth_manager 6")).waitFor()
+        Thread.sleep(2000)
+        Runtime.getRuntime().exec(arrayOf("su", "-c", "service call bluetooth_manager 5")).waitFor()
+        Thread.sleep(3000)
+        true
+    }.getOrDefault(false)
+    
+    fun killBluetoothProcessAsync(onComplete: () -> Unit) {
+        if (!isRootAvailable()) {
+            onComplete()
+            return
+        }
+        Thread {
+            runCatching {
+                val pidProcess = Runtime.getRuntime().exec(arrayOf("su", "-c", "ps | grep com.android.bluetooth | grep -v grep"))
+                val reader = pidProcess.inputStream.bufferedReader()
+                val line = reader.readLine()
+                reader.close()
+                if (line != null) {
+                    val parts = line.trim().split("\\s+".toRegex())
+                    if (parts.size >= 2) {
+                        val pid = parts[1]
+                        Runtime.getRuntime().exec(arrayOf("su", "-c", "kill -9 $pid")).waitFor()
+                    }
+                }
+                Thread.sleep(3000)
+            }
+            onComplete()
+        }.start()
+    }
 }

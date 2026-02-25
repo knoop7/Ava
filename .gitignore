@@ -14,12 +14,39 @@
 .cxx
 local.properties
 
-# Bluetooth and VoiceSatellite related files (keep local, not upload to GitHub)
+# 屏蔽隐藏目录
+/.claude/
+/.github/
+/.idea/
+/.kiro/
+/.kotlin/
+/.windsurf/
+
+# 屏蔽文档和测试目录
+/docs/
+/test/
+
+# 屏蔽根目录html文件
+/*.html
+
+# 屏蔽本地脚本和发布说明
+/RELEASE_*.md
+/*.sh
+
+# 屏蔽蓝牙相关代码
 app/src/main/java/com/example/ava/bluetooth/
+app/src/main/java/com/example/ava/esphome/voicesatellite/VoiceSatelliteBluetooth.kt
 app/src/main/java/com/example/ava/ui/screens/settings/BluetoothSettingsScreen.kt
-app/src/main/java/com/example/ava/esphome/voicesatellite/
+app/src/main/java/com/example/ava/wakelocks/BluetoothWakeLock.kt
+esphomeproto/src/main/java/com/example/esphomeproto/api/BluetoothProxyFeature.kt
+app/src/main/java/com/example/ava/ui/Navigation.kt
+app/src/main/java/com/example/ava/ui/screens/settings/SettingsScreen.kt
+app/src/main/java/com/example/ava/ui/screens/settings/RootSettingsScreen.kt
+app/src/main/java/com/example/ava/ui/components/MdiIconMapper.kt
+app/src/main/java/com/example/ava/esphome/voicesatellite/VoiceSatellite.kt
+
+# 屏蔽蓝牙相关资源
+app/src/main/res/drawable/mdi_bluetooth.xml
 app/src/main/res/drawable/bluetooth_24px.xml
-app/src/main/java/com/example/ava/nsd/VoiceSatelliteNsd.kt
-app/src/main/java/com/example/ava/services/VoiceSatelliteService.kt
-app/src/main/java/com/example/ava/settings/VoiceSatelliteSettings.kt
-app/src/main/java/com/example/ava/ui/screens/settings/VoiceSatelliteSettings.kt
+app/src/main/res/drawable/ic_bluetooth_proxy_24px.xml
+app/src/main/res/drawable/ic_bluetooth_warning.xml

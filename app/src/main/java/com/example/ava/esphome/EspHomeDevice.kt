@@ -65,7 +65,15 @@ abstract class EspHomeDevice(
             entities.add(entity)
             
             if (isSubscribedToEntityState.value) {
-                
+                isSubscribedToEntityState.value = false
+                isSubscribedToEntityState.value = true
+            }
+        }
+    }
+
+    fun removeEntity(entity: Entity) {
+        if (entities.remove(entity)) {
+            if (isSubscribedToEntityState.value) {
                 isSubscribedToEntityState.value = false
                 isSubscribedToEntityState.value = true
             }

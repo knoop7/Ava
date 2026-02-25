@@ -32,7 +32,6 @@ struct FrontendOutput FrontendProcessSamples(struct FrontendState* state,
   FilterbankAccumulateChannels(&state->filterbank, energy);
   uint32_t* scaled_filterbank = FilterbankSqrt(&state->filterbank, input_shift);
 
-  
   NoiseReductionApply(&state->noise_reduction, scaled_filterbank);
 
   if (state->pcan_gain_control.enable_pcan) {

@@ -41,7 +41,7 @@ class BinarySensorEntity(
         binarySensorStateResponse {
             key = this@BinarySensorEntity.key
             this.state = state
-            
+            missingState = false
         }
     }
 }

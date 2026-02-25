@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat
 import java.util.Calendar
 import com.example.ava.R
 import com.example.ava.settings.playerSettingsStore
+import com.example.ava.weather.WeatherData
 import com.example.ava.weather.WeatherService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,41 +37,65 @@ class DreamClockService : Service() {
 
     private var windowManager: WindowManager? = null
     private var clockView: DreamClockView? = null
+    private var windowParams: WindowManager.LayoutParams? = null
     private val handler = Handler(Looper.getMainLooper())
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private var isClockEnabled = false
+    private var isClockVisible = false
+    @Volatile private var isServiceRunning = true
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onCreate() {
-        super.onCreate()
-        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        
-        if (android.provider.Settings.canDrawOverlays(this)) {
-            createClockView()
-            
-            handler.postDelayed({ fetchWeather() }, 1000)
+    private val weatherListener: (WeatherData) -> Unit = { weather ->
+        handler.post {
+            clockView?.updateWeather(weather.temperature, weather.condition)
         }
     }
     
-    private var lastCity: String = ""
+    override fun onCreate() {
+        super.onCreate()
+        instance = this
+        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+        WeatherService.addWeatherListener(weatherListener)
+    }
+    
+    private fun bringToFront() {
+        if (!isClockEnabled || !isClockVisible) return
+        clockView?.let { view ->
+            windowParams?.let { params ->
+                try {
+
+                    if (view.isAttachedToWindow) {
+                        windowManager?.removeView(view)
+                        windowManager?.addView(view, params)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to bring clock to front", e)
+                }
+            }
+        }
+    }
     
     private fun fetchWeather() {
         serviceScope.launch {
             try {
                 val settings = playerSettingsStore.data.first()
-                val city = settings.weatherCity
-                if (city.isBlank()) {
+                val weatherEntity = settings.haWeatherEntity
+                if (weatherEntity.isBlank()) {
                     return@launch
                 }
-                lastCity = city
-                val weather = WeatherService.getWeather(city)
-                clockView?.updateWeather(weather.temperature, weather.condition)
+                val weather = WeatherService.getCachedWeather()
+                if (weather != null) {
+                    clockView?.updateWeather(weather.temperature, weather.condition)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to fetch weather: ${e.message}")
             }
         }
         
-        handler.postDelayed({ fetchWeather() }, 60 * 1000L)
+        if (isServiceRunning) {
+            handler.postDelayed({ fetchWeather() }, 60 * 1000L)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -94,7 +119,7 @@ class DreamClockService : Service() {
             ))
         }
 
-        val clockParams = WindowManager.LayoutParams(
+        windowParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
             layoutType,
@@ -116,7 +141,7 @@ class DreamClockService : Service() {
         }
 
         try {
-            windowManager?.addView(clockView, clockParams)
+            windowManager?.addView(clockView, windowParams)
             clockView?.visibility = View.GONE
         } catch (e: Exception) {
             Log.e(TAG, "Failed to create clock window", e)
@@ -131,14 +156,20 @@ class DreamClockService : Service() {
     private fun handleIntent(intent: Intent) {
         when (intent.action) {
             ACTION_SHOW -> {
+                Log.d(TAG, "ACTION_SHOW received, canDrawOverlays=${android.provider.Settings.canDrawOverlays(this)}")
                 if (!android.provider.Settings.canDrawOverlays(this)) {
+                    Log.w(TAG, "Cannot draw overlays, returning")
                     return
                 }
                 if (clockView == null) {
+                    Log.d(TAG, "Creating clock view")
                     createClockView()
                 }
                 isClockEnabled = true
+                isClockVisible = true
+                bringToFront()
                 showClock()
+                Log.d(TAG, "Clock shown, clockView=${clockView != null}, visibility=${clockView?.visibility}")
             }
             ACTION_HIDE -> {
                 isClockEnabled = false
@@ -149,17 +180,28 @@ class DreamClockService : Service() {
                     toggleClock()
                 }
             }
+            ACTION_SET_VISIBLE -> {
+                if (isClockEnabled) {
+                    val visible = intent.getBooleanExtra(EXTRA_VISIBLE, true)
+                    if (visible && !isClockVisible) {
+                        showClock()
+                    } else if (!visible && isClockVisible) {
+                        hideClock()
+                    }
+                }
+            }
+            "com.example.ava.ACTION_BRING_TO_FRONT" -> {
+                bringToFront()
+            }
         }
     }
-    
-    private var isClockEnabled = false
-    private var isClockVisible = true
     
     private fun showClock() {
         clockView?.visibility = View.VISIBLE
         clockView?.setShowClock(true)
         clockView?.startClock()
         isClockVisible = true
+        handler.postDelayed({ fetchWeather() }, 1000)
     }
     
     private fun hideClock() {
@@ -196,22 +238,27 @@ class DreamClockService : Service() {
         if (!isClockEnabled) return
         
         if (isClockVisible) {
-            
             clockView?.stopClock()
             clockView?.visibility = View.GONE
             isClockVisible = false
+            serviceScope.launch {
+                playerSettingsStore.updateData { it.copy(enableDreamClockVisible = false) }
+            }
         } else {
-            
             clockView?.visibility = View.VISIBLE
             clockView?.setShowClock(true)
             clockView?.startClock()
             isClockVisible = true
+            serviceScope.launch {
+                playerSettingsStore.updateData { it.copy(enableDreamClockVisible = true) }
+            }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        
+        isServiceRunning = false
+        WeatherService.removeWeatherListener(weatherListener)
         handler.removeCallbacksAndMessages(null)
         serviceScope.cancel()
         clockView?.stopClock()
@@ -224,10 +271,15 @@ class DreamClockService : Service() {
 
     companion object {
         private const val TAG = "DreamClockService"
+        private var instance: DreamClockService? = null
         
         const val ACTION_SHOW = "com.example.ava.SHOW_CLOCK"
         const val ACTION_HIDE = "com.example.ava.HIDE_CLOCK"
         const val ACTION_TOGGLE = "com.example.ava.TOGGLE_CLOCK"
+
+        fun bringToFrontStatic() {
+            instance?.bringToFront()
+        }
 
         fun show(context: Context) {
             val intent = Intent(context, DreamClockService::class.java).apply {
@@ -246,6 +298,17 @@ class DreamClockService : Service() {
         fun toggle(context: Context) {
             val intent = Intent(context, DreamClockService::class.java).apply {
                 action = ACTION_TOGGLE
+            }
+            context.startService(intent)
+        }
+        
+        const val ACTION_SET_VISIBLE = "com.example.ava.SET_CLOCK_VISIBLE"
+        const val EXTRA_VISIBLE = "visible"
+        
+        fun setVisible(context: Context, visible: Boolean) {
+            val intent = Intent(context, DreamClockService::class.java).apply {
+                action = ACTION_SET_VISIBLE
+                putExtra(EXTRA_VISIBLE, visible)
             }
             context.startService(intent)
         }
@@ -447,7 +510,7 @@ class DreamClockView(context: Context, private val clockSize: Int) : View(contex
         override fun run() {
             invalidate()
             if (isRunning) {
-                handler.postDelayed(this, 16)  
+                handler.postDelayed(this, 67)  
             }
         }
     }

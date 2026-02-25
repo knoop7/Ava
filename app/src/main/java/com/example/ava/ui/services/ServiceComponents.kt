@@ -37,22 +37,19 @@ import com.example.ava.esphome.*
 import com.example.ava.permissions.VOICE_SATELLITE_PERMISSIONS
 import com.example.ava.services.VoiceSatelliteService
 import com.example.ava.utils.translate
-import kotlinx.coroutines.launch
-
-
-private val SlateText = Color(0xFF1E293B)
-private val SlateSecondary = Color(0xFF64748B)
-private val SlateTertiary = Color(0xFF94A3B8)
-private val SlateBorder = Color(0xFFE2E8F0)
-private val AccentPrimary = Color(0xFF4F46E5) 
-private val AccentBlue = Color(0xFF3B82F6)
-private val AccentViolet = Color(0xFF8B5CF6)
-private val AccentGreen = Color(0xFF22C55E)
-private val AccentRed = Color(0xFFEF4444)
+import com.example.ava.ui.theme.SlateText
+import com.example.ava.ui.theme.SlateSecondary
+import com.example.ava.ui.theme.SlateTertiary
+import com.example.ava.ui.theme.SlateBorder
+import com.example.ava.ui.theme.AccentBlue
+import com.example.ava.ui.theme.AccentViolet
+import com.example.ava.ui.theme.AccentGreen
+import com.example.ava.ui.theme.AccentRed
 
 @Composable
 fun StartStopVoiceSatellite(
-    onNavigateToSettings: () -> Unit = {}
+    onNavigateToSettings: () -> Unit = {},
+    isDarkMode: Boolean = false
 ) {
     var service by remember { mutableStateOf<VoiceSatelliteService?>(null) }
     BindToService(
@@ -68,7 +65,7 @@ fun StartStopVoiceSatellite(
             verticalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(
-                color = AccentBlue,
+                color = if (isDarkMode) Color(0xFFA78B73) else AccentBlue,
                 modifier = Modifier.size(48.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -91,7 +88,8 @@ fun StartStopVoiceSatellite(
             MainControlButton(
                 isStarted = isStarted,
                 onStart = { currentService.startVoiceSatellite() },
-                onStop = { currentService.stopVoiceSatellite() }
+                onStop = { currentService.stopVoiceSatellite() },
+                isDarkMode = isDarkMode
             )
             
             
@@ -107,55 +105,11 @@ fun StartStopVoiceSatellite(
 
 
 @Composable
-private fun StatusCard(state: EspHomeState) {
-    val (title, subtitle, bgColor) = when (state) {
-        is Connected -> Triple(stringResource(R.string.status_connected), "Connected", AccentGreen)
-        is Stopped -> Triple(stringResource(R.string.status_stopped), "Stopped", SlateTertiary)
-        is Disconnected -> Triple(stringResource(R.string.status_disconnected), "Disconnected", AccentRed)
-        is ServerError -> Triple(stringResource(R.string.status_error), "Error", AccentRed)
-        else -> Triple(stringResource(R.string.status_working), "Working...", AccentBlue)
-    }
-    
-    Surface(
-        shape = RoundedCornerShape(16.dp),
-        color = bgColor.copy(alpha = 0.1f),
-        modifier = Modifier.padding(horizontal = 48.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .background(bgColor, CircleShape)
-            )
-            
-            Column {
-                Text(
-                    text = title,
-                    color = SlateText,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = subtitle,
-                    color = SlateTertiary,
-                    fontSize = 11.sp
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
 private fun MainControlButton(
     isStarted: Boolean,
     onStart: () -> Unit,
-    onStop: () -> Unit
+    onStop: () -> Unit,
+    isDarkMode: Boolean = false
 ) {
     val registerPermissionsResult = rememberLaunchWithMultiplePermissions(
         onPermissionGranted = onStart,
@@ -164,22 +118,44 @@ private fun MainControlButton(
     
     
     val buttonColor by animateColorAsState(
-        targetValue = if (isStarted) AccentPrimary else Color.White,
+        targetValue = when {
+            isDarkMode && isStarted -> Color(0xFF1A2332)
+            isDarkMode -> Color(0xFF1F1F1F)
+            isStarted -> AccentBlue
+            else -> Color.White
+        },
         animationSpec = tween(300),
         label = "buttonColor"
     )
     
     
-    val borderColor = if (isStarted) Color.Transparent else SlateBorder
+    val borderColor = when {
+        isDarkMode && isStarted -> Color(0xFF2A3A4A)
+        isStarted -> Color.Transparent
+        isDarkMode -> Color(0xFF333333)
+        else -> SlateBorder
+    }
+    
+    val iconTint = when {
+        isStarted -> Color.White
+        isDarkMode -> Color(0xFF6B7280)
+        else -> SlateTertiary
+    }
+    
+    val textColor = when {
+        isStarted -> Color.White.copy(alpha = 0.8f)
+        isDarkMode -> Color(0xFF6B7280)
+        else -> SlateTertiary
+    }
     
     Box(
         modifier = Modifier
             .size(160.dp)
             .shadow(
-                elevation = if (isStarted) 20.dp else 4.dp,
+                elevation = if (isStarted) 20.dp else if (isDarkMode) 0.dp else 4.dp,
                 shape = CircleShape,
-                ambientColor = if (isStarted) AccentBlue.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.1f),
-                spotColor = if (isStarted) AccentBlue.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.1f)
+                ambientColor = if (isStarted && !isDarkMode) AccentBlue.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.1f),
+                spotColor = if (isStarted && !isDarkMode) AccentBlue.copy(alpha = 0.3f) else Color.Black.copy(alpha = 0.1f)
             )
             .clip(CircleShape)
             .background(buttonColor)
@@ -201,14 +177,14 @@ private fun MainControlButton(
             Icon(
                 painter = painterResource(R.drawable.power_24px),
                 contentDescription = if (isStarted) "Stop" else "Start",
-                tint = if (isStarted) Color.White else SlateTertiary,
+                tint = iconTint,
                 modifier = Modifier.size(48.dp)
             )
             
             
             Text(
                 text = if (isStarted) "STOP SERVICE" else "START SERVICE",
-                color = if (isStarted) Color.White.copy(alpha = 0.8f) else SlateTertiary,
+                color = textColor,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
@@ -220,8 +196,8 @@ private fun MainControlButton(
 @Composable
 fun BindToService(onConnected: (VoiceSatelliteService) -> Unit, onDisconnected: () -> Unit) {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     DisposableEffect(Unit) {
+        var bound = false
         val serviceConnection = object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
                 (binder as? VoiceSatelliteService.VoiceSatelliteBinder)?.let {
@@ -234,20 +210,22 @@ fun BindToService(onConnected: (VoiceSatelliteService) -> Unit, onDisconnected: 
             }
         }
         val serviceIntent = Intent(context, VoiceSatelliteService::class.java)
-        coroutineScope.launch {
-            try {
-                val bound =
-                    context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-                if (!bound)
-                    Log.e("BindToService", "Cannot bind to VoiceAssistantService")
-            } catch (e: Exception) {
-                Log.e("BindToService", "Error binding to service", e)
-            }
+        try {
+            bound = context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+            if (!bound)
+                Log.e("BindToService", "Cannot bind to VoiceSatelliteService")
+        } catch (e: Exception) {
+            Log.e("BindToService", "Error binding to service", e)
         }
 
-
         onDispose {
-            context.unbindService(serviceConnection)
+            if (bound) {
+                try {
+                    context.unbindService(serviceConnection)
+                } catch (e: Exception) {
+                    Log.e("BindToService", "Error unbinding service", e)
+                }
+            }
         }
     }
 }

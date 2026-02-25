@@ -191,21 +191,23 @@ object ShizukuUtils {
             return false
         }
         
-        
-        val r1 = executeCommand("pm grant $packageName android.permission.BLUETOOTH_SCAN")
-        val r2 = executeCommand("pm grant $packageName android.permission.BLUETOOTH_CONNECT")
-        val r3 = executeCommand("pm grant $packageName android.permission.BLUETOOTH_ADVERTISE")
-        
-        
-        val r4 = executeCommand("pm grant $packageName android.permission.ACCESS_COARSE_LOCATION")
-        val r5 = executeCommand("pm grant $packageName android.permission.ACCESS_FINE_LOCATION")
-        
-        
-        executeCommand("settings put secure location_mode 3")
-        
-        Log.d(TAG, "grantBluetoothPermissions: SCAN=${r1.first}, CONNECT=${r2.first}, ADVERTISE=${r3.first}, COARSE=${r4.first}, FINE=${r5.first}")
-        
-        return r5.first == 0
+        return try {
+            val r1 = executeCommand("pm grant $packageName android.permission.BLUETOOTH_SCAN")
+            val r2 = executeCommand("pm grant $packageName android.permission.BLUETOOTH_CONNECT")
+            val r3 = executeCommand("pm grant $packageName android.permission.BLUETOOTH_ADVERTISE")
+            
+            val r4 = executeCommand("pm grant $packageName android.permission.ACCESS_COARSE_LOCATION")
+            val r5 = executeCommand("pm grant $packageName android.permission.ACCESS_FINE_LOCATION")
+            
+            executeCommand("settings put secure location_mode 3")
+            
+            Log.d(TAG, "grantBluetoothPermissions: SCAN=${r1.first}, CONNECT=${r2.first}, ADVERTISE=${r3.first}, COARSE=${r4.first}, FINE=${r5.first}")
+            
+            r5.first == 0
+        } catch (e: Exception) {
+            Log.e(TAG, "grantBluetoothPermissions failed", e)
+            false
+        }
     }
     
     fun executeDisplayToggle(dexPath: String, mode: Int): Boolean {

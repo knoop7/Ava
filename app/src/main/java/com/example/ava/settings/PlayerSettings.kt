@@ -13,14 +13,23 @@ data class PlayerSettings(
     val enableWakeSound: Boolean = true,
     val enableScreenOff: Boolean = true,  
     val wakeSound: String = "asset:///sounds/wake_word_triggered.wav",
+    val wakeSound2: String = "asset:///sounds/wake_word_triggered.wav",
     val timerFinishedSound: String = "asset:///sounds/timer_finished.flac",
+    val stopSound: String = "asset:///stopWords/stop_sound.wav",
+    val enableStopSound: Boolean = true,
+    val continuousPromptSound: String = "asset:///sounds/continuous_prompt.wav",
     val enableContinuousConversation: Boolean = false,  
     val enableFloatingWindow: Boolean = false,  
     val enableVinylCover: Boolean = false,  
     val enableDreamClock: Boolean = false,  
+    val enableDreamClockDisplay: Boolean = false,  
+    val enableDreamClockVisible: Boolean = false,  
     val enableWeatherOverlay: Boolean = false,  
-    val weatherCity: String = "",  
+    val enableWeatherOverlayDisplay: Boolean = false,  
+    val enableWeatherOverlayVisible: Boolean = false,  
+    val haWeatherEntity: String = "",  
     val enableAutoRestart: Boolean = false,  
+    val enableHaSwitchOverlay: Boolean = false,  
 )
 
 val Context.playerSettingsStore: DataStore<PlayerSettings> by dataStore(
@@ -47,6 +56,8 @@ class PlayerSettingsStore(dataStore: DataStore<PlayerSettings>) :
     }
     val wakeSound =
         SettingState(getFlow().map { it.wakeSound }) { value -> update { it.copy(wakeSound = value) } }
+    val wakeSound2 =
+        SettingState(getFlow().map { it.wakeSound2 }) { value -> update { it.copy(wakeSound2 = value) } }
     val timerFinishedSound =
         SettingState(getFlow().map { it.timerFinishedSound }) { value ->
             update {
@@ -55,6 +66,14 @@ class PlayerSettingsStore(dataStore: DataStore<PlayerSettings>) :
                 )
             }
         }
+    val stopSound =
+        SettingState(getFlow().map { it.stopSound }) { value -> update { it.copy(stopSound = value) } }
+    val enableStopSound = SettingState(getFlow().map { it.enableStopSound }) { value ->
+        update { it.copy(enableStopSound = value) }
+    }
+    val continuousPromptSound = SettingState(getFlow().map { it.continuousPromptSound }) { value ->
+        update { it.copy(continuousPromptSound = value) }
+    }
     val enableContinuousConversation = SettingState(getFlow().map { it.enableContinuousConversation }) { value ->
         update { it.copy(enableContinuousConversation = value) }
     }
@@ -67,13 +86,28 @@ class PlayerSettingsStore(dataStore: DataStore<PlayerSettings>) :
     val enableDreamClock = SettingState(getFlow().map { it.enableDreamClock }) { value ->
         update { it.copy(enableDreamClock = value) }
     }
+    val enableDreamClockDisplay = SettingState(getFlow().map { it.enableDreamClockDisplay }) { value ->
+        update { it.copy(enableDreamClockDisplay = value) }
+    }
+    val enableDreamClockVisible = SettingState(getFlow().map { it.enableDreamClockVisible }) { value ->
+        update { it.copy(enableDreamClockVisible = value) }
+    }
     val enableWeatherOverlay = SettingState(getFlow().map { it.enableWeatherOverlay }) { value ->
         update { it.copy(enableWeatherOverlay = value) }
     }
-    val weatherCity = SettingState(getFlow().map { it.weatherCity }) { value ->
-        update { it.copy(weatherCity = value) }
+    val enableWeatherOverlayDisplay = SettingState(getFlow().map { it.enableWeatherOverlayDisplay }) { value ->
+        update { it.copy(enableWeatherOverlayDisplay = value) }
+    }
+    val enableWeatherOverlayVisible = SettingState(getFlow().map { it.enableWeatherOverlayVisible }) { value ->
+        update { it.copy(enableWeatherOverlayVisible = value) }
+    }
+    val haWeatherEntity = SettingState(getFlow().map { it.haWeatherEntity }) { value ->
+        update { it.copy(haWeatherEntity = value) }
     }
     val enableAutoRestart = SettingState(getFlow().map { it.enableAutoRestart }) { value ->
         update { it.copy(enableAutoRestart = value) }
+    }
+    val enableHaSwitchOverlay = SettingState(getFlow().map { it.enableHaSwitchOverlay }) { value ->
+        update { it.copy(enableHaSwitchOverlay = value) }
     }
 }

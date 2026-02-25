@@ -30,3 +30,25 @@
 # Keep microfeatures classes that are called from JNI
 -keep class com.example.microfeatures.** { *; }
 
+# Keep FloatingWindowService inner View classes
+-keep class com.example.ava.services.FloatingWindowService$* { *; }
+
+# Keep all custom View classes
+-keep class * extends android.view.View { *; }
+
+# Keep BroadcastReceiver
+-keep class com.example.ava.receivers.** { *; }
+
+# Keep Service classes
+-keep class com.example.ava.services.** { *; }
+
+# Keep low-end BLE chip detection method only
+-keepclassmembers class com.example.ava.bluetooth.BluetoothPresenceManager {
+    public boolean isLowEndBleChip();
+    public boolean isBluetoothEnabled();
+}
+-keepclassmembers class com.example.ava.utils.RootUtils {
+    public static boolean isRootAvailable();
+    public static void killBluetoothProcessAsync(kotlin.jvm.functions.Function0);
+}
+

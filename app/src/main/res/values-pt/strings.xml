@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==================== App Basics ==================== -->
+    <string name="app_name">Assistente de Voz Ava</string>
+    <string name="service_name">Serviço de Satélite de Voz</string>
+    <string name="screensaver_image">Imagem do protetor de tela</string>
+    <string name="label_ok">OK</string>
+    <string name="label_cancel">Cancelar</string>
+    <string name="label_settings">Configurações</string>
+    <string name="back">Voltar</string>
+    <string name="more_options">Mais opções</string>
+    <string name="connecting_service">Criando...</string>
+    <string name="copied_to_clipboard">Copiado para a área de transferência</string>
+
+    <string name="settings_coming_soon">Em breve</string>
+    
+    <!-- ==================== Service Status ==================== -->
+    <string name="label_start_service">Iniciar serviço</string>
+    <string name="label_stop_service">Parar serviço</string>
+    <string name="satellite_state_stopped">Parado</string>
+    <string name="satellite_state_disconnected">Desconectado</string>
+    <string name="satellite_state_idle">Ocioso</string>
+    <string name="satellite_state_listening">Ouvindo</string>
+    <string name="satellite_state_processing">Processando</string>
+    <string name="satellite_state_responding">Respondendo</string>
+    <string name="satellite_state_server_error">Erro do servidor: %1$s</string>
+    <string name="status_connected">Conectado</string>
+    <string name="status_stopped">Parado</string>
+    <string name="status_disconnected">Desconectado</string>
+    <string name="status_error">Erro</string>
+    <string name="status_working">Em funcionamento</string>
+    
+    <!-- ==================== Voice Satellite Config ==================== -->
+    <string name="label_voice_satellite_name">Nome do dispositivo</string>
+    <string name="label_voice_satellite_port">Porta do serviço</string>
+    <string name="label_voice_satellite_wake_word">Palavra de ativação 1</string>
+    <string name="label_voice_satellite_wake_word_2">Palavra de ativação 2</string>
+    <string name="label_voice_satellite_wake_word_2_none">Nenhum</string>
+    <string name="label_voice_satellite_enable_wake_sound">Som de ativação</string>
+    <string name="description_voice_satellite_play_wake_sound">Tocar som quando a palavra de ativação for detectada</string>
+    <string name="validation_voice_satellite_name_empty">O nome não pode ficar vazio</string>
+    <string name="validation_voice_satellite_port_invalid">A porta deve estar entre 1 e 65535</string>
+    <string name="validation_voice_satellite_wake_word_invalid">Palavra de ativação não encontrada</string>
+    <string name="validation_range">Insira um valor entre %1$d e %2$d</string>
+    
+    <!-- ==================== Home Assistant Entities ==================== -->
+    <string name="entity_media_player">Reprodutor de mídia</string>
+    <string name="entity_mute_microphone">Silenciar microfone</string>
+    <string name="entity_wake_sound">Som de ativação</string>
+    <string name="entity_screen_toggle">Alternar tela</string>
+    <string name="entity_screensaver_enable">Protetor de tela</string>
+    <string name="entity_screensaver_url">URL do protetor de tela</string>
+    <string name="entity_ha_remote_url">URL do navegador remoto</string>
+    <string name="entity_restart_service">Reiniciar serviço</string>
+    <string name="entity_manual_wake">Despertar manual</string>
+    <string name="entity_voice_command">Comando de voz</string>
+    <string name="entity_assistant_response">Resposta do assistente</string>
+    <string name="pipeline_error_no_speech">Sem voz detectada</string>
+    <string name="pipeline_error_config">Anomalia de voz, verifique config</string>
+    <string name="pipeline_error_cloud_auth">Problema auth nuvem, faça login</string>
+    <string name="pipeline_error_wake">Sinal wake anômalo, tente</string>
+    <string name="pipeline_error_unknown">Flutuação de rede, verifique</string>
+    <string name="pipeline_error_ha_disconnected">Servidor offline, verifique rede</string>
+    <string name="pipeline_error_ha_start_failed">Problema init pipeline, verifique</string>
+    <string name="pipeline_error_no_response">Pipeline sem resposta, verifique STT/TTS</string>
+    <string name="entity_notification_scene">Cena de notificação</string>
+    <string name="entity_scene_display_duration">Duração de exibição da cena</string>
+    <string name="entity_weather_display">Exibição do clima</string>
+    <string name="entity_dream_clock_display">Relógio dos sonhos</string>
+    <string name="entity_browser_display">Exibição do navegador</string>
+    <string name="entity_custom_scene_url">URL de cena personalizada</string>
+    <string name="entity_take_snapshot">Tirar instantâneo</string>
+    <string name="entity_camera_snapshot">Instantâneo do dispositivo</string>
+    <string name="entity_video_recording">Iniciar gravação</string>
+    <string name="entity_camera_video">Gravação do dispositivo</string>
+    <string name="entity_person_detected">Rosto detectado</string>
+    <string name="entity_male_count">Contagem de homens</string>
+    <string name="entity_female_count">Contagem de mulheres</string>
+    <string name="entity_bluetooth_scan_mode">Modo de varredura do proxy Bluetooth</string>
+    <string name="entity_light_sensor">Sensor de luz</string>
+    <string name="entity_magnetic_sensor">Sensor magnético</string>
+    <string name="entity_proximity_sensor">Sensor de proximidade</string>
+    <string name="entity_screen_brightness">Brilho da tela</string>
+    <string name="entity_battery_level">Nível da bateria</string>
+    <string name="entity_battery_voltage">Tensão da bateria</string>
+    <string name="entity_charging_status">Status de carregamento</string>
+    <string name="entity_microphone_volume">Volume do microfone</string>
+    <string name="entity_wifi_signal">Intensidade do sinal WiFi</string>
+    <string name="entity_device_ip">Endereço IP do dispositivo</string>
+    <string name="entity_storage_free">Armazenamento disponível</string>
+    <string name="entity_memory_usage">Memória usada</string>
+    <string name="entity_device_uptime">Tempo de atividade</string>
+    <string name="entity_kill_app">Encerrar app</string>
+    <string name="entity_reboot_device">Reiniciar dispositivo</string>
+    <string name="entity_intent_launcher_status">Status do lançador</string>
+    <string name="entity_bluetooth_rssi_threshold">Limite de RSSI Bluetooth</string>
+    <string name="entity_bluetooth_away_delay">Atraso de ausência do Bluetooth</string>
+    
+    <!-- ==================== Bluetooth ==================== -->
+    <string name="bluetooth_scan_mode_active">Varredura ativa</string>
+    <string name="bluetooth_scan_mode_passive">Varredura passiva</string>
+    <string name="bluetooth_device_presence">Presença de %s</string>
+    <string name="entity_bluetooth_scan_power">Potência de Varredura Bluetooth</string>
+    <string name="bluetooth_scan_power_high">Alto Desempenho</string>
+    <string name="bluetooth_scan_power_balanced">Equilibrado</string>
+    <string name="bluetooth_scan_power_low">Baixo Consumo</string>
+    
+    <!-- ==================== Settings Groups ==================== -->
+    <string name="section_core_connection">Conexão principal</string>
+    <string name="section_interaction_visual">Interação &amp; visual</string>
+    <string name="section_local_service">Serviço local</string>
+    <string name="settings_group_connection">Configuração ESPHome</string>
+    <string name="settings_group_connection_en">Voz</string>
+    <string name="settings_group_connection_desc">Palavra de ativação · Nome · Porta</string>
+    <string name="settings_group_interaction">Tela</string>
+    <string name="settings_group_interaction_en">Interação</string>
+    <string name="settings_group_interaction_desc">Conversa · Flutuante · Relógio</string>
+    <string name="settings_group_experimental">Experimental</string>
+    <string name="settings_group_experimental_en">Laboratório</string>
+    <string name="settings_group_experimental_desc">Câmera remota · Instantâneo</string>
+    <string name="settings_group_service">Serviço do dispositivo</string>
+    <string name="settings_group_service_en">Status</string>
+    <string name="settings_group_service_desc">Sensores · Tela · Orientação</string>
+    <string name="settings_group_browser">Navegador web</string>
+    <string name="settings_group_browser_en">Quiosque</string>
+    <string name="settings_group_browser_desc">Zoom · Toque · Renderização</string>
+    <string name="settings_group_bluetooth">Bluetooth</string>
+    <string name="settings_group_bluetooth_en">Proxy</string>
+    <string name="settings_group_bluetooth_desc">Beacon · Detecção · Notificar</string>
+    <string name="settings_group_screensaver">Protetor de tela</string>
+    <string name="settings_group_screensaver_en">Online</string>
+    <string name="settings_group_screensaver_desc">URL inativo · Brilho · Movimento</string>
+    <string name="settings_group_root">Permissões</string>
+    <string name="settings_group_root_en">Elevar</string>
+    <string name="settings_group_root_desc">Compat · Sincronizar · Elevar</string>
+    <string name="settings_category_service">Configurações do serviço</string>
+    <string name="settings_category_display">Configurações de tela</string>
+    <string name="settings_category_weather">Configurações do clima</string>
+    
+    <!-- ==================== Notification & Sound ==================== -->
+    <string name="notification_sound">Som de notificação</string>
+    <string name="notification_sound_desc">Tocar som quando o pop-up da cena aparecer</string>
+    <string name="select_sound">Selecionar som</string>
+    <string name="select_external_audio">+ Selecionar áudio externo</string>
+    <string name="sound_none">Nenhum</string>
+    <string name="sound_unknown">Desconhecido</string>
+    <string name="wake_sound_select">Selecionar som de ativação</string>
+    <string name="wake_sound_default">Som padrão</string>
+    <string name="wake_sound_1">Som da palavra de ativação 1</string>
+    <string name="wake_sound_2">Som da palavra de ativação 2</string>
+    <string name="wake_sound_select_prefix">Selecionar: </string>
+    <string name="sound_select_external">+ Selecionar áudio externo</string>
+    
+    <!-- ==================== Custom Scene ==================== -->
+    <string name="custom_scene_config">Configuração de cena personalizada</string>
+    <string name="custom_scene_desc">Carregar configuração de cena de notificação a partir de um arquivo JSON remoto.</string>
+    <string name="custom_scene_json_format">Requisitos do formato JSON:</string>
+    <string name="custom_scene_json_requirements">• Deve ser um array JSON válido ou objeto com a chave "scenes"\n• Cada cena precisa de title, icon, color\n• Ícones FontAwesome suportados</string>
+    <string name="custom_scene_example_hint">Clique em "Usar exemplo" para preencher automaticamente uma URL de configuração de exemplo para referência.</string>
+    <string name="custom_scene_use_example">Usar exemplo</string>
+    <string name="custom_scene_i_know">Entendi</string>
+    <string name="settings_scene_display_duration">Duração de exibição da cena</string>
+    <string name="settings_scene_display_duration_desc">Tempo de exibição da cena em segundos</string>
+    <string name="settings_custom_scene_url">JSON de cena personalizada</string>
+    <string name="settings_custom_scene_not_configured">Não configurado</string>
+    <string name="settings_custom_scene_count">%1$d configurado</string>
+    <string name="settings_custom_scene_loaded">%1$d cenas carregadas</string>
+    <string name="settings_custom_scene_loading">Carregando...</string>
+    <string name="settings_custom_scene_url_placeholder">Digite a URL do JSON</string>
+    <string name="error_json_empty">Conteúdo vazio</string>
+    <string name="error_json_not_array">Erro de formato: não é um array JSON</string>
+    <string name="error_json_no_scenes">Nenhuma definição de cena encontrada</string>
+    <string name="error_json_parse_failed">Falha ao analisar: %1$s</string>
+    
+    <!-- ==================== Screen Control ==================== -->
+    <string name="screen_toggle_on_success">Tela ligada com sucesso (%1$s)</string>
+    <string name="screen_toggle_off_success">Tela desligada com sucesso (%1$s)</string>
+    <string name="screen_toggle_failed">Falha no controle da tela, verifique Root ou Shizuku</string>
+    <string name="settings_keep_screen_on">Manter tela ligada</string>
+    <string name="settings_keep_screen_on_desc">Evitar que a tela escureça</string>
+    <string name="settings_screen_brightness">Brilho da tela</string>
+    <string name="settings_screen_brightness_desc">Sincronizar brilho bidirecionalmente</string>
+    <string name="settings_force_orientation">Forçar orientação</string>
+    <string name="settings_force_orientation_desc">Bloquear orientação da tela</string>
+    <string name="settings_force_orientation_mode">Modo de orientação</string>
+    <string name="settings_orientation_portrait">Retrato</string>
+    <string name="settings_orientation_landscape">Paisagem</string>
+    <string name="settings_orientation_auto">Seguir sistema</string>
+    <string name="settings_display_size">Resolução da tela</string>
+    <string name="settings_display_size_desc">Ajustar resolução (requer ADB)</string>
+    <string name="settings_display_scale">Escala de exibição</string>
+    <string name="settings_display_scale_desc">Valor menor mostra mais conteúdo</string>
+    <string name="settings_display_size_error">Falha, autorize WRITE_SECURE_SETTINGS</string>
+    <string name="settings_auto_unlock">Desbloqueio automático por deslize</string>
+    <string name="settings_auto_unlock_desc">Desbloquear automaticamente por deslize (experimental)</string>
+    
+    <!-- ==================== Floating Window & Conversation ==================== -->
+    <string name="floating_ai_reply">Resposta da IA:</string>
+    <string name="settings_floating_window">Legenda flutuante</string>
+    <string name="settings_floating_window_desc">Mostrar conteúdo da conversa de voz</string>
+    <string name="settings_continuous_conversation">Conversa contínua</string>
+    <string name="settings_continuous_conversation_desc">Ouvir automaticamente após o término do TTS</string>
+    <string name="settings_overlay_permission_required">Permissão de sobreposição necessária</string>
+    <string name="settings_write_settings_permission_required">Permissão para modificar configurações do sistema necessária</string>
+    <string name="settings_device_not_supported">O dispositivo não suporta este recurso</string>
+    
+    <!-- ==================== Album Display ==================== -->
+    <string name="settings_vinyl_cover">Exibição de álbum</string>
+    <string name="settings_vinyl_cover_desc">Mostrar álbum em tela cheia durante a reprodução</string>
+    <string name="settings_ha_media_player">Reprodutor de mídia do HA</string>
+    <string name="settings_ha_media_player_desc">Para informações do reprodutor de mídia</string>
+    <string name="settings_ha_media_player_dialog_desc">ID da entidade do reprodutor de mídia para capa do álbum, ex. media_player.xxx. Nota: Só é ativado quando a exibição de álbum está ligada e a entidade do reprodutor de mídia do HA está configurada</string>
+    <string name="vinyl_cover_hiding">Ocultando contêiner de letras</string>
+    
+    <!-- ==================== Display Settings ==================== -->
+    <string name="settings_hide_header">Ocultar texto do cabeçalho</string>
+    <string name="settings_hide_header_desc">Ocultar título e subtítulo do Ava</string>
+    <string name="settings_dark_mode">Modo escuro</string>
+    <string name="settings_dark_mode_desc">Alternar tema dia/noite</string>
+    
+    <!-- ==================== Dream Clock ==================== -->
+    <string name="settings_dream_clock">Relógio dos sonhos</string>
+    <string name="settings_dream_clock_desc">Mostrar janela flutuante com relógio analógico</string>
+    <string name="settings_dream_clock_ha_switch">Controlar no Home Assistant</string>
+    <string name="settings_dream_clock_ha_switch_desc">Controle remoto mostrar/ocultar</string>
+    
+    <!-- ==================== Weather Display ==================== -->
+    <string name="weather_city">Cidade do clima</string>
+    <string name="settings_weather_overlay">Exibição do clima</string>
+    <string name="settings_weather_overlay_desc">Mostrar interface imersiva do clima</string>
+    <string name="settings_weather_overlay_realtime_desc">Mostrar informações do clima em tempo real</string>
+    <string name="settings_weather_overlay_ha_switch">Controlar no Home Assistant</string>
+    <string name="settings_weather_overlay_ha_switch_desc">Controle remoto mostrar/ocultar</string>
+    <string name="settings_ha_weather_entity">Entidade de clima</string>
+    <string name="settings_ha_weather_entity_short_desc">Para informações do clima</string>
+    <string name="settings_ha_weather_entity_desc">ID da entidade de clima do HA, ex. weather.home</string>
+    <string name="weather_humidity">Umidade</string>
+    <string name="weather_air">Ar</string>
+    <string name="weather_pressure">Pressão</string>
+    <string name="weather_wind_speed">Vento</string>
+    <string name="weather_wind_direction">Direção</string>
+    <string name="weather_sunny">Ensolarado</string>
+    <string name="weather_clear_night">Noite clara</string>
+    <string name="weather_partly_cloudy">Parcialmente nublado</string>
+    <string name="weather_cloudy">Nublado</string>
+    <string name="weather_light_rain">Chuva leve</string>
+    <string name="weather_rainy">Chuvoso</string>
+    <string name="weather_heavy_rain">Chuva forte</string>
+    <string name="weather_light_snow">Neve leve</string>
+    <string name="weather_snowy">Nevoso</string>
+    <string name="weather_heavy_snow">Neve intensa</string>
+    <string name="weather_fog">Nevoeiro</string>
+    <string name="weather_haze">Névoa</string>
+    <string name="weather_wind">Ventoso</string>
+    <string name="weather_sandstorm">Tempestade de areia</string>
+    <string name="weather_wind_n">N</string>
+    <string name="weather_wind_ne">NE</string>
+    <string name="weather_wind_e">L</string>
+    <string name="weather_wind_se">SE</string>
+    <string name="weather_wind_s">S</string>
+    <string name="weather_wind_sw">SO</string>
+    <string name="weather_wind_w">O</string>
+    <string name="weather_wind_nw">NO</string>
+    
+    <!-- ==================== Screensaver Settings ==================== -->
+    <string name="settings_screensaver_url">URL do protetor de tela</string>
+    <string name="settings_screensaver_url_desc">URL da página web do protetor de tela</string>
+    <string name="settings_screensaver_url_visible">Mostrar URL do protetor de tela</string>
+    <string name="settings_screensaver_url_visible_desc">Mostrar entidade de URL no Home Assistant</string>
+    <string name="settings_xiaomi_wallpaper">Estilo de papel de parede Xiaomi</string>
+    <string name="settings_xiaomi_wallpaper_desc">Usar papel de parede aleatório como fundo</string>
+    <string name="settings_screensaver_enable">Ativar protetor de tela</string>
+    <string name="settings_screensaver_enable_desc">Mostrar protetor de tela após tempo ocioso</string>
+    <string name="settings_screensaver_timeout">Tempo limite da tela</string>
+    <string name="settings_screensaver_timeout_desc">Tempo ocioso antes do protetor de tela (segundos)</string>
+    <string name="settings_screensaver_dark_off">Desligar no escuro</string>
+    <string name="settings_screensaver_dark_off_desc">Desligar a tela quando estiver escuro</string>
+    <string name="settings_screensaver_background_pause">Pausa em segundo plano</string>
+    <string name="settings_screensaver_background_pause_desc">Pausar quando outro app estiver em primeiro plano</string>
+    <string name="settings_screensaver_motion_on">Acordar por proximidade</string>
+    <string name="settings_screensaver_motion_on_desc">Acordar a tela quando detectar proximidade</string>
+    <!-- ==================== Browser Settings ==================== -->
+    <string name="settings_browser_pull_refresh">Puxar para atualizar</string>
+    <string name="settings_browser_pull_refresh_desc">Puxe para baixo para atualizar a página</string>
+    <string name="settings_browser_initial_scale">Escala da página</string>
+    <string name="settings_browser_initial_scale_desc">Zoom inicial, 0 para ajuste automático</string>
+    <string name="settings_browser_font_size">Tamanho da fonte</string>
+    <string name="settings_browser_font_size_desc">Tamanho do texto, 100 é normal</string>
+    <string name="settings_browser_settings_button">Botão de configurações</string>
+    <string name="settings_browser_settings_button_desc">Mostrar ícone de engrenagem no canto inferior direito</string>
+    <string name="settings_browser_search_engine">Motor de busca</string>
+    <string name="settings_browser_touch">Ativar toque</string>
+    <string name="settings_browser_touch_desc">Permitir tocar em botões e links</string>
+    <string name="settings_browser_drag">Ativar arraste</string>
+    <string name="settings_browser_drag_desc">Permitir rolar e arrastar</string>
+    <string name="settings_browser_render_mode">Modo de renderização</string>
+    <string name="settings_browser_render_mode_desc">Troque se a página for exibida incorretamente</string>
+    <string name="settings_browser_render_hardware">Hardware</string>
+    <string name="settings_browser_render_software">Software</string>
+    <string name="render_hardware">Hardware</string>
+    <string name="render_software">Software</string>
+    <string name="settings_browser_ha_remote_url">Controle web remoto</string>
+    <string name="settings_browser_ha_remote_url_desc">Permite abrir páginas remotamente via Home Assistant. Quando ativado, uma entidade aparecerá na integração. Insira a URL para mostrar, limpe para ocultar</string>
+    <string name="settings_browser_ha_display_switch">Controlar no Home Assistant</string>
+    <string name="settings_browser_ha_display_switch_desc">Mostrar entidade de interruptor no HA para controlar remotamente exibir/ocultar o navegador</string>
+    <string name="settings_browser_advanced_control">Controle remoto do HA</string>
+    <string name="settings_browser_advanced_control_desc">Controlar navegador via Home Assistant</string>
+    <string name="settings_browser_back_key_hide">Ocultar com tecla voltar</string>
+    <string name="settings_browser_back_key_hide_desc">Ocultar janela flutuante do navegador ao pressionar a tecla voltar</string>
+    <string name="settings_browser_clear_cache">Limpar cache do navegador</string>
+    <string name="settings_browser_clear_cache_desc">Limpar cache, cookies e histórico do navegador</string>
+    <string name="settings_browser_cache_cleared">Cache do navegador limpo</string>
+    <string name="advanced_control_help_title">Comandos do navegador</string>
+    <string name="advanced_control_help_desc">Controle o navegador via Home Assistant. JS, brilho, volume, etc.</string>
+    <string name="advanced_control_call_title">Como chamar</string>
+    <string name="advanced_control_call_content">action: esphome.xxx_webview_command\ndata:\n  command: \'seu comando\'</string>
+    <string name="advanced_control_commands_title">Comandos</string>
+    <string name="advanced_control_commands_content">JS: {\"eval\": \"code\"}\nAtualizar: {\"reload\": true}\nLimpar cache: {\"clearCache\": true}\nBrilho(0-255): {\"brightness\": 128}\nVolume(0-100): {\"volume\": 50}</string>
+    <string name="advanced_control_copy">Copiar</string>
+    <string name="advanced_control_ai_link_title">Link do AI (clique para copiar)</string>
+    <string name="advanced_control_dismiss">Entendi</string>
+    
+    <!-- ==================== Bluetooth Settings ==================== -->
+    <string name="settings_bluetooth_detect">Detecção de dispositivos</string>
+    <string name="settings_bluetooth_detect_desc">Detectar dispositivos Bluetooth próximos</string>
+    <string name="settings_bluetooth_rssi_threshold">Limite de RSSI</string>
+    <string name="settings_bluetooth_rssi_threshold_desc">Esquerda para perto, direita para longe</string>
+    <string name="settings_bluetooth_away_delay">Atraso de ausência</string>
+    <string name="settings_bluetooth_away_delay_desc">Tempo antes de marcar como ausente</string>
+    <string name="settings_bluetooth_add_device">Adicionar dispositivo Bluetooth</string>
+    <string name="settings_bluetooth_add_device_hint">Adicione dispositivos Bluetooth para rastrear presença. Quando o dispositivo estiver próximo, será marcado como presente no Home Assistant.</string>
+    <string name="settings_bluetooth_enable_hint">Por favor, ative a detecção e o Bluetooth para usar este recurso</string>
+    <string name="settings_bluetooth_tracked_devices">Presença | BLE Sensor</string>
+    <string name="settings_bluetooth_nearby">Perto</string>
+    <string name="settings_bluetooth_not_nearby">Não está perto</string>
+    <string name="settings_bluetooth_select_device">Selecionar dispositivo Bluetooth</string>
+    <string name="settings_bluetooth_searching">Procurando dispositivos próximos...</string>
+    <string name="settings_bluetooth_no_device">Nenhum dispositivo encontrado</string>
+    <string name="settings_bluetooth_already_added">Já adicionado</string>
+    <string name="settings_bluetooth_paired">Pareado</string>
+    <string name="settings_bluetooth_unknown_device">Dispositivo desconhecido</string>
+    <string name="settings_bluetooth_permission_required">Permissões de Bluetooth e localização necessárias</string>
+    <string name="settings_bluetooth_wifi_conflict">Bluetooth pode afetar o desempenho do WiFi</string>
+    <string name="settings_bluetooth_proxy">BLE Proxy | Mesh</string>
+    <string name="settings_bluetooth_proxy_title">Proxy Bluetooth</string>
+    <string name="settings_bluetooth_proxy_desc">Encaminhar BLE para HA</string>
+    <string name="settings_bluetooth_proxy_device_name">Nome do dispositivo</string>
+    <string name="settings_bluetooth_proxy_mac_address">Endereço</string>
+    <string name="settings_bluetooth_proxy_scan_mode">Modo de varredura</string>
+    <string name="settings_bluetooth_proxy_scan_active">Varredura ativa</string>
+    <string name="settings_bluetooth_proxy_scan_passive">Varredura passiva</string>
+    <string name="settings_bluetooth_proxy_scan_power">Potência de varredura</string>
+    
+    <!-- ==================== Sensor Settings ==================== -->
+    <string name="settings_environment_sensor">Sensores ambientais</string>
+    <string name="settings_environment_sensor_desc">Enviar dados de sensores para o Home Assistant</string>
+    <string name="settings_sensor_update_interval">Intervalo de atualização</string>
+    <string name="settings_sensor_update_interval_desc">Frequência de envio dos dados do sensor</string>
+    <string name="settings_sensor_enabled">Sensores ambientais</string>
+    <string name="settings_sensor_enabled_desc">Ativar leitura dos sensores disponíveis</string>
+    <string name="settings_battery_monitor">Monitor de bateria</string>
+    <string name="settings_battery_monitor_desc">Monitorar bateria e status de carregamento</string>
+    <string name="settings_proximity_sensor">Sensor de proximidade</string>
+    <string name="settings_proximity_sensor_desc">Ativar sensor de proximidade</string>
+    <string name="settings_proximity_send_to_hass">Enviar ao Home Assistant</string>
+    <string name="settings_proximity_send_to_hass_desc">Sincronizar estado de proximidade bidirecionalmente</string>
+    <string name="settings_proximity_wake_screen">Acordar por proximidade</string>
+    <string name="settings_proximity_wake_screen_desc">Acordar a tela quando um objeto estiver perto</string>
+    <string name="settings_proximity_threshold">Limite de acionamento</string>
+    <string name="settings_proximity_threshold_desc">Acordar a tela quando estiver mais perto que isso</string>
+    <string name="settings_proximity_away_delay">Atraso de ausência</string>
+    <string name="settings_proximity_away_delay_desc">Segundos antes de marcar como ausente</string>
+    
+    <!-- ==================== Diagnostic Info ==================== -->
+    <string name="settings_diagnostic_sensor">Sensores de diagnóstico</string>
+    <string name="settings_diagnostic_sensor_desc">Enviar status do dispositivo ao Home Assistant</string>
+    <string name="settings_intent_launcher">Executor de Intent Android</string>
+    <string name="settings_intent_launcher_desc">Execução remota avançada de Intent</string>
+    <string name="settings_intent_launcher_ha_display">Mostrar no Home Assistant</string>
+    <string name="settings_intent_launcher_ha_display_desc">Controle remoto do serviço launch_intent</string>
+    <string name="settings_intent_launcher_usage_title">Guia de uso</string>
+    <string name="settings_intent_launcher_usage_desc">Execute Android Intent remotamente via Home Assistant para abrir apps ou configurações.</string>
+    <string name="settings_intent_launcher_usage_call_title">Como Chamar</string>
+    <string name="settings_intent_launcher_usage_call_content">action: esphome.nome_dispositivo_launch_intent\ndata:\n  intent_uri: \"spotify://\"</string>
+    <string name="settings_intent_launcher_usage_format_title">Formatos Suportados</string>
+    <string name="settings_intent_launcher_usage_format_content">Abrir App:\nspotify://com.spotify.music\nConfigurações do sistema:\nintent:#Intent;action=android.settings.SETTINGS;end</string>
+    <string name="settings_diagnostic_wifi">Sinal WiFi</string>
+    <string name="settings_diagnostic_wifi_desc">Mostrar intensidade do sinal</string>
+    <string name="settings_diagnostic_ip">IP do dispositivo</string>
+    <string name="settings_diagnostic_ip_desc">Mostrar endereço de rede</string>
+    <string name="settings_diagnostic_storage">Armazenamento</string>
+    <string name="settings_diagnostic_storage_desc">Mostrar capacidade restante</string>
+    <string name="settings_diagnostic_memory">Memória</string>
+    <string name="settings_diagnostic_memory_desc">Mostrar memória usada</string>
+    <string name="settings_diagnostic_uptime">Tempo de atividade</string>
+    <string name="settings_diagnostic_uptime_desc">Mostrar tempo de execução</string>
+    <string name="settings_diagnostic_kill_app">Encerrar app</string>
+    <string name="settings_diagnostic_kill_app_desc">Forçar o fechamento deste app</string>
+    <string name="settings_diagnostic_reboot">Reiniciar dispositivo</string>
+    <string name="settings_diagnostic_reboot_desc">Reiniciar todo o dispositivo</string>
+    <string name="settings_diagnostic_battery_level">Nível da bateria</string>
+    <string name="settings_diagnostic_battery_voltage">Tensão da bateria</string>
+    <string name="settings_diagnostic_charging_status">Status de carregamento</string>
+    
+    <!-- ==================== Shizuku Permissions ==================== -->
+    <string name="settings_shizuku_title">Autorização do Shizuku</string>
+    <string name="settings_shizuku_desc">Elevar permissões do app via Shizuku</string>
+    <string name="settings_shizuku_not_installed">Shizuku não instalado</string>
+    <string name="settings_shizuku_not_running">Shizuku não está em execução</string>
+    <string name="settings_shizuku_authorized">Autorizado</string>
+    <string name="settings_shizuku_waiting">Aguardando autorização</string>
+    <string name="settings_shizuku_install">Instalar Shizuku</string>
+    <string name="settings_shizuku_start">Iniciar Shizuku</string>
+    <string name="settings_shizuku_authorize">Autorizar Shizuku</string>
+    <string name="settings_shizuku_refresh">Atualizar</string>
+    <string name="settings_shizuku_guide">Guia</string>
+    <string name="settings_shizuku_guide_text">Shizuku é uma ferramenta de gerenciamento de permissões de código aberto.\n\nEtapas de configuração:\n1. Baixe e instale o Shizuku do GitHub\n2. Ative via depuração sem fio ou ADB\n3. Volte aqui e toque em autorizar</string>
+    <string name="settings_root_status">Status do root</string>
+    <string name="settings_root_available">Acesso root concedido</string>
+    <string name="settings_root_unavailable">Acesso root não disponível</string>
+    
+    <!-- ==================== Camera Settings ==================== -->
+    <string name="settings_experimental">Avançado</string>
+    <string name="settings_camera_enabled">Câmera remota</string>
+    <string name="settings_camera_enabled_desc">Permitir que o HA controle a câmera remotamente</string>
+    <string name="settings_no_camera">Nenhuma câmera disponível</string>
+    <string name="settings_camera_mode">Modo da câmera</string>
+    <string name="settings_camera_mode_snapshot">Modo instantâneo</string>
+    <string name="settings_camera_mode_snapshot_desc">Disparar instantâneo e obter imagem</string>
+    <string name="settings_camera_mode_video">Modo vídeo</string>
+    <string name="settings_camera_mode_video_desc">Alternar gravação, obter stream de vídeo</string>
+    <string name="settings_person_detection">Detecção de rosto</string>
+    <string name="settings_person_detection_desc">Detectar rostos no vídeo</string>
+    <string name="settings_face_box">Mostrar caixa de rosto</string>
+    <string name="settings_face_box_desc">Desenhar caixa ao redor dos rostos detectados</string>
+    <string name="settings_video_fps">FPS de vídeo</string>
+    <string name="settings_video_fps_desc">FPS menor recomendado para estabilidade</string>
+    <string name="settings_video_fps_format">%d FPS</string>
+    <string name="settings_video_resolution">Resolução de vídeo</string>
+    <string name="settings_video_resolution_240">Suave (320×240)</string>
+    <string name="settings_video_resolution_360">SD (480×360)</string>
+    <string name="settings_video_resolution_480">HD (640×480)</string>
+    <string name="settings_video_resolution_720">FHD (960×720)</string>
+    <string name="settings_camera_position">Seleção de câmera</string>
+    <string name="settings_camera_back">Câmera traseira</string>
+    <string name="settings_camera_front">Câmera frontal</string>
+    <string name="settings_image_size">Tamanho da imagem</string>
+    <string name="settings_image_size_original">Original (sem corte)</string>
+    <string name="settings_image_size_500">500px (corte quadrado)</string>
+    <string name="settings_image_size_720">720px (corte quadrado)</string>
+    <string name="settings_image_size_1080">1080px (corte quadrado)</string>
+    
+    <!-- ==================== Service Settings ==================== -->
+    <string name="settings_port_description">Altere a porta para evitar conflitos</string>
+    <string name="settings_auto_restart">Reinício automático</string>
+    <string name="settings_auto_restart_desc">Iniciar automaticamente na inicialização e ativar o serviço</string>
+    <string name="microphone_muted_toast">Microfone silenciado</string>
+    <string name="microphone_unmuted_toast">Microfone ativado</string>
+    
+    <!-- ==================== About Page ==================== -->
+    <string name="settings_about">Sobre</string>
+    <string name="settings_device_info">Informações do dispositivo</string>
+    <string name="settings_author">Autor original</string>
+    <string name="settings_secondary_dev">Desenvolvedor secundário</string>
+    <string name="settings_project_url">URL do projeto</string>
+    <string name="github_project">Projeto de código aberto</string>
+    <string name="ava_version">Assistente Ava %1$s (Stable)</string>
+    <string name="device_ip">IP do dispositivo: %1$s</string>
+    <string name="original_author">Autor original: brownard</string>
+    <string name="secondary_dev">Desenvolvedor secundário: knoop7</string>
+    
+    <!-- ==================== Welcome Page ==================== -->
+    <string name="welcome_title">Bem-vindo ao Ava</string>
+    <string name="welcome_subtitle">Siga-nos para mais dicas de casa inteligente</string>
+    <string name="qr_code_desc">Código QR</string>
+    <string name="wechat_account">Dicas de casa inteligente</string>
+    <string name="auto_close_countdown">Fechar automaticamente em 10 segundos</string>
+    
+    <!-- ==================== Update Prompt ==================== -->
+    <string name="update_available">Nova versão disponível</string>
+    <string name="update_changelog">Novidades</string>
+    <string name="update_later">Mais tarde</string>
+    <string name="update_now">Atualizar agora</string>
+    
+    <!-- ==================== Missing Translations ==================== -->
+    <string name="entity_screensaver_display">Exibição do protetor</string>
+    <string name="settings_browser_tampermonkey">Tampermonkey</string>
+    <string name="settings_browser_tampermonkey_desc">Ativar suporte a scripts de usuário no navegador</string>
+    <string name="settings_browser_useragent">Identidade do navegador</string>
+    <string name="settings_browser_useragent_desc">Alternar identidade para acessar diferentes versões de sites</string>
+    <string name="settings_ha_switch_overlay">Sobreposição de interruptor</string>
+    <string name="settings_ha_switch_overlay_desc">Mostrar lembrete ao controlar luzes por voz</string>
+    <string name="settings_screensaver_ha_display">Mostrar no Home Assistant</string>
+    <string name="settings_screensaver_ha_display_desc">Mostrar controle do protetor no Home Assistant</string>
+    <string name="settings_screensaver_url_hint">Para usar o Home Assistant como protetor, primeiro ative a Exibição do Navegador, insira a URL do HA e faça login para sincronizar cookies.</string>
+    <string name="tampermonkey_add_script">Adicionar script</string>
+    <string name="tampermonkey_add_script_desc">Gerenciador leve de scripts baseado no Android-WebMonkey. Obrigado a warren-bank pela contribuição open source.\n\nPode: GM_getValue/setValue, GM_addStyle, GM_xmlhttpRequest, GM_cookie, GM_notification etc.\n\nNão pode: GM_download, GM_webRequest, unsafeWindow\n\nProjeto: github.com/warren-bank/Android-WebMonkey</string>
+    <string name="tampermonkey_install_failed">Falha ao instalar script</string>
+    <string name="tampermonkey_install_script">Scripts externos</string>
+    <string name="tampermonkey_installing">Abrindo site do script...</string>
+    <string name="tampermonkey_manage_scripts">Gerenciar scripts</string>
+    <string name="tampermonkey_no_scripts">Nenhum script instalado</string>
+    <string name="tampermonkey_script_installed">Script instalado</string>
+    <string name="tampermonkey_scripts_installed">scripts instalados</string>
+    <string name="entity_quick_entity_display">Painel de Entidades Rápidas</string>
+    <string name="entity_quick_entity_slot">Slot de Entidade Rápida %1$d</string>
+    <string name="settings_quick_entity_ha_slots">Configuração de Slots HA</string>
+    <string name="settings_quick_entity_ha_slots_desc">Permitir configurar slots de entidade do Home Assistant</string>
+    <string name="quick_entity_hidden">Painel de entidades rápidas oculto</string>
+    <string name="quick_entity_long_press_hint">Segure por 5 segundos para ocultar o painel</string>
+    <string name="settings_quick_entity">Controle de Entidades Rápidas</string>
+    <string name="settings_quick_entity_clear_slot">Limpar este slot</string>
+    <string name="settings_quick_entity_color">Cor</string>
+    <string name="settings_quick_entity_color_auto">Cor automática conforme o tipo do ícone</string>
+    <string name="settings_quick_entity_color_custom">Cor personalizada</string>
+    <string name="settings_quick_entity_color_custom_hint">Digite o código de cor hexadecimal, ex.: #FF5733</string>
+    <string name="settings_quick_entity_configure">Configurar Entidades</string>
+    <string name="settings_quick_entity_desc">Painel de controle rápido de entidades no estilo Stream Deck</string>
+    <string name="settings_quick_entity_empty">Não configurado</string>
+    <string name="settings_quick_entity_icon">Ícone</string>
+    <string name="settings_quick_entity_id">ID da Entidade</string>
+    <string name="settings_quick_entity_id_hint">Digite o ID da entidade do Home Assistant</string>
+    <string name="settings_quick_entity_save">Salvar</string>
+    <string name="settings_quick_entity_slot">Slot de Entidade %1$d</string>
+    <string name="settings_quick_entity_supported_types">Suporta: switch, button, light, sensor, binary_sensor, cover, climate, fan, input_boolean, input_number, input_select, input_text, scene, script, vacuum, water_heater</string>
+    <string name="useragent_default">Padrão (Android)</string>
+    <string name="useragent_desktop">Desktop (Windows)</string>
+    <string name="useragent_ios">iOS (iPhone)</string>
+    <string name="useragent_macos">macOS (Safari)</string>
+</resources>

@@ -22,6 +22,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.ava.settings.BrowserSettings
 import com.example.ava.settings.BrowserSettingsStore
+import com.example.ava.utils.UserScriptManager
+import com.example.ava.webmonkey.GmApi
+import com.example.ava.webmonkey.GmApiInjector
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -29,17 +32,23 @@ class WebViewService : LifecycleService() {
     
     private var windowManager: WindowManager? = null
     private var containerView: ViewGroup? = null
+    private var windowParams: WindowManager.LayoutParams? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var webView: WebView? = null
+    private var gmApi: GmApi? = null
     private lateinit var browserSettingsStore: BrowserSettingsStore
+    private lateinit var userScriptManager: UserScriptManager
     private var currentSettings: BrowserSettings = BrowserSettings.DEFAULT
-    private var originalUrl: String = "" 
+    private var originalUrl: String = ""
+    private var tampermonkeyDialog: android.app.AlertDialog? = null
+    private var scriptListDialog: android.app.AlertDialog? = null 
     
     companion object {
         private const val TAG = "WebViewService"
         private var instance: WebViewService? = null
         private var pendingRestoreUrl: String? = null 
-        private var isInSettings = false 
+        private var isInSettings = false
+        private var isCreating = false 
         
         fun show(context: Context, url: String) {
             
@@ -91,9 +100,24 @@ class WebViewService : LifecycleService() {
             context.startService(intent)
         }
         
+        fun destroy(context: Context) {
+            val intent = Intent(context, WebViewService::class.java).apply {
+                action = "ACTION_DESTROY"
+            }
+            context.startService(intent)
+        }
+        
         fun updateUrl(context: Context, url: String) {
             val intent = Intent(context, WebViewService::class.java).apply {
                 action = "ACTION_UPDATE"
+                putExtra("url", url)
+            }
+            context.startService(intent)
+        }
+        
+        fun showOrRefresh(context: Context, url: String) {
+            val intent = Intent(context, WebViewService::class.java).apply {
+                action = "ACTION_SHOW_OR_REFRESH"
                 putExtra("url", url)
             }
             context.startService(intent)
@@ -112,8 +136,9 @@ class WebViewService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         browserSettingsStore = BrowserSettingsStore(this)
+        userScriptManager = UserScriptManager(this)
+        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -127,6 +152,9 @@ class WebViewService : LifecycleService() {
             "ACTION_HIDE" -> {
                 hideWebView()
             }
+            "ACTION_DESTROY" -> {
+                destroyWebView()
+            }
             "ACTION_UPDATE" -> {
                 val url = intent.getStringExtra("url") ?: ""
                 updateUrl(url)
@@ -134,6 +162,10 @@ class WebViewService : LifecycleService() {
             "ACTION_COMMAND" -> {
                 val command = intent.getStringExtra("command") ?: ""
                 handleCommand(command)
+            }
+            "ACTION_SHOW_OR_REFRESH" -> {
+                val url = intent.getStringExtra("url") ?: ""
+                showOrRefreshWebView(url)
             }
         }
         
@@ -146,6 +178,12 @@ class WebViewService : LifecycleService() {
             updateUrl(url)
             return
         }
+        
+        if (isCreating) {
+            Log.d(TAG, "Already creating WebView, ignoring show request")
+            return
+        }
+        isCreating = true
         
         lifecycleScope.launch {
             try {
@@ -183,7 +221,8 @@ class WebViewService : LifecycleService() {
                         type = WindowManager.LayoutParams.TYPE_PHONE
                     }
                     @Suppress("DEPRECATION")
-                    flags = WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                    flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                            WindowManager.LayoutParams.FLAG_FULLSCREEN or
                             WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
                             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
                             WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or
@@ -261,22 +300,62 @@ class WebViewService : LifecycleService() {
                         }
                         addView(settingsButton, buttonParams)
                     }
+                    
+                    if (currentSettings.tampermonkeyEnabled) {
+                        val density = resources.displayMetrics.density
+                        val iconSize = (48 * density).toInt()
+                        val topMargin = (20 * density).toInt()
+                        val rightMargin = (12 * density).toInt()
+                        
+                        val tampermonkeyIcon = ImageButton(this@WebViewService).apply {
+                            setImageResource(com.example.ava.R.drawable.ic_tampermonkey)
+                            setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                            alpha = 0.5f
+                            scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
+                            isClickable = true
+                            isFocusable = true
+                            elevation = 10f
+                            setOnClickListener {
+                                showTampermonkeyDialog()
+                            }
+                        }
+                        val iconParams = FrameLayout.LayoutParams(iconSize, iconSize).apply {
+                            gravity = Gravity.TOP or Gravity.END
+                            setMargins(0, topMargin, rightMargin, 0)
+                        }
+                        addView(tampermonkeyIcon, iconParams)
+                    }
                 }
                 containerView = container
+                windowParams = params
                 windowManager?.addView(containerView, params)
                 loadUrl(url)
                 
+                WeatherOverlayService.bringToFrontStatic()
+                DreamClockService.bringToFrontStatic()
+                QuickEntityOverlayService.bringToFrontStatic()
+                
+                ScreensaverController.onUserInteraction()
+                
+                isCreating = false
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to show WebView", e)
+                isCreating = false
             }
         }
     }
+    
+    private var renderCrashCount = 0
+    private var lastRenderCrashTime = 0L
+    private val MAX_CRASH_COUNT = 3
+    private val CRASH_RESET_INTERVAL = 60_000L
     
     @SuppressLint("ClickableViewAccessibility", "SetJavaScriptEnabled")
     private fun setupWebView() {
         webView?.let { wv ->
             val settings = wv.settings
             
+            settings.cacheMode = android.webkit.WebSettings.LOAD_NO_CACHE
             
             settings.javaScriptEnabled = true
             settings.javaScriptCanOpenWindowsAutomatically = true
@@ -286,10 +365,19 @@ class WebViewService : LifecycleService() {
             settings.allowContentAccess = true
             settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             settings.mediaPlaybackRequiresUserGesture = false
-            settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
-            settings.userAgentString = settings.userAgentString + " AvaWebView"
             
+            val baseUA = settings.userAgentString
+            settings.userAgentString = when (currentSettings.userAgentMode) {
+                1 -> "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                2 -> "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_2_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15"
+                3 -> "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+                else -> "$baseUA AvaWebView"
+            }
             
+            if (currentSettings.tampermonkeyEnabled) {
+                gmApi = GmApi(this@WebViewService, wv, "ava_scripts")
+                wv.addJavascriptInterface(gmApi!!, GmApi.JS_BRIDGE_NAME)
+            }
             
             if (currentSettings.initialScale > 0) {
                 wv.setInitialScale(currentSettings.initialScale)
@@ -311,13 +399,28 @@ class WebViewService : LifecycleService() {
             }
             
             
-            settings.setSupportZoom(currentSettings.dragEnabled)
-            settings.builtInZoomControls = currentSettings.dragEnabled
-            settings.displayZoomControls = false 
+            settings.setSupportZoom(true)
+            settings.builtInZoomControls = true
+            settings.displayZoomControls = false
+            settings.useWideViewPort = true
+            settings.loadWithOverviewMode = true 
             
             wv.webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(view: WebView?, request: android.webkit.WebResourceRequest?): Boolean {
+                    val url = request?.url?.toString() ?: return false
+                    if (currentSettings.tampermonkeyEnabled && url.endsWith(".user.js")) {
+                        downloadAndInstallScript(url)
+                        return true
+                    }
+                    return false
+                }
+                
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
+                    hideLoadingDialog()
+                    if (currentSettings.tampermonkeyEnabled && url != null) {
+                        injectMatchingScripts(url)
+                    }
                 }
                 
                 override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
@@ -333,12 +436,41 @@ class WebViewService : LifecycleService() {
                     view: WebView?,
                     detail: android.webkit.RenderProcessGoneDetail?
                 ): Boolean {
-                    Log.e(TAG, "Renderer crashed, didCrash=${detail?.didCrash()}")
+                    val now = System.currentTimeMillis()
+                    val didCrash = detail?.didCrash() ?: false
+                    Log.e(TAG, "Renderer crashed, didCrash=$didCrash, crashCount=$renderCrashCount")
+                    
+
+                    if (now - lastRenderCrashTime > CRASH_RESET_INTERVAL) {
+                        renderCrashCount = 0
+                    }
+                    lastRenderCrashTime = now
+                    renderCrashCount++
+                    
+                    val lastUrl = webView?.url ?: originalUrl
                     webView?.let { wv ->
-                        (wv.parent as? ViewGroup)?.removeView(wv)
-                        wv.destroy()
+                        try {
+                            (wv.parent as? ViewGroup)?.removeView(wv)
+                            wv.destroy()
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error destroying crashed WebView", e)
+                        }
                     }
                     webView = null
+                    
+                    if (renderCrashCount >= MAX_CRASH_COUNT) {
+                        Log.e(TAG, "Too many crashes ($renderCrashCount), stopping WebView rebuild to protect system")
+                        lifecycleScope.launch {
+                            browserSettingsStore.enableBrowserVisible.set(false)
+                        }
+                        return true
+                    }
+                    
+                    if (lastUrl.isNotEmpty()) {
+                        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                            showWebView(lastUrl)
+                        }, 2000)
+                    }
                     return true
                 }
             }
@@ -364,6 +496,19 @@ class WebViewService : LifecycleService() {
             }
             wv.isFocusableInTouchMode = true
             wv.requestFocus()
+            
+            wv.setOnTouchListener { v, event ->
+                if (event.action == android.view.MotionEvent.ACTION_DOWN) {
+                    windowParams?.let { params ->
+                        if (params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE != 0) {
+                            params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+                            windowManager?.updateViewLayout(containerView, params)
+                        }
+                    }
+                    v.requestFocus()
+                }
+                false
+            }
         }
     }
     
@@ -384,25 +529,87 @@ class WebViewService : LifecycleService() {
         }
     }
     
-    private fun hideWebView() {
+    private fun showOrRefreshWebView(url: String) {
+        originalUrl = url
+        if (containerView == null) {
+            showWebView(url)
+        } else {
+            webView?.reload()
+            if (webView?.url != url) {
+                loadUrl(url)
+            }
+        }
+    }
+    
+    private fun cleanupWebView(caller: String) {
+        Log.d(TAG, "$caller called, containerView=$containerView, webView=$webView")
+        
         try {
             webView?.let { wv ->
-                wv.stopLoading()
-                wv.onPause()
-                wv.pauseTimers()
-                wv.loadUrl("about:blank")
-                (wv.parent as? ViewGroup)?.removeView(wv)
+                try {
+                    wv.stopLoading()
+                    wv.onPause()
+                    wv.pauseTimers()
+                    wv.loadUrl("about:blank")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error stopping WebView", e)
+                }
+                try {
+                    (wv.parent as? ViewGroup)?.removeView(wv)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error removing WebView from parent", e)
+                }
+                try {
+                    wv.destroy()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error destroying WebView", e)
+                }
             }
-            containerView?.let { container ->
-                windowManager?.removeView(container)
-            }
-            webView?.destroy()
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to hide WebView", e)
+            Log.e(TAG, "Error in WebView cleanup", e)
         }
+        
+        try {
+            containerView?.let { container ->
+                try {
+                    windowManager?.removeView(container)
+                    Log.d(TAG, "Container removed from WindowManager")
+                } catch (e: IllegalArgumentException) {
+                    Log.w(TAG, "Container not attached to WindowManager")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error removing container", e)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in container cleanup", e)
+        }
+        
+        lifecycleScope.launch {
+            try {
+                val settings = browserSettingsStore.get()
+                if (settings.enableBrowserDisplay && settings.enableBrowserVisible) {
+                    browserSettingsStore.enableBrowserVisible.set(false)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating settings", e)
+            }
+        }
+        
         containerView = null
         swipeRefreshLayout = null
         webView = null
+        isCreating = false
+    }
+    
+    private fun hideWebView() {
+        cleanupWebView("hideWebView")
+    }
+    
+    private fun destroyWebView() {
+        cleanupWebView("destroyWebView")
+        originalUrl = ""
+        pendingRestoreUrl = null
+        stopSelf()
     }
     
     
@@ -573,9 +780,515 @@ class WebViewService : LifecycleService() {
         }
     }
     
+    private fun showTampermonkeyDialog() {
+        tampermonkeyDialog?.dismiss()
+        
+        val density = resources.displayMetrics.density
+        val dialogView = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding((16 * density).toInt(), (12 * density).toInt(), (16 * density).toInt(), (12 * density).toInt())
+            setBackgroundColor(android.graphics.Color.parseColor("#222222"))
+        }
+        
+        val scripts = userScriptManager.getAllScripts()
+        val titleText = android.widget.TextView(this).apply {
+            text = if (scripts.isNotEmpty()) "Tampermonkey (${scripts.size})" else "Tampermonkey"
+            textSize = 14f
+            setTextColor(android.graphics.Color.WHITE)
+        }
+        dialogView.addView(titleText)
+        
+        val divider = View(this).apply {
+            setBackgroundColor(android.graphics.Color.parseColor("#333333"))
+            layoutParams = android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT, (1 * density).toInt()
+            ).apply { setMargins(0, (10 * density).toInt(), 0, (10 * density).toInt()) }
+        }
+        dialogView.addView(divider)
+        
+        val addScriptBtn = android.widget.TextView(this).apply {
+            text = getString(com.example.ava.R.string.tampermonkey_add_script)
+            textSize = 13f
+            setTextColor(android.graphics.Color.parseColor("#CCCCCC"))
+            setPadding(0, (10 * density).toInt(), 0, (10 * density).toInt())
+            setOnClickListener {
+                tampermonkeyDialog?.dismiss()
+                showAddScriptDialog()
+            }
+        }
+        dialogView.addView(addScriptBtn)
+        
+        val installBtn = android.widget.TextView(this).apply {
+            text = getString(com.example.ava.R.string.tampermonkey_install_script)
+            textSize = 13f
+            setTextColor(android.graphics.Color.parseColor("#CCCCCC"))
+            setPadding(0, (10 * density).toInt(), 0, (10 * density).toInt())
+            setOnClickListener {
+                tampermonkeyDialog?.dismiss()
+                showLoadingDialog()
+                webView?.loadUrl("https://greasyfork.org/")
+            }
+        }
+        dialogView.addView(installBtn)
+        
+        val manageBtn = android.widget.TextView(this).apply {
+            text = getString(com.example.ava.R.string.tampermonkey_manage_scripts)
+            textSize = 13f
+            setTextColor(android.graphics.Color.parseColor("#CCCCCC"))
+            setPadding(0, (10 * density).toInt(), 0, (10 * density).toInt())
+            setOnClickListener {
+                tampermonkeyDialog?.dismiss()
+                showScriptListDialog()
+            }
+        }
+        dialogView.addView(manageBtn)
+        
+        tampermonkeyDialog = android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+            .setView(dialogView)
+            .create()
+        
+        tampermonkeyDialog?.window?.setType(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) 
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY 
+            else 
+                @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
+        )
+        tampermonkeyDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        tampermonkeyDialog?.show()
+    }
+    
+    private var loadingDialog: android.app.AlertDialog? = null
+    
+    private fun showLoadingDialog() {
+        loadingDialog?.dismiss()
+        val density = resources.displayMetrics.density
+        
+        val dialogView = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.HORIZONTAL
+            setPadding((20 * density).toInt(), (16 * density).toInt(), (20 * density).toInt(), (16 * density).toInt())
+            setBackgroundColor(android.graphics.Color.parseColor("#222222"))
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        
+        val progressBar = android.widget.ProgressBar(this).apply {
+            isIndeterminate = true
+            layoutParams = android.widget.LinearLayout.LayoutParams((24 * density).toInt(), (24 * density).toInt())
+        }
+        dialogView.addView(progressBar)
+        
+        val loadingText = android.widget.TextView(this).apply {
+            text = getString(com.example.ava.R.string.tampermonkey_installing)
+            textSize = 13f
+            setTextColor(android.graphics.Color.WHITE)
+            setPadding((12 * density).toInt(), 0, 0, 0)
+        }
+        dialogView.addView(loadingText)
+        
+        loadingDialog = android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+        
+        loadingDialog?.window?.setType(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) 
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY 
+            else 
+                @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
+        )
+        loadingDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        loadingDialog?.show()
+    }
+    
+    private fun hideLoadingDialog() {
+        loadingDialog?.dismiss()
+        loadingDialog = null
+    }
+    
+    private fun downloadAndInstallScript(url: String) {
+        showLoadingDialog()
+        
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            var connection: java.net.HttpURLConnection? = null
+            try {
+                connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                connection.connectTimeout = 10000
+                connection.readTimeout = 10000
+                val scriptContent = connection.inputStream.bufferedReader().use { it.readText() }
+                
+                val script = UserScriptManager.parseUserScript(scriptContent)
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    hideLoadingDialog()
+                    if (script != null) {
+                        userScriptManager.saveScript(script)
+                        showScriptInstalledDialog(script.name)
+                    } else {
+                        showInstallFailedDialog()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to download script: $url", e)
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    hideLoadingDialog()
+                    showInstallFailedDialog()
+                }
+            } finally {
+                connection?.disconnect()
+            }
+        }
+    }
+    
+    private fun showInstallFailedDialog() {
+        val density = resources.displayMetrics.density
+        val dialogView = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding((20 * density).toInt(), (16 * density).toInt(), (20 * density).toInt(), (16 * density).toInt())
+            setBackgroundColor(android.graphics.Color.parseColor("#222222"))
+            gravity = Gravity.CENTER
+        }
+        
+        val msgText = android.widget.TextView(this).apply {
+            text = getString(com.example.ava.R.string.tampermonkey_install_failed)
+            textSize = 13f
+            setTextColor(android.graphics.Color.WHITE)
+        }
+        dialogView.addView(msgText)
+        
+        val dialog = android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+            .setView(dialogView)
+            .setPositiveButton("OK", null)
+            .create()
+        
+        dialog.window?.setType(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) 
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY 
+            else 
+                @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
+        )
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
+    }
+    
+    private fun showScriptInstalledDialog(scriptName: String) {
+        val dialog = android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+            .setTitle(getString(com.example.ava.R.string.tampermonkey_script_installed))
+            .setMessage(scriptName)
+            .setPositiveButton("OK", null)
+            .create()
+        
+        dialog.window?.setType(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) 
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY 
+            else 
+                @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
+        )
+        dialog.show()
+    }
+    
+    private fun injectMatchingScripts(url: String) {
+        webView?.evaluateJavascript(GmApiInjector.getGmApiScript()) { 
+            Log.d(TAG, "GM API injected")
+        }
+        
+        val scripts = userScriptManager.getMatchingScripts(url)
+        scripts.forEach { script ->
+            val metadataEndMarker = "==/UserScript=="
+            val metadataEnd = script.code.indexOf(metadataEndMarker)
+            if (metadataEnd < 0) return@forEach
+            
+            var codeStart = metadataEnd + metadataEndMarker.length
+            while (codeStart < script.code.length && script.code[codeStart] in listOf('\n', '\r', ' ', '\t')) {
+                codeStart++
+            }
+            val pureCode = script.code.substring(codeStart)
+            
+            if (pureCode.isBlank()) return@forEach
+            
+            val wrappedCode = """
+                (function() {
+                    'use strict';
+                    try {
+                        $pureCode
+                    } catch(e) {
+                        console.error('[Tampermonkey] Script error:', e);
+                    }
+                })();
+            """.trimIndent()
+            
+            webView?.evaluateJavascript(wrappedCode) { result ->
+                Log.d(TAG, "Injected script: ${script.name}")
+            }
+        }
+    }
+    
+    private fun showAddScriptDialog() {
+        val density = resources.displayMetrics.density
+        
+        val dialogView = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding((16 * density).toInt(), (12 * density).toInt(), (16 * density).toInt(), (12 * density).toInt())
+            setBackgroundColor(android.graphics.Color.parseColor("#222222"))
+        }
+        
+        val titleText = android.widget.TextView(this).apply {
+            text = getString(com.example.ava.R.string.tampermonkey_add_script)
+            textSize = 14f
+            setTextColor(android.graphics.Color.WHITE)
+            setPadding(0, 0, 0, (8 * density).toInt())
+        }
+        dialogView.addView(titleText)
+        
+        val descText = android.widget.TextView(this).apply {
+            text = getString(com.example.ava.R.string.tampermonkey_add_script_desc)
+            textSize = 11f
+            setTextColor(android.graphics.Color.parseColor("#888888"))
+            setPadding(0, 0, 0, (12 * density).toInt())
+        }
+        dialogView.addView(descText)
+        
+        val editText = android.widget.EditText(this).apply {
+            hint = "// ==UserScript==\n// @name  My Script\n// @match *://*/*\n// ==/UserScript==\n\nalert('Hello!');"
+            setHintTextColor(android.graphics.Color.parseColor("#555555"))
+            setTextColor(android.graphics.Color.WHITE)
+            setBackgroundColor(android.graphics.Color.parseColor("#1A1A1A"))
+            textSize = 11f
+            minLines = 8
+            maxLines = 12
+            gravity = Gravity.TOP or Gravity.START
+            setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        }
+        dialogView.addView(editText)
+        
+        val buttonRow = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.HORIZONTAL
+            gravity = Gravity.END
+            setPadding(0, (12 * density).toInt(), 0, 0)
+        }
+        
+        val cancelBtn = android.widget.TextView(this).apply {
+            text = getString(android.R.string.cancel)
+            textSize = 13f
+            setTextColor(android.graphics.Color.parseColor("#888888"))
+            setPadding((16 * density).toInt(), (8 * density).toInt(), (16 * density).toInt(), (8 * density).toInt())
+        }
+        buttonRow.addView(cancelBtn)
+        
+        val saveBtn = android.widget.TextView(this).apply {
+            text = getString(android.R.string.ok)
+            textSize = 13f
+            setTextColor(android.graphics.Color.WHITE)
+            setPadding((16 * density).toInt(), (8 * density).toInt(), (16 * density).toInt(), (8 * density).toInt())
+        }
+        buttonRow.addView(saveBtn)
+        dialogView.addView(buttonRow)
+        
+        val dialog = android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+            .setView(dialogView)
+            .create()
+        
+        cancelBtn.setOnClickListener { dialog.dismiss() }
+        saveBtn.setOnClickListener {
+            val code = editText.text.toString()
+            if (code.isNotBlank()) {
+                val script = UserScriptManager.parseUserScript(code)
+                if (script != null) {
+                    userScriptManager.saveScript(script)
+                    dialog.dismiss()
+                    showScriptInstalledDialog(script.name)
+                } else {
+                    val simpleScript = com.example.ava.utils.UserScript(
+                        id = System.currentTimeMillis().toString(),
+                        name = "Custom Script",
+                        namespace = "local",
+                        version = "1.0",
+                        description = "",
+                        matchPatterns = listOf("*"),
+                        code = "// ==UserScript==\n// @name Custom Script\n// @match *://*/*\n// ==/UserScript==\n\n$code",
+                        enabled = true
+                    )
+                    userScriptManager.saveScript(simpleScript)
+                    dialog.dismiss()
+                    showScriptInstalledDialog("Custom Script")
+                }
+            }
+        }
+        
+        dialog.window?.setType(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) 
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY 
+            else 
+                @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
+        )
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
+    }
+    
+    private fun showScriptListDialog() {
+        scriptListDialog?.dismiss()
+        
+        val density = resources.displayMetrics.density
+        val scripts = userScriptManager.getAllScripts()
+        
+        val dialogView = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding((16 * density).toInt(), (12 * density).toInt(), (16 * density).toInt(), (12 * density).toInt())
+            setBackgroundColor(android.graphics.Color.parseColor("#222222"))
+        }
+        
+        val titleText = android.widget.TextView(this).apply {
+            text = getString(com.example.ava.R.string.tampermonkey_manage_scripts)
+            textSize = 14f
+            setTextColor(android.graphics.Color.WHITE)
+            setPadding(0, 0, 0, (8 * density).toInt())
+        }
+        dialogView.addView(titleText)
+        
+        val divider = View(this).apply {
+            setBackgroundColor(android.graphics.Color.parseColor("#333333"))
+            layoutParams = android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT, (1 * density).toInt()
+            ).apply { setMargins(0, 0, 0, (8 * density).toInt()) }
+        }
+        dialogView.addView(divider)
+        
+        if (scripts.isEmpty()) {
+            val emptyText = android.widget.TextView(this).apply {
+                text = getString(com.example.ava.R.string.tampermonkey_no_scripts)
+                textSize = 12f
+                setTextColor(android.graphics.Color.parseColor("#666666"))
+                setPadding(0, (12 * density).toInt(), 0, (12 * density).toInt())
+            }
+            dialogView.addView(emptyText)
+        } else {
+            val scrollView = android.widget.ScrollView(this).apply {
+                layoutParams = android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { 
+                    height = minOf((200 * density).toInt(), (scripts.size * 48 * density).toInt())
+                }
+            }
+            val listContainer = android.widget.LinearLayout(this).apply {
+                orientation = android.widget.LinearLayout.VERTICAL
+            }
+            
+            scripts.forEach { script ->
+                val itemView = android.widget.LinearLayout(this).apply {
+                    orientation = android.widget.LinearLayout.HORIZONTAL
+                    setPadding(0, (6 * density).toInt(), 0, (6 * density).toInt())
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+                
+                val statusDot = android.widget.TextView(this).apply {
+                    text = if (script.enabled) "●" else "○"
+                    textSize = 10f
+                    setTextColor(if (script.enabled) android.graphics.Color.parseColor("#4CAF50") else android.graphics.Color.parseColor("#555555"))
+                    setPadding(0, 0, (6 * density).toInt(), 0)
+                    setOnClickListener {
+                        userScriptManager.toggleScript(script.id, !script.enabled)
+                        showScriptListDialog()
+                    }
+                }
+                itemView.addView(statusDot)
+                
+                val nameText = android.widget.TextView(this).apply {
+                    text = script.name
+                    textSize = 12f
+                    setTextColor(if (script.enabled) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#666666"))
+                    maxLines = 1
+                    ellipsize = android.text.TextUtils.TruncateAt.END
+                    layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                        setMargins(0, 0, (16 * density).toInt(), 0)
+                    }
+                    setOnClickListener {
+                        userScriptManager.toggleScript(script.id, !script.enabled)
+                        showScriptListDialog()
+                    }
+                }
+                itemView.addView(nameText)
+                
+                val deleteBtn = android.widget.TextView(this).apply {
+                    text = "✕"
+                    textSize = 12f
+                    setTextColor(android.graphics.Color.parseColor("#555555"))
+                    setPadding((10 * density).toInt(), (4 * density).toInt(), 0, (4 * density).toInt())
+                    setOnClickListener {
+                        userScriptManager.deleteScript(script.id)
+                        showScriptListDialog()
+                    }
+                }
+                itemView.addView(deleteBtn)
+                
+                listContainer.addView(itemView)
+            }
+            scrollView.addView(listContainer)
+            dialogView.addView(scrollView)
+        }
+        
+        val closeBtn = android.widget.TextView(this).apply {
+            text = "OK"
+            textSize = 13f
+            setTextColor(android.graphics.Color.WHITE)
+            gravity = Gravity.CENTER
+            setPadding(0, (10 * density).toInt(), 0, (4 * density).toInt())
+        }
+        dialogView.addView(closeBtn)
+        
+        scriptListDialog = android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+            .setView(dialogView)
+            .create()
+        
+        closeBtn.setOnClickListener { scriptListDialog?.dismiss() }
+        
+        scriptListDialog?.window?.setType(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) 
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY 
+            else 
+                @Suppress("DEPRECATION") WindowManager.LayoutParams.TYPE_PHONE
+        )
+        scriptListDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        scriptListDialog?.show()
+    }
+    
     override fun onDestroy() {
         super.onDestroy()
-        hideWebView()
+        
+
+        try {
+            tampermonkeyDialog?.dismiss()
+            tampermonkeyDialog = null
+        } catch (e: Exception) {
+            Log.w(TAG, "Error dismissing tampermonkeyDialog", e)
+        }
+        
+        try {
+            scriptListDialog?.dismiss()
+            scriptListDialog = null
+        } catch (e: Exception) {
+            Log.w(TAG, "Error dismissing scriptListDialog", e)
+        }
+        
+        try {
+            loadingDialog?.dismiss()
+            loadingDialog = null
+        } catch (e: Exception) {
+            Log.w(TAG, "Error dismissing loadingDialog", e)
+        }
+        
+
+        try {
+            hideWebView()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in hideWebView during onDestroy", e)
+        }
+        
+
+        try {
+            gmApi?.destroy()
+        } catch (e: Exception) {
+            Log.w(TAG, "Error destroying gmApi", e)
+        }
+        gmApi = null
         instance = null
     }
     

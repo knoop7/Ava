@@ -11,7 +11,8 @@ private const val BYTES_PER_SAMPLE = 2
 private const val BYTES_PER_CHUNK = SAMPLES_PER_CHUNK * BYTES_PER_SAMPLE
 private const val SECONDS_PER_CHUNK = SAMPLES_PER_CHUNK / SAMPLES_PER_SECOND
 private const val STRIDE = 3
-private const val DEFAULT_REFRACTORY = 2  
+private const val DEFAULT_REFRACTORY_SECONDS = 0.3f
+private const val CHUNKS_PER_SECOND = SAMPLES_PER_SECOND.toFloat() / SAMPLES_PER_CHUNK
 
 class MicroWakeWord(
     val id: String,
@@ -26,6 +27,8 @@ class MicroWakeWord(
     private var outputScale: Float = 0f
     private var outputZeroPoint: Int = 0
     private val probabilities = ArrayDeque<Float>(slidingWindowSize)
+    private var refractoryCounter = 0
+    private val refractoryChunks = (DEFAULT_REFRACTORY_SECONDS * CHUNKS_PER_SECOND).toInt()
 
     private fun initializeIfNeeded() {
         if (!isInitialized) {
@@ -93,14 +96,26 @@ class MicroWakeWord(
     }
 
     private fun isWakeWordDetected(probability: Float): Boolean {
+        if (refractoryCounter > 0) {
+            refractoryCounter--
+            return false
+        }
+        
         if (probabilities.size == slidingWindowSize)
             probabilities.removeFirst()
         probabilities.add(probability)
-        return probabilities.size == slidingWindowSize && probabilities.average() > probabilityCutoff
+        
+        val detected = probabilities.size == slidingWindowSize && probabilities.average() > probabilityCutoff
+        if (detected) {
+            probabilities.clear()
+            refractoryCounter = refractoryChunks
+        }
+        return detected
     }
 
     fun reset() {
         probabilities.clear()
+        refractoryCounter = 0
     }
 
     override fun close() {

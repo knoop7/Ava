@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==================== App Basics ==================== -->
+    <string name="app_name">Trợ lý giọng nói Ava</string>
+    <string name="service_name">Dịch vụ vệ tinh giọng nói</string>
+    <string name="screensaver_image">Ảnh trình bảo vệ màn hình</string>
+    <string name="label_ok">Đồng ý</string>
+    <string name="label_cancel">Hủy</string>
+    <string name="label_settings">Cài đặt</string>
+    <string name="back">Quay lại</string>
+    <string name="more_options">Tùy chọn khác</string>
+    <string name="connecting_service">Đang tạo...</string>
+    <string name="copied_to_clipboard">Đã sao chép vào clipboard</string>
+
+    <string name="settings_coming_soon">Sắp có</string>
+    
+    <!-- ==================== Service Status ==================== -->
+    <string name="label_start_service">Khởi động dịch vụ</string>
+    <string name="label_stop_service">Dừng dịch vụ</string>
+    <string name="satellite_state_stopped">Đã dừng</string>
+    <string name="satellite_state_disconnected">Đã ngắt kết nối</string>
+    <string name="satellite_state_idle">Nhàn rỗi</string>
+    <string name="satellite_state_listening">Đang lắng nghe</string>
+    <string name="satellite_state_processing">Đang xử lý</string>
+    <string name="satellite_state_responding">Đang phản hồi</string>
+    <string name="satellite_state_server_error">Lỗi máy chủ: %1$s</string>
+    <string name="status_connected">Đã kết nối</string>
+    <string name="status_stopped">Đã dừng</string>
+    <string name="status_disconnected">Đã ngắt kết nối</string>
+    <string name="status_error">Lỗi</string>
+    <string name="status_working">Đang hoạt động</string>
+    
+    <!-- ==================== Voice Satellite Config ==================== -->
+    <string name="label_voice_satellite_name">Tên thiết bị</string>
+    <string name="label_voice_satellite_port">Cổng dịch vụ</string>
+    <string name="label_voice_satellite_wake_word">Từ đánh thức 1</string>
+    <string name="label_voice_satellite_wake_word_2">Từ đánh thức 2</string>
+    <string name="label_voice_satellite_wake_word_2_none">Không</string>
+    <string name="label_voice_satellite_enable_wake_sound">Âm báo đánh thức</string>
+    <string name="description_voice_satellite_play_wake_sound">Phát âm khi phát hiện từ đánh thức</string>
+    <string name="validation_voice_satellite_name_empty">Tên không được để trống</string>
+    <string name="validation_voice_satellite_port_invalid">Cổng phải từ 1 đến 65535</string>
+    <string name="validation_voice_satellite_wake_word_invalid">Không tìm thấy từ đánh thức</string>
+    <string name="validation_range">Vui lòng nhập giá trị từ %1$d đến %2$d</string>
+    
+    <!-- ==================== Home Assistant Entities ==================== -->
+    <string name="entity_media_player">Trình phát phương tiện</string>
+    <string name="entity_mute_microphone">Tắt mic</string>
+    <string name="entity_wake_sound">Âm báo đánh thức</string>
+    <string name="entity_screen_toggle">Bật/tắt màn hình</string>
+    <string name="entity_screensaver_enable">Trình bảo vệ màn hình</string>
+    <string name="entity_screensaver_display">Hiển thị trình bảo vệ</string>
+    <string name="entity_screensaver_url">URL trình bảo vệ</string>
+    <string name="entity_ha_remote_url">URL trình duyệt từ xa</string>
+    <string name="entity_restart_service">Khởi động lại dịch vụ</string>
+    <string name="entity_manual_wake">Đánh thức thủ công</string>
+    <string name="entity_voice_command">Lệnh giọng nói</string>
+    <string name="entity_assistant_response">Phản hồi trợ lý</string>
+    <string name="pipeline_error_no_speech">Không phát hiện giọng nói</string>
+    <string name="pipeline_error_config">Lỗi giọng nói, kiểm tra config</string>
+    <string name="pipeline_error_cloud_auth">Vấn đề xác thực, đăng nhập lại</string>
+    <string name="pipeline_error_wake">Tín hiệu bất thường, thử lại</string>
+    <string name="pipeline_error_unknown">Mạng dao động, kiểm tra</string>
+    <string name="pipeline_error_ha_disconnected">Máy chủ offline, kiểm tra mạng</string>
+    <string name="pipeline_error_ha_start_failed">Vấn đề khởi tạo, kiểm tra config</string>
+    <string name="pipeline_error_no_response">Không phản hồi, kiểm tra STT/TTS</string>
+    <string name="entity_notification_scene">Cảnh thông báo</string>
+    <string name="entity_scene_display_duration">Thời lượng hiển thị cảnh</string>
+    <string name="entity_weather_display">Hiển thị thời tiết</string>
+    <string name="entity_dream_clock_display">Đồng hồ Dream</string>
+    <string name="entity_browser_display">Hiển thị trình duyệt</string>
+    <string name="entity_custom_scene_url">URL cảnh tùy chỉnh</string>
+    <string name="entity_take_snapshot">Chụp ảnh</string>
+    <string name="entity_camera_snapshot">Ảnh chụp thiết bị</string>
+    <string name="entity_video_recording">Bắt đầu ghi</string>
+    <string name="entity_camera_video">Ghi hình thiết bị</string>
+    <string name="entity_person_detected">Phát hiện khuôn mặt</string>
+    <string name="entity_male_count">Số nam</string>
+    <string name="entity_female_count">Số nữ</string>
+    <string name="entity_bluetooth_scan_mode">Chế độ quét Bluetooth Proxy</string>
+    <string name="entity_light_sensor">Cảm biến ánh sáng</string>
+    <string name="entity_magnetic_sensor">Cảm biến từ trường</string>
+    <string name="entity_proximity_sensor">Cảm biến tiệm cận</string>
+    <string name="entity_screen_brightness">Độ sáng màn hình</string>
+    <string name="entity_battery_level">Mức pin</string>
+    <string name="entity_battery_voltage">Điện áp pin</string>
+    <string name="entity_charging_status">Trạng thái sạc</string>
+    <string name="entity_microphone_volume">Âm lượng mic</string>
+    <string name="entity_wifi_signal">Cường độ WiFi</string>
+    <string name="entity_device_ip">Địa chỉ IP thiết bị</string>
+    <string name="entity_storage_free">Dung lượng trống</string>
+    <string name="entity_memory_usage">Bộ nhớ đã dùng</string>
+    <string name="entity_device_uptime">Thời gian hoạt động</string>
+    <string name="entity_kill_app">Đóng ứng dụng</string>
+    <string name="entity_reboot_device">Khởi động lại thiết bị</string>
+    <string name="entity_intent_launcher_status">Trạng thái Intent Launcher</string>
+    <string name="entity_bluetooth_rssi_threshold">Ngưỡng RSSI Bluetooth</string>
+    <string name="entity_bluetooth_away_delay">Độ trễ rời xa Bluetooth</string>
+    
+    <!-- ==================== Bluetooth ==================== -->
+    <string name="bluetooth_scan_mode_active">Quét chủ động</string>
+    <string name="bluetooth_scan_mode_passive">Quét thụ động</string>
+    <string name="bluetooth_device_presence">%s hiện diện</string>
+    <string name="entity_bluetooth_scan_power">Công suất quét Bluetooth</string>
+    <string name="bluetooth_scan_power_high">Hiệu suất cao</string>
+    <string name="bluetooth_scan_power_balanced">Cân bằng</string>
+    <string name="bluetooth_scan_power_low">Tiết kiệm năng lượng</string>
+    
+    <!-- ==================== Settings Groups ==================== -->
+    <string name="section_core_connection">Kết nối lõi</string>
+    <string name="section_interaction_visual">Tương tác &amp; Hiển thị</string>
+    <string name="section_local_service">Dịch vụ cục bộ</string>
+    <string name="settings_group_connection">Cấu hình ESPHome</string>
+    <string name="settings_group_connection_en">Giọng nói</string>
+    <string name="settings_group_connection_desc">Từ đánh thức · Tên · Cổng</string>
+    <string name="settings_group_interaction">Hiển thị</string>
+    <string name="settings_group_interaction_en">Tương tác</string>
+    <string name="settings_group_interaction_desc">Hội thoại · Nổi · Đồng hồ</string>
+    <string name="settings_group_experimental">Nâng cao</string>
+    <string name="settings_group_experimental_en">Pro</string>
+    <string name="settings_group_experimental_desc">Camera · Ghi · Intent</string>
+    <string name="settings_group_service">Dịch vụ thiết bị</string>
+    <string name="settings_group_service_en">Trạng thái</string>
+    <string name="settings_group_service_desc">Cảm biến · Màn hình · Xoay</string>
+    <string name="settings_group_browser">Trình duyệt web</string>
+    <string name="settings_group_browser_en">Kiosk</string>
+    <string name="settings_group_browser_desc">Thu phóng · Chạm · Kết xuất</string>
+    <string name="settings_group_bluetooth">Bluetooth</string>
+    <string name="settings_group_bluetooth_en">Proxy</string>
+    <string name="settings_group_bluetooth_desc">Beacon · Phát hiện · Thông báo</string>
+    <string name="settings_group_screensaver">Trình bảo vệ màn hình</string>
+    <string name="settings_group_screensaver_en">Trực tuyến</string>
+    <string name="settings_group_screensaver_desc">URL rảnh · Độ sáng · Chuyển động</string>
+    <string name="settings_group_root">Quyền</string>
+    <string name="settings_group_root_en">Nâng quyền</string>
+    <string name="settings_group_root_desc">Tương thích · Đồng bộ · Nâng quyền</string>
+    <string name="settings_category_service">Cài đặt dịch vụ</string>
+    <string name="settings_category_display">Cài đặt hiển thị</string>
+    <string name="settings_category_weather">Cài đặt thời tiết</string>
+    
+    <!-- ==================== Notification & Sound ==================== -->
+    <string name="notification_sound">Âm báo thông báo</string>
+    <string name="notification_sound_desc">Phát âm khi cảnh thông báo bật lên</string>
+    <string name="select_sound">Chọn âm</string>
+    <string name="select_external_audio">+ Chọn âm thanh ngoài</string>
+    <string name="sound_none">Không</string>
+    <string name="sound_unknown">Không rõ</string>
+    <string name="wake_sound_select">Chọn âm đánh thức</string>
+    <string name="wake_sound_default">Âm mặc định</string>
+    <string name="wake_sound_1">Âm từ đánh thức 1</string>
+    <string name="wake_sound_2">Âm từ đánh thức 2</string>
+    <string name="wake_sound_select_prefix">Chọn: </string>
+    <string name="sound_select_external">+ Chọn âm thanh ngoài</string>
+    
+    <!-- ==================== Custom Scene ==================== -->
+    <string name="custom_scene_config">Cấu hình cảnh tùy chỉnh</string>
+    <string name="custom_scene_desc">Tải cấu hình cảnh thông báo từ tệp JSON từ xa.</string>
+    <string name="custom_scene_json_format">Yêu cầu định dạng JSON:</string>
+    <string name="custom_scene_json_requirements">• Phải là mảng JSON hợp lệ hoặc đối tượng có khóa "scenes"\n• Mỗi cảnh cần tiêu đề, biểu tượng, màu\n• Hỗ trợ biểu tượng FontAwesome</string>
+    <string name="custom_scene_example_hint">Nhấn "Dùng ví dụ" để tự điền URL cấu hình mẫu.</string>
+    <string name="custom_scene_use_example">Dùng ví dụ</string>
+    <string name="custom_scene_i_know">Đã hiểu</string>
+    <string name="settings_scene_display_duration">Thời lượng hiển thị cảnh</string>
+    <string name="settings_scene_display_duration_desc">Thời gian hiển thị cảnh (giây)</string>
+    <string name="settings_custom_scene_url">JSON cảnh tùy chỉnh</string>
+    <string name="settings_custom_scene_not_configured">Chưa cấu hình</string>
+    <string name="settings_custom_scene_count">Đã cấu hình %1$d</string>
+    <string name="settings_custom_scene_loaded">Đã tải %1$d cảnh</string>
+    <string name="settings_custom_scene_loading">Đang tải...</string>
+    <string name="settings_custom_scene_url_placeholder">Nhập URL JSON</string>
+    <string name="error_json_empty">Nội dung trống</string>
+    <string name="error_json_not_array">Lỗi định dạng: không phải mảng JSON</string>
+    <string name="error_json_no_scenes">Không tìm thấy định nghĩa cảnh</string>
+    <string name="error_json_parse_failed">Phân tích thất bại: %1$s</string>
+    
+    <!-- ==================== Screen Control ==================== -->
+    <string name="screen_toggle_on_success">Bật màn hình thành công (%1$s)</string>
+    <string name="screen_toggle_off_success">Tắt màn hình thành công (%1$s)</string>
+    <string name="screen_toggle_failed">Điều khiển màn hình thất bại, kiểm tra Root hoặc Shizuku</string>
+    <string name="settings_keep_screen_on">Giữ màn hình sáng</string>
+    <string name="settings_keep_screen_on_desc">Ngăn màn hình tối</string>
+    <string name="settings_screen_brightness">Độ sáng màn hình</string>
+    <string name="settings_screen_brightness_desc">Đồng bộ độ sáng hai chiều</string>
+    <string name="settings_force_orientation">Ép hướng màn hình</string>
+    <string name="settings_force_orientation_desc">Khóa hướng màn hình</string>
+    <string name="settings_force_orientation_mode">Chế độ xoay</string>
+    <string name="settings_orientation_portrait">Dọc</string>
+    <string name="settings_orientation_landscape">Ngang</string>
+    <string name="settings_orientation_auto">Theo hệ thống</string>
+    <string name="settings_display_size">Độ phân giải hiển thị</string>
+    <string name="settings_display_size_desc">Điều chỉnh độ phân giải (cần ADB)</string>
+    <string name="settings_display_scale">Tỉ lệ hiển thị</string>
+    <string name="settings_display_scale_desc">Giá trị nhỏ hiển thị nhiều hơn</string>
+    <string name="settings_display_size_error">Thất bại, cấp quyền WRITE_SECURE_SETTINGS</string>
+    <string name="settings_auto_unlock">Tự mở khóa vuốt</string>
+    <string name="settings_auto_unlock_desc">Tự mở khóa dạng vuốt (thử nghiệm)</string>
+    
+    <!-- ==================== Floating Window & Conversation ==================== -->
+    <string name="floating_ai_reply">Phản hồi AI:</string>
+    <string name="settings_floating_window">Phụ đề nổi</string>
+    <string name="settings_floating_window_desc">Hiển thị nội dung hội thoại giọng nói</string>
+    <string name="settings_continuous_conversation">Hội thoại liên tục</string>
+    <string name="settings_continuous_conversation_desc">Tự lắng nghe sau khi TTS kết thúc</string>
+    <string name="settings_overlay_permission_required">Cần quyền hiển thị lớp phủ</string>
+    <string name="settings_write_settings_permission_required">Cần quyền sửa cài đặt hệ thống</string>
+    <string name="settings_device_not_supported">Thiết bị không hỗ trợ tính năng này</string>
+    
+    <!-- ==================== Album Display ==================== -->
+    <string name="settings_vinyl_cover">Hiển thị album</string>
+    <string name="settings_vinyl_cover_desc">Hiển thị toàn màn hình khi phát album</string>
+    <string name="settings_ha_media_player">Trình phát phương tiện Home Assistant</string>
+    <string name="settings_ha_media_player_desc">Dành cho thông tin trình phát</string>
+    <string name="settings_ha_media_player_dialog_desc">ID thực thể trình phát để hiển thị bìa album, ví dụ media_player.xxx. Lưu ý: Chỉ bật khi hiển thị album được bật và đã cấu hình thực thể trình phát Home Assistant</string>
+    <string name="vinyl_cover_hiding">Đang ẩn vùng lời bài hát</string>
+    
+    <!-- ==================== Display Settings ==================== -->
+    <string name="settings_hide_header">Ẩn tiêu đề</string>
+    <string name="settings_hide_header_desc">Ẩn tiêu đề và phụ đề Ava</string>
+    <string name="settings_dark_mode">Chế độ tối</string>
+    <string name="settings_dark_mode_desc">Chuyển giao diện ngày/đêm</string>
+    
+    <!-- ==================== Dream Clock ==================== -->
+    <string name="settings_dream_clock">Đồng hồ Dream</string>
+    <string name="settings_dream_clock_desc">Hiển thị cửa sổ đồng hồ kim nổi</string>
+    <string name="settings_dream_clock_ha_switch">Điều khiển trong Home Assistant</string>
+    <string name="settings_dream_clock_ha_switch_desc">Điều khiển hiển thị/ẩn từ xa</string>
+    
+    <!-- ==================== Light Switch Button Overlay ==================== -->
+    <string name="settings_ha_switch_overlay">Lớp phủ nút đèn</string>
+    <string name="settings_ha_switch_overlay_desc">Hiển thị nhắc nhở đẹp khi bạn điều khiển đèn bằng giọng nói</string>
+    
+    <!-- ==================== Tampermonkey ==================== -->
+    <string name="settings_browser_tampermonkey">Tampermonkey</string>
+    <string name="settings_browser_tampermonkey_desc">Bật hỗ trợ userscript trong trình duyệt</string>
+    <string name="tampermonkey_install_script">Script bên ngoài</string>
+    <string name="tampermonkey_add_script">Thêm script</string>
+    <string name="tampermonkey_add_script_desc">Trình quản lý userscript nhẹ dựa trên dự án Android-WebMonkey. Cảm ơn warren-bank vì đóng góp mã nguồn mở.\n\nCó thể: GM_getValue/setValue, GM_addStyle, GM_xmlhttpRequest, GM_cookie, GM_notification etc\n\nKhông thể: GM_download, GM_webRequest, unsafeWindow\n\nDự án: github.com/warren-bank/Android-WebMonkey</string>
+    <string name="tampermonkey_manage_scripts">Quản lý script</string>
+    <string name="tampermonkey_scripts_installed">script đã cài</string>
+    <string name="tampermonkey_no_scripts">Chưa cài script</string>
+    <string name="tampermonkey_script_installed">Đã cài script</string>
+    <string name="tampermonkey_install_failed">Cài script thất bại</string>
+    <string name="tampermonkey_installing">Đang mở trang script...</string>
+    
+    <!-- ==================== User-Agent ==================== -->
+    <string name="settings_browser_useragent">Danh tính trình duyệt</string>
+    <string name="settings_browser_useragent_desc">Chuyển danh tính trình duyệt để truy cập phiên bản website khác</string>
+    <string name="useragent_default">Mặc định (Android)</string>
+    <string name="useragent_desktop">Máy tính (Windows)</string>
+    <string name="useragent_macos">macOS (Safari)</string>
+    <string name="useragent_ios">iOS (iPhone)</string>
+    
+    <!-- ==================== Weather Display ==================== -->
+    <string name="weather_city">Thành phố thời tiết</string>
+    <string name="settings_weather_overlay">Hiển thị thời tiết</string>
+    <string name="settings_weather_overlay_desc">Hiển thị giao diện thời tiết sống động</string>
+    <string name="settings_weather_overlay_realtime_desc">Hiển thị thông tin thời tiết thời gian thực</string>
+    <string name="settings_weather_overlay_ha_switch">Điều khiển trong Home Assistant</string>
+    <string name="settings_weather_overlay_ha_switch_desc">Điều khiển hiển thị/ẩn từ xa</string>
+    <string name="settings_ha_weather_entity">Thực thể thời tiết</string>
+    <string name="settings_ha_weather_entity_short_desc">Dùng cho thông tin thời tiết</string>
+    <string name="settings_ha_weather_entity_desc">ID thực thể thời tiết Home Assistant, ví dụ weather.home</string>
+    <string name="weather_humidity">Độ ẩm</string>
+    <string name="weather_air">Không khí</string>
+    <string name="weather_pressure">Áp suất</string>
+    <string name="weather_wind_speed">Gió</string>
+    <string name="weather_wind_direction">Hướng</string>
+    <string name="weather_sunny">Nắng</string>
+    <string name="weather_clear_night">Đêm quang</string>
+    <string name="weather_partly_cloudy">Ít mây</string>
+    <string name="weather_cloudy">Nhiều mây</string>
+    <string name="weather_light_rain">Mưa nhẹ</string>
+    <string name="weather_rainy">Mưa</string>
+    <string name="weather_heavy_rain">Mưa lớn</string>
+    <string name="weather_light_snow">Tuyết nhẹ</string>
+    <string name="weather_snowy">Có tuyết</string>
+    <string name="weather_heavy_snow">Tuyết dày</string>
+    <string name="weather_fog">Sương mù</string>
+    <string name="weather_haze">Mù mịt</string>
+    <string name="weather_wind">Gió mạnh</string>
+    <string name="weather_sandstorm">Bão cát</string>
+    <string name="weather_wind_n">N</string>
+    <string name="weather_wind_ne">NE</string>
+    <string name="weather_wind_e">E</string>
+    <string name="weather_wind_se">SE</string>
+    <string name="weather_wind_s">S</string>
+    <string name="weather_wind_sw">SW</string>
+    <string name="weather_wind_w">W</string>
+    <string name="weather_wind_nw">NW</string>
+    
+    <!-- ==================== Screensaver Settings ==================== -->
+    <string name="settings_screensaver_url">URL trình bảo vệ màn hình</string>
+    <string name="settings_screensaver_url_desc">URL trang web trình bảo vệ tùy chỉnh</string>
+    <string name="settings_screensaver_url_hint">Để dùng Home Assistant làm trình bảo vệ màn hình, trước tiên bật Hiển thị trình duyệt, nhập URL HA của bạn vào URL trình duyệt từ xa và đăng nhập để đồng bộ cookie, sau đó trình bảo vệ màn hình có thể tự đăng nhập vào bảng điều khiển HA.</string>
+    <string name="settings_screensaver_url_visible">Hiển thị URL trình bảo vệ</string>
+    <string name="settings_screensaver_url_visible_desc">Hiển thị thực thể URL trong Home Assistant</string>
+    <string name="settings_screensaver_ha_display">Hiển thị trong Home Assistant</string>
+    <string name="settings_screensaver_ha_display_desc">Hiển thị điều khiển trình bảo vệ trong Home Assistant</string>
+    <string name="settings_xiaomi_wallpaper">Kiểu hình nền Xiaomi</string>
+    <string name="settings_xiaomi_wallpaper_desc">Dùng hình nền ngẫu nhiên</string>
+    <string name="settings_screensaver_enable">Bật trình bảo vệ màn hình</string>
+    <string name="settings_screensaver_enable_desc">Hiển thị trình bảo vệ sau thời gian rảnh</string>
+    <string name="settings_screensaver_timeout">Thời gian chờ hiển thị</string>
+    <string name="settings_screensaver_timeout_desc">Thời gian rảnh trước khi bật (giây)</string>
+    <string name="settings_screensaver_dark_off">Tắt khi tối</string>
+    <string name="settings_screensaver_dark_off_desc">Tắt màn hình khi tối</string>
+    <string name="settings_screensaver_background_pause">Tạm dừng nền</string>
+    <string name="settings_screensaver_background_pause_desc">Tạm dừng khi ứng dụng khác ở tiền cảnh</string>
+    <string name="settings_screensaver_motion_on">Đánh thức bằng tiệm cận</string>
+    <string name="settings_screensaver_motion_on_desc">Bật màn hình khi phát hiện tiệm cận</string>
+    <!-- ==================== Browser Settings ==================== -->
+    <string name="settings_browser_pull_refresh">Kéo để làm mới</string>
+    <string name="settings_browser_pull_refresh_desc">Kéo xuống để làm mới trang</string>
+    <string name="settings_browser_initial_scale">Tỉ lệ trang</string>
+    <string name="settings_browser_initial_scale_desc">Thu phóng ban đầu, 0 để tự fit</string>
+    <string name="settings_browser_font_size">Cỡ chữ</string>
+    <string name="settings_browser_font_size_desc">Kích thước chữ, 100 là bình thường</string>
+    <string name="settings_browser_settings_button">Nút cài đặt</string>
+    <string name="settings_browser_settings_button_desc">Hiển thị biểu tượng bánh răng góc dưới phải</string>
+    <string name="settings_browser_search_engine">Công cụ tìm kiếm</string>
+    <string name="settings_browser_touch">Bật chạm</string>
+    <string name="settings_browser_touch_desc">Cho phép chạm nút và liên kết</string>
+    <string name="settings_browser_drag">Bật kéo</string>
+    <string name="settings_browser_drag_desc">Cho phép cuộn và kéo</string>
+    <string name="settings_browser_render_mode">Chế độ kết xuất</string>
+    <string name="settings_browser_render_mode_desc">Chuyển nếu trang hiển thị sai</string>
+    <string name="settings_browser_render_hardware">Phần cứng</string>
+    <string name="settings_browser_render_software">Phần mềm</string>
+    <string name="render_hardware">Phần cứng</string>
+    <string name="render_software">Phần mềm</string>
+    <string name="settings_browser_ha_remote_url">Điều khiển web từ xa</string>
+    <string name="settings_browser_ha_remote_url_desc">Cho phép mở trang web từ xa qua Home Assistant. Khi bật, một thực thể sẽ xuất hiện trong tích hợp. Nhập URL để hiển thị, xóa để ẩn</string>
+    <string name="settings_browser_ha_display_switch">Điều khiển trong Home Assistant</string>
+    <string name="settings_browser_ha_display_switch_desc">Hiển thị công tắc trong Home Assistant để điều khiển hiển thị/ẩn trình duyệt từ xa</string>
+    <string name="settings_browser_advanced_control">Điều khiển từ xa Home Assistant</string>
+    <string name="settings_browser_advanced_control_desc">Điều khiển trình duyệt qua Home Assistant</string>
+    <string name="settings_browser_back_key_hide">Ẩn bằng phím Back</string>
+    <string name="settings_browser_back_key_hide_desc">Ẩn cửa sổ trình duyệt nổi khi bấm Back</string>
+    <string name="settings_browser_clear_cache">Xóa bộ nhớ đệm trình duyệt</string>
+    <string name="settings_browser_clear_cache_desc">Xóa cache, cookie và lịch sử</string>
+    <string name="settings_browser_cache_cleared">Đã xóa bộ nhớ đệm trình duyệt</string>
+    <string name="advanced_control_help_title">Dịch vụ lệnh trình duyệt</string>
+    <string name="advanced_control_help_desc">Điều khiển trình duyệt từ xa qua Home Assistant. Hỗ trợ chạy JS, độ sáng, âm lượng, v.v.</string>
+    <string name="advanced_control_call_title">Cách gọi</string>
+    <string name="advanced_control_call_content">action: esphome.xxx_webview_command\ndata:\n  command: \'your command\'</string>
+    <string name="advanced_control_commands_title">Lệnh thường dùng</string>
+    <string name="advanced_control_commands_content">Execute JS: {"eval": "code"}\nRefresh: {"reload": true}\nClear cache: {"clearCache": true}\nBrightness(0-255): {"brightness": 128}\nVolume(0-100): {"volume": 50}</string>
+    <string name="advanced_control_copy">Sao chép vào clipboard</string>
+    <string name="advanced_control_ai_link_title">Liên kết trợ lý AI (nhấn để sao chép)</string>
+    <string name="advanced_control_dismiss">Đã hiểu</string>
+    
+    <!-- ==================== Bluetooth Settings ==================== -->
+    <string name="settings_bluetooth_detect">Phát hiện thiết bị</string>
+    <string name="settings_bluetooth_detect_desc">Phát hiện thiết bị Bluetooth gần đây</string>
+    <string name="settings_bluetooth_rssi_threshold">Ngưỡng RSSI</string>
+    <string name="settings_bluetooth_rssi_threshold_desc">Bên trái gần, bên phải xa</string>
+    <string name="settings_bluetooth_away_delay">Độ trễ rời xa</string>
+    <string name="settings_bluetooth_away_delay_desc">Thời gian trước khi đánh dấu là vắng</string>
+    <string name="settings_bluetooth_add_device">Thêm thiết bị Bluetooth</string>
+    <string name="settings_bluetooth_add_device_hint">Thêm thiết bị Bluetooth để theo dõi hiện diện. Khi thiết bị ở gần, sẽ được đánh dấu là có mặt trong Home Assistant.</string>
+    <string name="settings_bluetooth_enable_hint">Vui lòng bật phát hiện và Bluetooth để dùng tính năng này</string>
+    <string name="settings_bluetooth_tracked_devices">Phát hiện hiện diện | BLE Sense</string>
+    <string name="settings_bluetooth_nearby">Gần đây</string>
+    <string name="settings_bluetooth_not_nearby">Không ở gần</string>
+    <string name="settings_bluetooth_select_device">Chọn thiết bị Bluetooth</string>
+    <string name="settings_bluetooth_searching">Đang tìm thiết bị gần...</string>
+    <string name="settings_bluetooth_no_device">Không tìm thấy thiết bị</string>
+    <string name="settings_bluetooth_already_added">Đã thêm</string>
+    <string name="settings_bluetooth_paired">Đã ghép nối</string>
+    <string name="settings_bluetooth_unknown_device">Thiết bị không xác định</string>
+    <string name="settings_bluetooth_permission_required">Cần quyền Bluetooth và vị trí</string>
+    <string name="settings_bluetooth_wifi_conflict">Bluetooth có thể ảnh hưởng hiệu năng WiFi</string>
+    <string name="settings_bluetooth_proxy">Cổng BLE | Mesh</string>
+    <string name="settings_bluetooth_proxy_title">Proxy Bluetooth</string>
+    <string name="settings_bluetooth_proxy_desc">API ESPHome</string>
+    <string name="settings_bluetooth_proxy_device_name">Tên thiết bị</string>
+    <string name="settings_bluetooth_proxy_mac_address">Địa chỉ thiết bị</string>
+    <string name="settings_bluetooth_proxy_scan_mode">Chế độ quét</string>
+    <string name="settings_bluetooth_proxy_scan_active">Quét chủ động</string>
+    <string name="settings_bluetooth_proxy_scan_passive">Quét thụ động</string>
+    <string name="settings_bluetooth_proxy_scan_power">Công suất quét</string>
+    
+    <!-- ==================== Sensor Settings ==================== -->
+    <string name="settings_environment_sensor">Cảm biến môi trường</string>
+    <string name="settings_environment_sensor_desc">Gửi dữ liệu cảm biến tới Home Assistant</string>
+    <string name="settings_sensor_update_interval">Chu kỳ cập nhật</string>
+    <string name="settings_sensor_update_interval_desc">Tần suất gửi dữ liệu cảm biến</string>
+    <string name="settings_sensor_enabled">Cảm biến môi trường</string>
+    <string name="settings_sensor_enabled_desc">Bật đọc cảm biến khả dụng</string>
+    <string name="settings_battery_monitor">Theo dõi pin</string>
+    <string name="settings_battery_monitor_desc">Theo dõi pin và trạng thái sạc</string>
+    <string name="settings_proximity_sensor">Cảm biến tiệm cận</string>
+    <string name="settings_proximity_sensor_desc">Bật cảm biến tiệm cận</string>
+    <string name="settings_proximity_send_to_hass">Gửi tới Home Assistant</string>
+    <string name="settings_proximity_send_to_hass_desc">Đồng bộ trạng thái tiệm cận hai chiều</string>
+    <string name="settings_proximity_wake_screen">Đánh thức bằng tiệm cận</string>
+    <string name="settings_proximity_wake_screen_desc">Bật màn hình khi vật ở gần</string>
+    <string name="settings_proximity_threshold">Ngưỡng kích hoạt</string>
+    <string name="settings_proximity_threshold_desc">Bật màn hình khi gần hơn giá trị này</string>
+    <string name="settings_proximity_away_delay">Độ trễ rời xa</string>
+    <string name="settings_proximity_away_delay_desc">Số giây trước khi đánh dấu là vắng</string>
+    
+    <!-- ==================== Diagnostic Info ==================== -->
+    <string name="settings_diagnostic_sensor">Cảm biến chẩn đoán</string>
+    <string name="settings_diagnostic_sensor_desc">Gửi trạng thái thiết bị tới Home Assistant</string>
+    <string name="settings_intent_launcher">Trình thực thi Android Intent</string>
+    <string name="settings_intent_launcher_desc">Thực thi intent nâng cao từ xa</string>
+    <string name="settings_intent_launcher_ha_display">Hiển thị trong Home Assistant</string>
+    <string name="settings_intent_launcher_ha_display_desc">Điều khiển dịch vụ launch_intent từ xa</string>
+    <string name="settings_intent_launcher_usage_title">Hướng dẫn sử dụng</string>
+    <string name="settings_intent_launcher_usage_desc">Thực thi Android Intent từ xa qua Home Assistant để mở ứng dụng hoặc cài đặt hệ thống.</string>
+    <string name="settings_intent_launcher_usage_call_title">Cách gọi</string>
+    <string name="settings_intent_launcher_usage_call_content">action: esphome.device_name_launch_intent\ndata:\n  intent_uri: "spotify://"</string>
+    <string name="settings_intent_launcher_usage_format_title">Định dạng hỗ trợ</string>
+    <string name="settings_intent_launcher_usage_format_content">Mở ứng dụng:\nspotify://com.spotify.music\nCài đặt hệ thống:\nintent:#Intent;action=android.settings.SETTINGS;end</string>
+    <string name="settings_diagnostic_wifi">Tín hiệu WiFi</string>
+    <string name="settings_diagnostic_wifi_desc">Hiển thị cường độ tín hiệu</string>
+    <string name="settings_diagnostic_ip">IP thiết bị</string>
+    <string name="settings_diagnostic_ip_desc">Hiển thị địa chỉ mạng</string>
+    <string name="settings_diagnostic_storage">Bộ nhớ lưu trữ</string>
+    <string name="settings_diagnostic_storage_desc">Hiển thị dung lượng còn lại</string>
+    <string name="settings_diagnostic_memory">Bộ nhớ</string>
+    <string name="settings_diagnostic_memory_desc">Hiển thị bộ nhớ đã dùng</string>
+    <string name="settings_diagnostic_uptime">Thời gian hoạt động</string>
+    <string name="settings_diagnostic_uptime_desc">Hiển thị thời gian chạy</string>
+    <string name="settings_diagnostic_kill_app">Đóng ứng dụng</string>
+    <string name="settings_diagnostic_kill_app_desc">Buộc đóng ứng dụng này</string>
+    <string name="settings_diagnostic_reboot">Khởi động lại thiết bị</string>
+    <string name="settings_diagnostic_reboot_desc">Khởi động lại toàn bộ thiết bị</string>
+    <string name="settings_diagnostic_battery_level">Mức pin</string>
+    <string name="settings_diagnostic_battery_voltage">Điện áp pin</string>
+    <string name="settings_diagnostic_charging_status">Trạng thái sạc</string>
+    
+    <!-- ==================== Shizuku Permissions ==================== -->
+    <string name="settings_shizuku_title">Ủy quyền Shizuku</string>
+    <string name="settings_shizuku_desc">Nâng quyền ứng dụng qua Shizuku</string>
+    <string name="settings_shizuku_not_installed">Chưa cài Shizuku</string>
+    <string name="settings_shizuku_not_running">Shizuku chưa chạy</string>
+    <string name="settings_shizuku_authorized">Đã ủy quyền</string>
+    <string name="settings_shizuku_waiting">Đang chờ ủy quyền</string>
+    <string name="settings_shizuku_install">Cài Shizuku</string>
+    <string name="settings_shizuku_start">Khởi chạy Shizuku</string>
+    <string name="settings_shizuku_authorize">Ủy quyền Shizuku</string>
+    <string name="settings_shizuku_refresh">Làm mới</string>
+    <string name="settings_shizuku_guide">Hướng dẫn</string>
+    <string name="settings_shizuku_guide_text">Shizuku là công cụ quản lý quyền mã nguồn mở.\n\nCác bước thiết lập:\n1. Tải và cài Shizuku từ GitHub\n2. Bật qua gỡ lỗi không dây hoặc ADB\n3. Quay lại đây và nhấn ủy quyền</string>
+    <string name="settings_root_status">Trạng thái Root</string>
+    <string name="settings_root_available">Đã cấp quyền root</string>
+    <string name="settings_root_unavailable">Không có quyền root</string>
+    
+    <!-- ==================== Camera Settings ==================== -->
+    <string name="settings_experimental">Nâng cao</string>
+    <string name="settings_camera_enabled">Camera từ xa</string>
+    <string name="settings_camera_enabled_desc">Cho phép Home Assistant điều khiển camera từ xa</string>
+    <string name="settings_no_camera">Không có camera</string>
+    <string name="settings_camera_mode">Chế độ camera</string>
+    <string name="settings_camera_mode_snapshot">Chế độ chụp ảnh</string>
+    <string name="settings_camera_mode_snapshot_desc">Kích hoạt chụp ảnh và nhận hình</string>
+    <string name="settings_camera_mode_video">Chế độ video</string>
+    <string name="settings_camera_mode_video_desc">Bật/tắt ghi hình, nhận luồng video</string>
+    <string name="settings_person_detection">Phát hiện khuôn mặt</string>
+    <string name="settings_person_detection_desc">Phát hiện khuôn mặt trong video</string>
+    <string name="settings_face_box">Hiển thị khung mặt</string>
+    <string name="settings_face_box_desc">Vẽ khung quanh khuôn mặt phát hiện</string>
+    <string name="settings_video_fps">FPS video</string>
+    <string name="settings_video_fps_desc">FPS thấp hơn được khuyến nghị để ổn định</string>
+    <string name="settings_video_fps_format">%d FPS</string>
+    <string name="settings_video_resolution">Độ phân giải video</string>
+    <string name="settings_video_resolution_240">Mượt (320×240)</string>
+    <string name="settings_video_resolution_360">SD (480×360)</string>
+    <string name="settings_video_resolution_480">HD (640×480)</string>
+    <string name="settings_video_resolution_720">FHD (960×720)</string>
+    <string name="settings_camera_position">Chọn camera</string>
+    <string name="settings_camera_back">Camera sau</string>
+    <string name="settings_camera_front">Camera trước</string>
+    <string name="settings_image_size">Kích thước ảnh</string>
+    <string name="settings_image_size_original">Gốc (không cắt)</string>
+    <string name="settings_image_size_500">500px (cắt vuông)</string>
+    <string name="settings_image_size_720">720px (cắt vuông)</string>
+    <string name="settings_image_size_1080">1080px (cắt vuông)</string>
+    
+    <!-- ==================== Service Settings ==================== -->
+    <string name="settings_port_description">Thay đổi cổng để tránh xung đột</string>
+    <string name="settings_auto_restart">Tự khởi động lại</string>
+    <string name="settings_auto_restart_desc">Tự khởi động khi bật máy và bật dịch vụ</string>
+    <string name="microphone_muted_toast">Mic đã tắt</string>
+    <string name="microphone_unmuted_toast">Mic đã bật</string>
+    
+    <!-- ==================== About Page ==================== -->
+    <string name="settings_about">Giới thiệu</string>
+    <string name="settings_device_info">Thông tin thiết bị</string>
+    <string name="settings_author">Tác giả gốc</string>
+    <string name="settings_secondary_dev">Dev phụ</string>
+    <string name="settings_project_url">URL dự án</string>
+    <string name="github_project">Dự án mã nguồn mở</string>
+    <string name="ava_version">Ava Assistant %1$s (Ổn định)</string>
+    <string name="device_ip">IP thiết bị: %1$s</string>
+    <string name="original_author">Tác giả gốc: brownard</string>
+    <string name="secondary_dev">Dev phụ: knoop7</string>
+    
+    <!-- ==================== Welcome Page ==================== -->
+    <string name="welcome_title">Chào mừng đến với Ava</string>
+    <string name="welcome_subtitle">Theo dõi chúng tôi để biết thêm mẹo nhà thông minh</string>
+    <string name="qr_code_desc">Mã QR</string>
+    <string name="wechat_account">Mẹo nhà thông minh</string>
+    <string name="auto_close_countdown">Tự đóng sau 10 giây</string>
+    
+    <!-- ==================== Update Prompt ==================== -->
+    <string name="update_available">Có phiên bản mới</string>
+    <string name="update_changelog">Điểm mới</string>
+    <string name="update_later">Để sau</string>
+    <string name="update_now">Cập nhật ngay</string>
+    
+    <!-- ==================== Quick Entity ==================== -->
+    <string name="settings_quick_entity">Điều khiển thực thể nhanh</string>
+    <string name="settings_quick_entity_desc">Bảng điều khiển nhanh kiểu Stream Deck</string>
+    <string name="settings_quick_entity_slot">Ô thực thể %1$d</string>
+    <string name="settings_quick_entity_id">ID thực thể</string>
+    <string name="settings_quick_entity_id_hint">Nhập ID thực thể từ Home Assistant</string>
+    <string name="settings_quick_entity_supported_types">Hỗ trợ: switch, button, light, sensor, binary_sensor, cover, climate, fan, input_boolean, input_number, input_select, input_text, scene, script, vacuum, water_heater</string>
+    <string name="settings_quick_entity_icon">Biểu tượng</string>
+    <string name="settings_quick_entity_configure">Cấu hình thực thể</string>
+    <string name="settings_quick_entity_empty">Chưa cấu hình</string>
+    <string name="settings_quick_entity_save">Lưu</string>
+    <string name="settings_quick_entity_color">Màu</string>
+    <string name="settings_quick_entity_color_auto">Tự động màu theo loại biểu tượng</string>
+    <string name="settings_quick_entity_color_custom">Màu tùy chỉnh</string>
+    <string name="settings_quick_entity_color_custom_hint">Nhập mã màu hex, ví dụ #FF5733</string>
+    <string name="settings_quick_entity_clear_slot">Xóa ô này</string>
+    <string name="entity_quick_entity_display">Bảng thực thể nhanh</string>
+    <string name="entity_quick_entity_slot">Ô thực thể nhanh %1$d</string>
+    <string name="settings_quick_entity_ha_slots">Cấu hình ô HA</string>
+    <string name="settings_quick_entity_ha_slots_desc">Cho phép cấu hình ô thực thể từ Home Assistant</string>
+    <string name="quick_entity_long_press_hint">Giữ 5 giây để ẩn bảng</string>
+    <string name="quick_entity_hidden">Đã ẩn bảng thực thể nhanh</string>
+</resources>

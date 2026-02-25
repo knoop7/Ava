@@ -18,11 +18,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.map
+import androidx.compose.runtime.remember
+import com.example.ava.ui.prefs.rememberBooleanPreference
+import com.example.ava.ui.screens.home.KEY_DARK_MODE
+import com.example.ava.ui.screens.home.PREFS_NAME
 
 @Composable
 fun TextSetting(
     name: String,
     description: String = "",
+    dialogHint: String = "",
     value: String,
     placeholder: String = "",
     enabled: Boolean = true,
@@ -39,7 +44,7 @@ fun TextSetting(
     ) {
         TextDialog(
             title = name,
-            description = "",
+            description = dialogHint,
             value = value,
             placeholder = placeholder,
             onConfirmRequest = onConfirmRequest,
@@ -94,10 +99,14 @@ fun ValidatedTextField(
     inputTransformation: InputTransformation? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val prefs = remember { context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE) }
+    val isDarkMode by rememberBooleanPreference(prefs, KEY_DARK_MODE, false)
     
-    val accentColor = Color(0xFF4F46E5) 
-    val labelColor = Color(0xFF334155) 
-    val subLabelColor = Color(0xFF94A3B8) 
+    val accentColor = if (isDarkMode) Color(0xFFA78B73) else Color(0xFF0417E0) 
+    val labelColor = if (isDarkMode) Color(0xFFF1F5F9) else Color(0xFF334155)
+    val subLabelColor = Color(0xFF94A3B8)
+    val containerColor = if (isDarkMode) Color(0xFF2D2D2D) else Color(0xFFF8FAFC)
     
     TextField(
         modifier = Modifier.fillMaxWidth(),
@@ -122,8 +131,8 @@ fun ValidatedTextField(
         ),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color(0xFFF8FAFC),
-            unfocusedContainerColor = Color(0xFFF8FAFC),
+            focusedContainerColor = containerColor,
+            unfocusedContainerColor = containerColor,
             errorContainerColor = Color(0xFFFEF2F2),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,

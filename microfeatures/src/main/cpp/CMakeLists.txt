@@ -44,10 +44,12 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         tensorflow/lite/experimental/microfrontend/lib/window_util.c
         kissfft/kiss_fft.c
         kissfft/tools/kiss_fftr.c
+        webrtc_ns/noise_suppression.c
+        NoiseSuppressor.cpp
         MicroFrontend.cpp
 )
 set(BASEPATH "${CMAKE_SOURCE_DIR}")
-include_directories("${BASEPATH}" "${BASEPATH}/kissfft")
+include_directories("${BASEPATH}" "${BASEPATH}/kissfft" "${BASEPATH}/webrtc_ns")
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this

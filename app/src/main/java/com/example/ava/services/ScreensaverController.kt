@@ -22,22 +22,25 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 object ScreensaverController {
     private const val TAG = "ScreensaverController"
     private const val DARK_THRESHOLD_LUX = 2.0f
-    private const val IDLE_CHECK_INTERVAL_MS = 1000L
+    private const val IDLE_CHECK_MIN_INTERVAL_MS = 500L
+    private const val IDLE_CHECK_MAX_INTERVAL_MS = 5000L
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var appContext: Context? = null
     private var settingsStore: ScreensaverSettingsStore? = null
     private var currentSettings: ScreensaverSettings = ScreensaverSettings()
 
-    private var lastInteractionAt = System.currentTimeMillis()
+    @Volatile private var lastInteractionAt = System.currentTimeMillis()
     private var idleJob: Job? = null
     private var lightJob: Job? = null
     private var sensorManager: EnvironmentSensorManager? = null
     private var motionJob: Job? = null
 
-    private var isScreensaverVisible = false
+    @Volatile private var isScreensaverVisible = false
+    private val screensaverLock = Any()
     private var isAppInForeground = true
     private var isScreenOffByDark = false
     private var wasEnabled = false
+    private var wasVisible = true
     private var activityCallbacks: Application.ActivityLifecycleCallbacks? = null
     private var startedCount = 0
     private var wakeLock: PowerManager.WakeLock? = null
@@ -53,10 +56,20 @@ object ScreensaverController {
                 currentSettings = settings
                 if (!settings.enabled) {
                     stopScreensaver()
+                    stopIdleJob()
                     stopSensors()
                     wasEnabled = false
                     return@collectLatest
                 }
+
+                if (settings.enableHaDisplay && !settings.visible) {
+                    stopScreensaver()
+                }
+
+                if (settings.enableHaDisplay && settings.visible && !wasVisible) {
+                    lastInteractionAt = System.currentTimeMillis()
+                }
+                wasVisible = settings.visible
                 if (!wasEnabled && settings.enabled) {
                     lastInteractionAt = System.currentTimeMillis()
                     wasEnabled = true
@@ -67,7 +80,9 @@ object ScreensaverController {
                 if (effectiveUrl.isBlank()) {
                     stopScreensaver()
                 }
-                if (isScreensaverVisible && effectiveUrl.isNotBlank()) {
+
+                val shouldShow = if (settings.enableHaDisplay) settings.visible else true
+                if (isScreensaverVisible && effectiveUrl.isNotBlank() && shouldShow) {
                     ScreensaverWebViewService.updateUrl(requireContext(), effectiveUrl)
                 }
             }
@@ -81,11 +96,17 @@ object ScreensaverController {
             override fun onActivityStarted(activity: android.app.Activity) {
                 startedCount += 1
                 isAppInForeground = startedCount > 0
+                if (isAppInForeground && currentSettings.backgroundPauseEnabled) {
+                    lastInteractionAt = System.currentTimeMillis()
+                }
             }
 
             override fun onActivityStopped(activity: android.app.Activity) {
                 startedCount = (startedCount - 1).coerceAtLeast(0)
                 isAppInForeground = startedCount > 0
+                if (!isAppInForeground && currentSettings.backgroundPauseEnabled) {
+                    stopScreensaver()
+                }
             }
 
             override fun onActivityCreated(
@@ -114,33 +135,79 @@ object ScreensaverController {
         if (isScreensaverVisible) {
             stopScreensaver()
         }
-        
+    }
+
+    private fun stopIdleJob() {
+        idleJob?.cancel()
+        idleJob = null
     }
 
     private fun ensureIdleJob() {
         if (idleJob != null) return
         idleJob = scope.launch {
             while (isActive) {
-                delay(IDLE_CHECK_INTERVAL_MS)
-                if (currentSettings.enabled) {
-                    checkIdleAndShow()
+                val serviceRunning = VoiceSatelliteService.getInstance() != null
+                if (serviceRunning && currentSettings.enabled) {
+                    val backgroundPaused = currentSettings.backgroundPauseEnabled && !isAppInForeground
+                    if (backgroundPaused) {
+                        if (isScreensaverVisible) {
+                            stopScreensaver()
+                        }
+                        delay(IDLE_CHECK_MAX_INTERVAL_MS)
+                        continue
+                    }
+
+
+                    val shouldShow = if (currentSettings.enableHaDisplay) {
+                        currentSettings.visible
+                    } else {
+                        true
+                    }
+                    
+                    if (shouldShow) {
+                        checkIdleAndShow()
+                    }
+                    
+                    delay(calculateIdleDelayMs(shouldShow))
+                } else {
+                    delay(IDLE_CHECK_MAX_INTERVAL_MS)
                 }
             }
+        }
+    }
+    
+    private fun calculateIdleDelayMs(shouldShow: Boolean): Long {
+        if (!shouldShow) return IDLE_CHECK_MAX_INTERVAL_MS
+        if (isScreensaverVisible) return IDLE_CHECK_MAX_INTERVAL_MS
+        
+        val timeoutMs = currentSettings.timeoutSeconds * 1000L
+        val elapsed = System.currentTimeMillis() - lastInteractionAt
+        val remaining = timeoutMs - elapsed
+        
+        return when {
+            remaining <= 0L -> IDLE_CHECK_MIN_INTERVAL_MS
+            remaining <= IDLE_CHECK_MAX_INTERVAL_MS -> remaining.coerceAtLeast(IDLE_CHECK_MIN_INTERVAL_MS)
+            else -> IDLE_CHECK_MAX_INTERVAL_MS
         }
     }
 
     private fun checkIdleAndShow() {
         val context = appContext ?: return
+        if (currentSettings.backgroundPauseEnabled && !isAppInForeground) return
+
+        if (currentSettings.enableHaDisplay && !currentSettings.visible) return
         val effectiveUrl = getEffectiveScreensaverUrl(currentSettings)
         if (effectiveUrl.isBlank()) return
-        if (isScreensaverVisible) return
-        val elapsed = System.currentTimeMillis() - lastInteractionAt
-        if (elapsed < currentSettings.timeoutSeconds * 1000L) return
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         if (!powerManager.isInteractive) return
-        ScreensaverWebViewService.show(context, effectiveUrl)
-        isScreensaverVisible = true
-        Log.d(TAG, "Screensaver shown")
+        synchronized(screensaverLock) {
+            if (isScreensaverVisible) return
+            val elapsed = System.currentTimeMillis() - lastInteractionAt
+            if (elapsed < currentSettings.timeoutSeconds * 1000L) return
+            ScreensaverWebViewService.show(context, effectiveUrl)
+            isScreensaverVisible = true
+            Log.d(TAG, "Screensaver shown after ${elapsed}ms idle")
+        }
     }
     
     private fun getEffectiveScreensaverUrl(settings: ScreensaverSettings): String {
@@ -152,10 +219,12 @@ object ScreensaverController {
     }
 
     private fun stopScreensaver() {
-        if (!isScreensaverVisible) return
-        ScreensaverWebViewService.hide(requireContext())
-        isScreensaverVisible = false
-        Log.d(TAG, "Screensaver hidden")
+        synchronized(screensaverLock) {
+            if (!isScreensaverVisible) return
+            ScreensaverWebViewService.hide(requireContext())
+            isScreensaverVisible = false
+            Log.d(TAG, "Screensaver hidden")
+        }
     }
 
     private fun updateSensors() {
@@ -254,10 +323,17 @@ object ScreensaverController {
             isScreenOffByDark = false
             
             val effectiveUrl = getEffectiveScreensaverUrl(currentSettings)
-            if (effectiveUrl.isNotBlank() && !isScreensaverVisible) {
-                ScreensaverWebViewService.show(requireContext(), effectiveUrl)
-                isScreensaverVisible = true
-                Log.d(TAG, "Screensaver restored after dark wake")
+            if (effectiveUrl.isNotBlank()) {
+                synchronized(screensaverLock) {
+                    if (!isScreensaverVisible) {
+                        val elapsed = System.currentTimeMillis() - lastInteractionAt
+                        if (elapsed >= currentSettings.timeoutSeconds * 1000L) {
+                            ScreensaverWebViewService.show(requireContext(), effectiveUrl)
+                            isScreensaverVisible = true
+                            Log.d(TAG, "Screensaver restored after dark wake")
+                        }
+                    }
+                }
             }
         }
     }
@@ -273,6 +349,8 @@ object ScreensaverController {
         }
     }
 
+    private val WAKELOCK_TIMEOUT_MS = 30 * 60 * 1000L
+    
     private fun acquireWakeLock() {
         if (wakeLock?.isHeld == true) return
         val powerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -280,9 +358,9 @@ object ScreensaverController {
             PowerManager.PARTIAL_WAKE_LOCK,
             "Ava:DarkSensorWakeLock"
         ).apply {
-            acquire() 
+            acquire(WAKELOCK_TIMEOUT_MS)
         }
-        Log.d(TAG, "WakeLock acquired for dark sensor")
+        Log.d(TAG, "WakeLock acquired for dark sensor with ${WAKELOCK_TIMEOUT_MS}ms timeout")
     }
     
     private fun releaseWakeLock() {

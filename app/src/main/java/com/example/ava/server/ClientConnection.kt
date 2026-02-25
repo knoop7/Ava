@@ -160,10 +160,25 @@ class ClientConnection(private val socket: Socket) : AutoCloseable {
     override fun close() {
         if (isClosed.compareAndSet(false, true)) {
             try {
+                bufferedReader.close()
+            } catch (e: IOException) { }
+            try {
+                outputStream.close()
+            } catch (e: IOException) { }
+            try {
                 socket.close()
             } catch (e: IOException) {
                 Log.e(TAG, "Error closing socket", e)
             }
+        }
+    }
+    
+    fun getRemoteAddress(): String? {
+        return try {
+            val addr = socket.inetAddress
+            addr?.hostAddress?.replace("/", "")
+        } catch (e: Exception) {
+            null
         }
     }
 

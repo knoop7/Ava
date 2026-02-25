@@ -19,6 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ava.ui.prefs.rememberBooleanPreference
+import com.example.ava.ui.screens.home.KEY_DARK_MODE
+import com.example.ava.ui.screens.home.PREFS_NAME
 
 @Composable
 fun <T> SelectSetting(
@@ -59,9 +62,12 @@ fun <T> DialogScope.SelectDialog(
     value: (T) -> String = { it.toString() },
     onConfirmRequest: (T?) -> Unit,
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val prefs = remember { context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE) }
+    val isDarkMode by rememberBooleanPreference(prefs, KEY_DARK_MODE, false)
     
-    val accentColor = androidx.compose.ui.graphics.Color(0xFF4F46E5) 
-    val labelColor = androidx.compose.ui.graphics.Color(0xFF334155) 
+    val accentColor = if (isDarkMode) androidx.compose.ui.graphics.Color(0xFFA78B73) else androidx.compose.ui.graphics.Color(0xFF0417E0) 
+    val labelColor = if (isDarkMode) androidx.compose.ui.graphics.Color(0xFFF1F5F9) else androidx.compose.ui.graphics.Color(0xFF334155)
     
     var selectedItem by remember { mutableStateOf(selected) }
     ActionDialog(

@@ -35,7 +35,9 @@ data class ExperimentalSettings(
     val cameraPosition: String = CameraPosition.FRONT.name,
     val imageSize: Int = 500,  
     val videoFps: Int = 2,        
-    val videoResolution: Int = 240, 
+    val videoResolution: Int = 240,
+    val personDetectionEnabled: Boolean = false,
+    val faceBoxEnabled: Boolean = true,
     
     val environmentSensorEnabled: Boolean = false,
     val sensorUpdateInterval: Int = 35,  
@@ -64,7 +66,13 @@ data class ExperimentalSettings(
     val diagnosticRebootEnabled: Boolean = false,
     val diagnosticBatteryLevelEnabled: Boolean = false,
     val diagnosticBatteryVoltageEnabled: Boolean = false,
-    val diagnosticChargingStatusEnabled: Boolean = false
+    val diagnosticChargingStatusEnabled: Boolean = false,
+    
+    val intentLauncherEnabled: Boolean = false,
+    val intentLauncherHaDisplayEnabled: Boolean = false,
+    
+    val microphoneVolume: Float = 1.0f,
+    val multiDeviceArbiterEnabled: Boolean = true
 ) {
     companion object {
         val DEFAULT = ExperimentalSettings()
@@ -160,6 +168,17 @@ class ExperimentalSettingsStore(context: Context) : SettingsStoreImpl<Experiment
         update { it.copy(videoResolution = resolution.coerceIn(240, 720)) }
     }
     
+    val personDetectionEnabled: Flow<Boolean> = getFlow().map { it.personDetectionEnabled }
+    
+    suspend fun setPersonDetectionEnabled(enabled: Boolean) {
+        update { it.copy(personDetectionEnabled = enabled) }
+    }
+    
+    val faceBoxEnabled: Flow<Boolean> = getFlow().map { it.faceBoxEnabled }
+    
+    suspend fun setFaceBoxEnabled(enabled: Boolean) {
+        update { it.copy(faceBoxEnabled = enabled) }
+    }
     
     val environmentSensorEnabled: Flow<Boolean> = getFlow().map { it.environmentSensorEnabled }
     val sensorUpdateInterval: Flow<Int> = getFlow().map { it.sensorUpdateInterval }
@@ -288,5 +307,28 @@ class ExperimentalSettingsStore(context: Context) : SettingsStoreImpl<Experiment
     
     suspend fun setDiagnosticChargingStatusEnabled(enabled: Boolean) {
         update { it.copy(diagnosticChargingStatusEnabled = enabled) }
+    }
+    
+    val intentLauncherEnabled: Flow<Boolean> = getFlow().map { it.intentLauncherEnabled }
+    val intentLauncherHaDisplayEnabled: Flow<Boolean> = getFlow().map { it.intentLauncherHaDisplayEnabled }
+    
+    suspend fun setIntentLauncherEnabled(enabled: Boolean) {
+        update { it.copy(intentLauncherEnabled = enabled) }
+    }
+    
+    suspend fun setIntentLauncherHaDisplayEnabled(enabled: Boolean) {
+        update { it.copy(intentLauncherHaDisplayEnabled = enabled) }
+    }
+    
+    val microphoneVolume: Flow<Float> = getFlow().map { it.microphoneVolume }
+    
+    suspend fun setMicrophoneVolume(volume: Float) {
+        update { it.copy(microphoneVolume = volume.coerceIn(0.0f, 2.0f)) }
+    }
+    
+    val multiDeviceArbiterEnabled: Flow<Boolean> = getFlow().map { it.multiDeviceArbiterEnabled }
+    
+    suspend fun setMultiDeviceArbiterEnabled(enabled: Boolean) {
+        update { it.copy(multiDeviceArbiterEnabled = enabled) }
     }
 }

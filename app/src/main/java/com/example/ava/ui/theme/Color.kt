@@ -2,9 +2,9 @@ package com.example.ava.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0xFF0A4AA9)
+val primaryLight = Color(0xFF0417E0)
 val onPrimaryLight = Color(0xFFFFFFFF)
-val primaryContainerLight = Color(0xFF3263C3)
+val primaryContainerLight = Color(0xFF0417E0)
 val onPrimaryContainerLight = Color(0xFFDFE6FF)
 val secondaryLight = Color(0xFF4F5E84)
 val onSecondaryLight = Color(0xFFFFFFFF)
@@ -40,7 +40,7 @@ val surfaceContainerHighestLight = Color(0xFFE2E2EA)
 
 val primaryLightMediumContrast = Color(0xFF00327B)
 val onPrimaryLightMediumContrast = Color(0xFFFFFFFF)
-val primaryContainerLightMediumContrast = Color(0xFF3263C3)
+val primaryContainerLightMediumContrast = Color(0xFF0417E0)
 val onPrimaryContainerLightMediumContrast = Color(0xFFFFFFFF)
 val secondaryLightMediumContrast = Color(0xFF263559)
 val onSecondaryLightMediumContrast = Color(0xFFFFFFFF)
@@ -112,7 +112,7 @@ val surfaceContainerHighestLightHighContrast = Color(0xFFC5C6CE)
 
 val primaryDark = Color(0xFFB0C6FF)
 val onPrimaryDark = Color(0xFF002D6F)
-val primaryContainerDark = Color(0xFF3263C3)
+val primaryContainerDark = Color(0xFF0417E0)
 val onPrimaryContainerDark = Color(0xFFDFE6FF)
 val secondaryDark = Color(0xFFB6C6F2)
 val onSecondaryDark = Color(0xFF202F53)

@@ -15,6 +15,9 @@ import java.io.OutputStream
 
 @Serializable
 data class BrowserSettings(
+    val haRemoteUrlEnabled: Boolean = false,
+    val enableBrowserDisplay: Boolean = false,
+    val enableBrowserVisible: Boolean = false,
     val pullRefreshEnabled: Boolean = true,
     val initialScale: Int = 0,  
     val fontSize: Int = 100,  
@@ -23,7 +26,9 @@ data class BrowserSettings(
     val hardwareAcceleration: Boolean = true,  
     val settingsButtonEnabled: Boolean = false,
     val advancedControlEnabled: Boolean = false,  
-    val backKeyHideEnabled: Boolean = true  
+    val backKeyHideEnabled: Boolean = true,
+    val tampermonkeyEnabled: Boolean = false,
+    val userAgentMode: Int = 0
 ) {
     companion object {
         val DEFAULT = BrowserSettings()
@@ -70,6 +75,7 @@ class BrowserSettingsStore(private val context: Context) {
     }
     
     
+    val haRemoteUrlEnabled: Flow<Boolean> = getFlow().map { it.haRemoteUrlEnabled }
     val pullRefreshEnabled: Flow<Boolean> = getFlow().map { it.pullRefreshEnabled }
     val initialScale: Flow<Int> = getFlow().map { it.initialScale }
     val fontSize: Flow<Int> = getFlow().map { it.fontSize }
@@ -79,6 +85,21 @@ class BrowserSettingsStore(private val context: Context) {
     val settingsButtonEnabled: Flow<Boolean> = getFlow().map { it.settingsButtonEnabled }
     val advancedControlEnabled: Flow<Boolean> = getFlow().map { it.advancedControlEnabled }
     val backKeyHideEnabled: Flow<Boolean> = getFlow().map { it.backKeyHideEnabled }
+    val tampermonkeyEnabled: Flow<Boolean> = getFlow().map { it.tampermonkeyEnabled }
+    val userAgentMode: Flow<Int> = getFlow().map { it.userAgentMode }
+    val enableBrowserDisplay: Flow<Boolean> = getFlow().map { it.enableBrowserDisplay }
+    val enableBrowserVisible: SettingState<Boolean> = SettingState(
+        getFlow().map { it.enableBrowserVisible },
+        { value -> update { it.copy(enableBrowserVisible = value) } }
+    )
+    
+    suspend fun setEnableBrowserDisplay(enabled: Boolean) {
+        update { it.copy(enableBrowserDisplay = enabled) }
+    }
+    
+    suspend fun setHaRemoteUrlEnabled(enabled: Boolean) {
+        update { it.copy(haRemoteUrlEnabled = enabled) }
+    }
     
     suspend fun setPullRefreshEnabled(enabled: Boolean) {
         update { it.copy(pullRefreshEnabled = enabled) }
@@ -114,5 +135,13 @@ class BrowserSettingsStore(private val context: Context) {
     
     suspend fun setBackKeyHideEnabled(enabled: Boolean) {
         update { it.copy(backKeyHideEnabled = enabled) }
+    }
+    
+    suspend fun setTampermonkeyEnabled(enabled: Boolean) {
+        update { it.copy(tampermonkeyEnabled = enabled) }
+    }
+    
+    suspend fun setUserAgentMode(mode: Int) {
+        update { it.copy(userAgentMode = mode.coerceIn(0, 3)) }
     }
 }

@@ -44,6 +44,13 @@ object A64KeyHandler {
         
         ScreensaverController.onUserInteraction()
         
+
+        if (keyCode == KeyEvent.KEYCODE_F12) {
+            Log.d(TAG, "F12 pressed, toggling mic mute")
+            VoiceSatelliteService.toggleMicMute()
+            return true
+        }
+        
         if (!isA64Device()) {
             return false
         }

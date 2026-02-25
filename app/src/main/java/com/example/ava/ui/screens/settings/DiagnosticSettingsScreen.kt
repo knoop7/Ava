@@ -58,7 +58,7 @@ fun DiagnosticSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 SettingRow(
                     label = stringResource(R.string.settings_diagnostic_ip)
@@ -74,7 +74,7 @@ fun DiagnosticSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 SettingRow(
                     label = stringResource(R.string.settings_diagnostic_storage)
@@ -90,7 +90,7 @@ fun DiagnosticSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 SettingRow(
                     label = stringResource(R.string.settings_diagnostic_memory)
@@ -106,7 +106,7 @@ fun DiagnosticSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 SettingRow(
                     label = stringResource(R.string.settings_diagnostic_uptime)
@@ -122,7 +122,7 @@ fun DiagnosticSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 SettingRow(
                     label = stringResource(R.string.settings_diagnostic_kill_app)
@@ -138,7 +138,7 @@ fun DiagnosticSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 SettingRow(
                     label = stringResource(R.string.settings_diagnostic_reboot)
@@ -154,7 +154,7 @@ fun DiagnosticSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 SettingRow(
                     label = stringResource(R.string.settings_diagnostic_battery_level)
@@ -170,7 +170,7 @@ fun DiagnosticSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 SettingRow(
                     label = stringResource(R.string.settings_diagnostic_battery_voltage)
@@ -186,7 +186,7 @@ fun DiagnosticSettingsScreen(
                     )
                 }
                 
-                HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+                SettingsDivider()
                 
                 SettingRow(
                     label = stringResource(R.string.settings_diagnostic_charging_status)

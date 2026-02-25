@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class EnvironmentSensorManager(context: Context) : SensorEventListener {
     
+    private var isTouching = false
+    
     companion object {
         private const val TAG = "EnvironmentSensor"
     }
@@ -103,4 +105,13 @@ class EnvironmentSensorManager(context: Context) : SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         
     }
+    
+    fun onTouchEvent(isTouching: Boolean) {
+        this.isTouching = isTouching
+        if (isTouching) {
+            _proximity.value = 0f
+        }
+    }
+    
+    fun isScreenTouched(): Boolean = isTouching
 }

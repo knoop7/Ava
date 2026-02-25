@@ -40,10 +40,19 @@ class CameraEntity(
             })
             
             is CameraImageRequest -> {
-                
+
                 if (message.single) {
-                    _imageFlow.replayCache.lastOrNull()?.let { imageData ->
-                        emitImageChunks(imageData)
+                    val imageData = _imageFlow.replayCache.lastOrNull()
+                    if (imageData != null) {
+                        val chunkSize = 1024
+                        val chunks = imageData.toList().chunked(chunkSize)
+                        chunks.forEachIndexed { index, chunk ->
+                            emit(cameraImageResponse {
+                                key = this@CameraEntity.key
+                                data = ByteString.copyFrom(chunk.toByteArray())
+                                done = (index == chunks.lastIndex)
+                            })
+                        }
                     }
                 }
                 

@@ -23,7 +23,8 @@ data class UpdateInfo(
     val versionCode: Int,
     val versionName: String,
     val downloadUrl: String,
-    val changelog: String = ""
+    val changelog: String = "",
+    val forceUpdate: Boolean = false
 )
 
 object AppUpdater {
@@ -33,6 +34,10 @@ object AppUpdater {
     private const val VERSION_URL = "https://ghfast.top/https://raw.githubusercontent.com/knoop7/Ava/master/version.json"
     
     private val json = Json { ignoreUnknownKeys = true }
+    
+    @Volatile
+    private var isDownloading = false
+    private var currentDownloadId: Long = -1
     
     suspend fun checkUpdate(context: Context): UpdateInfo? = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
@@ -67,7 +72,13 @@ object AppUpdater {
     }
     
     fun downloadAndInstall(context: Context, updateInfo: UpdateInfo) {
+        if (isDownloading) {
+            Log.d(TAG, "Download already in progress, ignoring request")
+            return
+        }
+        
         try {
+            isDownloading = true
             val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             
             
@@ -94,12 +105,15 @@ object AppUpdater {
             }
             
             val downloadId = downloadManager.enqueue(request)
+            currentDownloadId = downloadId
             
             
             val receiver = object : BroadcastReceiver() {
                 override fun onReceive(ctx: Context, intent: Intent) {
                     val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                     if (id == downloadId) {
+                        isDownloading = false
+                        currentDownloadId = -1
                         try {
                             ctx.unregisterReceiver(this)
                         } catch (e: Exception) {
@@ -113,6 +127,8 @@ object AppUpdater {
             @Suppress("UnspecifiedRegisterReceiverFlag")
             context.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         } catch (e: Exception) {
+            isDownloading = false
+            currentDownloadId = -1
             Log.e(TAG, "Download failed", e)
         }
     }

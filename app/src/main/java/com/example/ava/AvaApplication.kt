@@ -1,8 +1,10 @@
 package com.example.ava
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.example.ava.notifications.NotificationScenes
+import com.example.ava.utils.LocaleUtils
 import java.io.File
 import java.io.FileWriter
 import java.text.SimpleDateFormat
@@ -12,9 +14,14 @@ import java.util.Locale
 class AvaApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        LocaleUtils.applyLocale(this)
         setupGlobalExceptionHandler()
         
         NotificationScenes.loadFromAssets(this)
+    }
+    
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(LocaleUtils.applyLocale(base))
     }
 
     private fun setupGlobalExceptionHandler() {

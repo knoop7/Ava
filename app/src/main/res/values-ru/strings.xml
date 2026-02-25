@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ==================== App Basics ==================== -->
+    <string name="app_name">Ava ассистент</string>
+    <string name="service_name">Сервис спутника</string>
+    <string name="screensaver_image">Экран заставки</string>
+    <string name="label_ok">ОК</string>
+    <string name="label_cancel">Отмена</string>
+    <string name="label_settings">Настройки</string>
+    <string name="back">Назад</string>
+    <string name="more_options">Еще</string>
+    <string name="connecting_service">Создание...</string>
+    <string name="copied_to_clipboard">Скопировано</string>
+
+    <string name="settings_coming_soon">Скоро</string>
+    
+    <!-- ==================== Service Status ==================== -->
+    <string name="label_start_service">Запустить</string>
+    <string name="label_stop_service">Остановить</string>
+    <string name="satellite_state_stopped">Остановлен</string>
+    <string name="satellite_state_disconnected">Отключен</string>
+    <string name="satellite_state_idle">Ожидание</string>
+    <string name="satellite_state_listening">Слушает</string>
+    <string name="satellite_state_processing">Обработка</string>
+    <string name="satellite_state_responding">Отвечает</string>
+    <string name="satellite_state_server_error">Ошибка сервера: %1$s</string>
+    <string name="status_connected">Подключен</string>
+    <string name="status_stopped">Остановлен</string>
+    <string name="status_disconnected">Отключен</string>
+    <string name="status_error">Ошибка</string>
+    <string name="status_working">Работает</string>
+    
+    <!-- ==================== Voice Satellite Config ==================== -->
+    <string name="label_voice_satellite_name">Имя</string>
+    <string name="label_voice_satellite_port">Порт</string>
+    <string name="label_voice_satellite_wake_word">Слово 1</string>
+    <string name="label_voice_satellite_wake_word_2">Слово 2</string>
+    <string name="label_voice_satellite_wake_word_2_none">Нет</string>
+    <string name="label_voice_satellite_enable_wake_sound">Звук пробуждения</string>
+    <string name="description_voice_satellite_play_wake_sound">Проигрывать звук при активации</string>
+    <string name="validation_voice_satellite_name_empty">Имя не может быть пустым</string>
+    <string name="validation_voice_satellite_port_invalid">Порт 1–65535</string>
+    <string name="validation_voice_satellite_wake_word_invalid">Слово не найдено</string>
+    <string name="validation_range">Введите от %1$d до %2$d</string>
+    
+    <!-- ==================== Home Assistant Entities ==================== -->
+    <string name="entity_media_player">Плеер</string>
+    <string name="entity_mute_microphone">Микрофон выкл.</string>
+    <string name="entity_wake_sound">Звук пробуждения</string>
+    <string name="entity_screen_toggle">Экран</string>
+    <string name="entity_screensaver_enable">Заставка</string>
+    <string name="entity_screensaver_url">URL заставки</string>
+    <string name="entity_ha_remote_url">URL браузера</string>
+    <string name="entity_restart_service">Перезапуск</string>
+    <string name="entity_manual_wake">Разбудить</string>
+    <string name="entity_voice_command">Голосовая команда</string>
+    <string name="entity_assistant_response">Ответ ассистента</string>
+    <string name="pipeline_error_no_speech">Голос не обнаружен</string>
+    <string name="pipeline_error_config">Аномалия голоса, проверьте</string>
+    <string name="pipeline_error_cloud_auth">Проблема авторизации, войдите</string>
+    <string name="pipeline_error_wake">Аномалия сигнала, повторите</string>
+    <string name="pipeline_error_unknown">Колебания сети, проверьте</string>
+    <string name="pipeline_error_ha_disconnected">Сервер офлайн, проверьте сеть</string>
+    <string name="pipeline_error_ha_start_failed">Проблема инициализации, проверьте</string>
+    <string name="pipeline_error_no_response">Нет ответа, проверьте STT/TTS</string>
+    <string name="entity_notification_scene">Сцена уведомлений</string>
+    <string name="entity_scene_display_duration">Длительность сцены</string>
+    <string name="entity_weather_display">Погода</string>
+    <string name="entity_dream_clock_display">Часы</string>
+    <string name="entity_browser_display">Браузер</string>
+    <string name="entity_custom_scene_url">URL сцены</string>
+    <string name="entity_take_snapshot">Снимок</string>
+    <string name="entity_camera_snapshot">Снимок устройства</string>
+    <string name="entity_video_recording">Запись</string>
+    <string name="entity_camera_video">Видео устройства</string>
+    <string name="entity_person_detected">Лицо обнаружено</string>
+    <string name="entity_male_count">Мужчин</string>
+    <string name="entity_female_count">Женщин</string>
+    <string name="entity_bluetooth_scan_mode">Режим BLE</string>
+    <string name="entity_light_sensor">Датчик света</string>
+    <string name="entity_magnetic_sensor">Магнитный датчик</string>
+    <string name="entity_proximity_sensor">Датчик приближения</string>
+    <string name="entity_screen_brightness">Яркость</string>
+    <string name="entity_battery_level">Уровень батареи</string>
+    <string name="entity_battery_voltage">Напряжение батареи</string>
+    <string name="entity_charging_status">Статус зарядки</string>
+    <string name="entity_microphone_volume">Громкость микр.</string>
+    <string name="entity_wifi_signal">Сигнал WiFi</string>
+    <string name="entity_device_ip">IP устройства</string>
+    <string name="entity_storage_free">Свободно</string>
+    <string name="entity_memory_usage">Память</string>
+    <string name="entity_device_uptime">Время работы</string>
+    <string name="entity_kill_app">Закрыть</string>
+    <string name="entity_reboot_device">Перезагрузка</string>
+    <string name="entity_intent_launcher_status">Статус запуска</string>
+    <string name="entity_bluetooth_rssi_threshold">Порог RSSI</string>
+    <string name="entity_bluetooth_away_delay">Задержка</string>
+    
+    <!-- ==================== Bluetooth ==================== -->
+    <string name="bluetooth_scan_mode_active">Активный</string>
+    <string name="bluetooth_scan_mode_passive">Пассивный</string>
+    <string name="bluetooth_device_presence">Присутствие %s</string>
+    <string name="entity_bluetooth_scan_power">Мощность сканирования Bluetooth</string>
+    <string name="bluetooth_scan_power_high">Высокая производительность</string>
+    <string name="bluetooth_scan_power_balanced">Сбалансированный</string>
+    <string name="bluetooth_scan_power_low">Низкое энергопотребление</string>
+    
+    <!-- ==================== Settings Groups ==================== -->
+    <string name="section_core_connection">Связь</string>
+    <string name="section_interaction_visual">Интерфейс</string>
+    <string name="section_local_service">Сервисы</string>
+    <string name="settings_group_connection">ESPHome</string>
+    <string name="settings_group_connection_en">Голос</string>
+    <string name="settings_group_connection_desc">Слово · Имя · Порт</string>
+    <string name="settings_group_interaction">Экран</string>
+    <string name="settings_group_interaction_en">Интеракция</string>
+    <string name="settings_group_interaction_desc">Диалог · Окна · Часы</string>
+    <string name="settings_group_experimental">Эксперим.</string>
+    <string name="settings_group_experimental_en">Лаб</string>
+    <string name="settings_group_experimental_desc">Камера · Снимок</string>
+    <string name="settings_group_service">Сервис устройства</string>
+    <string name="settings_group_service_en">Статус</string>
+    <string name="settings_group_service_desc">Датчики · Экран</string>
+    <string name="settings_group_browser">Браузер</string>
+    <string name="settings_group_browser_en">Киоск</string>
+    <string name="settings_group_browser_desc">Зум · Тач · Рендер</string>
+    <string name="settings_group_bluetooth">Bluetooth</string>
+    <string name="settings_group_bluetooth_en">Прокси</string>
+    <string name="settings_group_bluetooth_desc">Маяки · Поиск</string>
+    <string name="settings_group_screensaver">Заставка</string>
+    <string name="settings_group_screensaver_en">Онлайн</string>
+    <string name="settings_group_screensaver_desc">URL · Ярк · Движ</string>
+    <string name="settings_group_root">Доступ</string>
+    <string name="settings_group_root_en">Права</string>
+    <string name="settings_group_root_desc">Совм · Синх · Рут</string>
+    <string name="settings_category_service">Сервис</string>
+    <string name="settings_category_display">Экран</string>
+    <string name="settings_category_weather">Погода</string>
+    
+    <!-- ==================== Notification & Sound ==================== -->
+    <string name="notification_sound">Звук уведомл.</string>
+    <string name="notification_sound_desc">Звук при показе сцены</string>
+    <string name="select_sound">Выбрать звук</string>
+    <string name="select_external_audio">+ Внешний звук</string>
+    <string name="sound_none">Нет</string>
+    <string name="sound_unknown">Неизвестно</string>
+    <string name="wake_sound_select">Звук пробуждения</string>
+    <string name="wake_sound_default">Звук по умолчанию</string>
+    <string name="wake_sound_1">Звук слова 1</string>
+    <string name="wake_sound_2">Звук слова 2</string>
+    <string name="wake_sound_select_prefix">Выбрано: </string>
+    <string name="sound_select_external">+ Внешний звук</string>
+    
+    <!-- ==================== Custom Scene ==================== -->
+    <string name="custom_scene_config">Сцены</string>
+    <string name="custom_scene_desc">Загрузить сцены из JSON.</string>
+    <string name="custom_scene_json_format">Требования JSON:</string>
+    <string name="custom_scene_json_requirements">• Валидный JSON массив или объект с ключом "scenes"\n• Каждой сцене нужны title, icon, color\n• Иконки FontAwesome</string>
+    <string name="custom_scene_example_hint">Нажмите "Пример" для образца.</string>
+    <string name="custom_scene_use_example">Пример</string>
+    <string name="custom_scene_i_know">Понял</string>
+    <string name="settings_scene_display_duration">Длительность сцены</string>
+    <string name="settings_scene_display_duration_desc">Время показа в секундах</string>
+    <string name="settings_custom_scene_url">JSON сцены</string>
+    <string name="settings_custom_scene_not_configured">Не задано</string>
+    <string name="settings_custom_scene_count">Настроено: %1$d</string>
+    <string name="settings_custom_scene_loaded">Загружено: %1$d</string>
+    <string name="settings_custom_scene_loading">Загрузка...</string>
+    <string name="settings_custom_scene_url_placeholder">Введите URL JSON</string>
+    <string name="error_json_empty">Пустое содержимое</string>
+    <string name="error_json_not_array">Ошибка: не массив</string>
+    <string name="error_json_no_scenes">Сцен нет</string>
+    <string name="error_json_parse_failed">Ошибка: %1$s</string>
+    
+    <!-- ==================== Screen Control ==================== -->
+    <string name="screen_toggle_on_success">Экран включен (%1$s)</string>
+    <string name="screen_toggle_off_success">Экран выключен (%1$s)</string>
+    <string name="screen_toggle_failed">Экран не управляется: Root/Шизуку</string>
+    <string name="settings_keep_screen_on">Не гасить экран</string>
+    <string name="settings_keep_screen_on_desc">Не снижать яркость</string>
+    <string name="settings_screen_brightness">Яркость</string>
+    <string name="settings_screen_brightness_desc">Синхронизация яркости</string>
+    <string name="settings_force_orientation">Ориентация</string>
+    <string name="settings_force_orientation_desc">Фиксировать ориентацию</string>
+    <string name="settings_force_orientation_mode">Режим ориентации</string>
+    <string name="settings_orientation_portrait">Портрет</string>
+    <string name="settings_orientation_landscape">Альбом</string>
+    <string name="settings_orientation_auto">Система</string>
+    <string name="settings_display_size">Разрешение</string>
+    <string name="settings_display_size_desc">Изменить (нужен ADB)</string>
+    <string name="settings_display_scale">Масштаб</string>
+    <string name="settings_display_scale_desc">Меньше — больше контента</string>
+    <string name="settings_display_size_error">Ошибка, нужен WRITE_SECURE_SETTINGS</string>
+    <string name="settings_auto_unlock">Авторазблок.</string>
+    <string name="settings_auto_unlock_desc">Авторазблок (эксп.)</string>
+    
+    <!-- ==================== Floating Window & Conversation ==================== -->
+    <string name="floating_ai_reply">Ответ ИИ:</string>
+    <string name="settings_floating_window">Субтитры</string>
+    <string name="settings_floating_window_desc">Показывать диалог</string>
+    <string name="settings_continuous_conversation">Непрерывно</string>
+    <string name="settings_continuous_conversation_desc">Слушать после TTS</string>
+    <string name="settings_overlay_permission_required">Нужно разрешение наложения</string>
+    <string name="settings_write_settings_permission_required">Нужно разрешение системных настроек</string>
+    <string name="settings_device_not_supported">Устройство не поддерживается</string>
+    
+    <!-- ==================== Album Display ==================== -->
+    <string name="settings_vinyl_cover">Альбом</string>
+    <string name="settings_vinyl_cover_desc">Показывать обложку</string>
+    <string name="settings_ha_media_player">HA плеер</string>
+    <string name="settings_ha_media_player_desc">Данные плеера</string>
+    <string name="settings_ha_media_player_dialog_desc">ID сущности плеера для обложки, напр. media_player.xxx</string>
+    <string name="vinyl_cover_hiding">Скрытие текста</string>
+    
+    <!-- ==================== Display Settings ==================== -->
+    <string name="settings_hide_header">Скрыть заголовок</string>
+    <string name="settings_hide_header_desc">Скрыть название и подзаголовок Ava</string>
+    <string name="settings_dark_mode">Тёмный режим</string>
+    <string name="settings_dark_mode_desc">Переключить день/ночь</string>
+    
+    <!-- ==================== Dream Clock ==================== -->
+    <string name="settings_dream_clock">Часы</string>
+    <string name="settings_dream_clock_desc">Плавающие часы</string>
+    <string name="settings_dream_clock_ha_switch">Управление в HA</string>
+    <string name="settings_dream_clock_ha_switch_desc">Показ/скрытие</string>
+    
+    <!-- ==================== Weather Display ==================== -->
+    <string name="weather_city">Город</string>
+    <string name="settings_weather_overlay">Погода</string>
+    <string name="settings_weather_overlay_desc">Погодный экран</string>
+    <string name="settings_weather_overlay_realtime_desc">Показывать сейчас</string>
+    <string name="settings_weather_overlay_ha_switch">Управление в HA</string>
+    <string name="settings_weather_overlay_ha_switch_desc">Показ/скрытие</string>
+    <string name="settings_ha_weather_entity">Сущность погоды</string>
+    <string name="settings_ha_weather_entity_short_desc">Данные погоды</string>
+    <string name="settings_ha_weather_entity_desc">ID сущности, напр. weather.home</string>
+    <string name="weather_humidity">Влажность</string>
+    <string name="weather_air">Воздух</string>
+    <string name="weather_pressure">Давление</string>
+    <string name="weather_wind_speed">Ветер</string>
+    <string name="weather_wind_direction">Направл.</string>
+    <string name="weather_sunny">Солнечно</string>
+    <string name="weather_clear_night">Ясн. ночь</string>
+    <string name="weather_partly_cloudy">Перем. облак.</string>
+    <string name="weather_cloudy">Облачно</string>
+    <string name="weather_light_rain">Легк. дождь</string>
+    <string name="weather_rainy">Дождь</string>
+    <string name="weather_heavy_rain">Сильн. дождь</string>
+    <string name="weather_light_snow">Легк. снег</string>
+    <string name="weather_snowy">Снег</string>
+    <string name="weather_heavy_snow">Сильн. снег</string>
+    <string name="weather_fog">Туман</string>
+    <string name="weather_haze">Дымка</string>
+    <string name="weather_wind">Ветрено</string>
+    <string name="weather_sandstorm">Песчаная буря</string>
+    <string name="weather_wind_n">С</string>
+    <string name="weather_wind_ne">СВ</string>
+    <string name="weather_wind_e">В</string>
+    <string name="weather_wind_se">ЮВ</string>
+    <string name="weather_wind_s">Ю</string>
+    <string name="weather_wind_sw">ЮЗ</string>
+    <string name="weather_wind_w">З</string>
+    <string name="weather_wind_nw">СЗ</string>
+    
+    <!-- ==================== Screensaver Settings ==================== -->
+    <string name="settings_screensaver_url">URL заставки</string>
+    <string name="settings_screensaver_url_desc">URL страницы заставки</string>
+    <string name="settings_screensaver_url_visible">Показать URL</string>
+    <string name="settings_screensaver_url_visible_desc">Показать сущность в HA</string>
+    <string name="settings_xiaomi_wallpaper">Стиль Xiaomi</string>
+    <string name="settings_xiaomi_wallpaper_desc">Случайные обои</string>
+    <string name="settings_screensaver_enable">Заставка</string>
+    <string name="settings_screensaver_enable_desc">Показывать после тайм-аута</string>
+    <string name="settings_screensaver_timeout">Тайм-аут</string>
+    <string name="settings_screensaver_timeout_desc">Секунды бездействия</string>
+    <string name="settings_screensaver_dark_off">Гасить в темноте</string>
+    <string name="settings_screensaver_dark_off_desc">Выключать экран в темноте</string>
+    <string name="settings_screensaver_background_pause">Пауза в фоне</string>
+    <string name="settings_screensaver_background_pause_desc">Пауза при другом приложении</string>
+    <string name="settings_screensaver_motion_on">Пробуждение</string>
+    <string name="settings_screensaver_motion_on_desc">Пробуждать по датчику</string>
+    <!-- ==================== Browser Settings ==================== -->
+    <string name="settings_browser_pull_refresh">Потянуть для обновл.</string>
+    <string name="settings_browser_pull_refresh_desc">Потянуть вниз для обновления</string>
+    <string name="settings_browser_initial_scale">Масштаб</string>
+    <string name="settings_browser_initial_scale_desc">0 для авто</string>
+    <string name="settings_browser_font_size">Размер шрифта</string>
+    <string name="settings_browser_font_size_desc">100 — обычно</string>
+    <string name="settings_browser_settings_button">Кнопка настроек</string>
+    <string name="settings_browser_settings_button_desc">Иконка справа снизу</string>
+    <string name="settings_browser_search_engine">Поисковик</string>
+    <string name="settings_browser_touch">Сенсор</string>
+    <string name="settings_browser_touch_desc">Разрешить клики</string>
+    <string name="settings_browser_drag">Перетаскивание</string>
+    <string name="settings_browser_drag_desc">Прокрутка и drag</string>
+    <string name="settings_browser_render_mode">Рендер</string>
+    <string name="settings_browser_render_mode_desc">Если страница ломается</string>
+    <string name="settings_browser_render_hardware">Аппаратный</string>
+    <string name="settings_browser_render_software">Программный</string>
+    <string name="render_hardware">Аппаратный</string>
+    <string name="render_software">Программный</string>
+    <string name="settings_browser_ha_remote_url">Удаленное управление</string>
+    <string name="settings_browser_ha_remote_url_desc">Открывать URL через HA. Включите — появится сущность. Введите URL для показа, очистите для скрытия</string>
+    <string name="settings_browser_ha_display_switch">Управление в HA</string>
+    <string name="settings_browser_ha_display_switch_desc">Показать переключатель в HA</string>
+    <string name="settings_browser_advanced_control">HA управление</string>
+    <string name="settings_browser_advanced_control_desc">Команды браузера</string>
+    <string name="settings_browser_back_key_hide">Скрывать по Back</string>
+    <string name="settings_browser_back_key_hide_desc">Скрывать окно по Back</string>
+    <string name="settings_browser_clear_cache">Очистить кэш</string>
+    <string name="settings_browser_clear_cache_desc">Кэш, cookies, история</string>
+    <string name="settings_browser_cache_cleared">Кэш очищен</string>
+    <string name="advanced_control_help_title">Команды браузера</string>
+    <string name="advanced_control_help_desc">Управление браузером через Home Assistant. JS, яркость, громкость и т.д.</string>
+    <string name="advanced_control_call_title">Как вызвать</string>
+    <string name="advanced_control_call_content">action: esphome.xxx_webview_command\ndata:\n  command: \'ваша команда\'</string>
+    <string name="advanced_control_commands_title">Команды</string>
+    <string name="advanced_control_commands_content">JS: {\"eval\": \"code\"}\nОбновить: {\"reload\": true}\nОчистить кэш: {\"clearCache\": true}\nЯркость(0-255): {\"brightness\": 128}\nГромкость(0-100): {\"volume\": 50}</string>
+    <string name="advanced_control_copy">Скопировать</string>
+    <string name="advanced_control_ai_link_title">Ссылка на AI (нажмите для копирования)</string>
+    <string name="advanced_control_dismiss">Понял</string>
+    
+    <!-- ==================== Bluetooth Settings ==================== -->
+    <string name="settings_bluetooth_detect">Поиск устройств</string>
+    <string name="settings_bluetooth_detect_desc">Искать рядом</string>
+    <string name="settings_bluetooth_rssi_threshold">Порог RSSI</string>
+    <string name="settings_bluetooth_rssi_threshold_desc">Влево ближе, вправо дальше</string>
+    <string name="settings_bluetooth_away_delay">Задержка</string>
+    <string name="settings_bluetooth_away_delay_desc">Время до "вне зоны"</string>
+    <string name="settings_bluetooth_add_device_hint">Добавьте устройства Bluetooth для отслеживания присутствия. Когда устройство рядом, оно будет отмечено как присутствующее в Home Assistant.</string>
+    <string name="settings_bluetooth_enable_hint">Включите обнаружение и Bluetooth для использования</string>
+    <string name="settings_bluetooth_tracked_devices">Присутствие | BLE</string>
+    <string name="settings_bluetooth_nearby">Рядом</string>
+    <string name="settings_bluetooth_not_nearby">Не рядом</string>
+    <string name="settings_bluetooth_select_device">Выбрать устройство</string>
+    <string name="settings_bluetooth_searching">Поиск устройств...</string>
+    <string name="settings_bluetooth_no_device">Нет устройств</string>
+    <string name="settings_bluetooth_already_added">Уже добавлено</string>
+    <string name="settings_bluetooth_paired">Спарено</string>
+    <string name="settings_bluetooth_unknown_device">Неизвестно</string>
+    <string name="settings_bluetooth_permission_required">Нужны Bluetooth и гео</string>
+    <string name="settings_bluetooth_wifi_conflict">Bluetooth может мешать WiFi</string>
+    <string name="settings_bluetooth_proxy">BLE Прокси | Mesh</string>
+    <string name="settings_bluetooth_proxy_title">Прокси Bluetooth</string>
+    <string name="settings_bluetooth_proxy_desc">Пересылка BLE в HA</string>
+    <string name="settings_bluetooth_proxy_device_name">Имя устройства</string>
+    <string name="settings_bluetooth_proxy_mac_address">Адрес</string>
+    <string name="settings_bluetooth_proxy_scan_mode">Режим сканирования</string>
+    <string name="settings_bluetooth_proxy_scan_active">Активное</string>
+    <string name="settings_bluetooth_proxy_scan_passive">Пассивное</string>
+    <string name="settings_bluetooth_proxy_scan_power">Мощность сканирования</string>
+    
+    <!-- ==================== Sensor Settings ==================== -->
+    <string name="settings_environment_sensor">Датчики среды</string>
+    <string name="settings_environment_sensor_desc">Отправлять в HA</string>
+    <string name="settings_sensor_update_interval">Интервал</string>
+    <string name="settings_sensor_update_interval_desc">Частота отправки</string>
+    <string name="settings_sensor_enabled">Датчики среды</string>
+    <string name="settings_sensor_enabled_desc">Включить чтение</string>
+    <string name="settings_battery_monitor">Батарея</string>
+    <string name="settings_battery_monitor_desc">Статус зарядки</string>
+    <string name="settings_proximity_sensor">Датчик приближения</string>
+    <string name="settings_proximity_sensor_desc">Включить датчик</string>
+    <string name="settings_proximity_send_to_hass">Отправка в HA</string>
+    <string name="settings_proximity_send_to_hass_desc">Синхронизация состояния</string>
+    <string name="settings_proximity_wake_screen">Пробуждение</string>
+    <string name="settings_proximity_wake_screen_desc">Будить экран рядом</string>
+    <string name="settings_proximity_threshold">Порог</string>
+    <string name="settings_proximity_threshold_desc">Будить при близости</string>
+    <string name="settings_proximity_away_delay">Задержка</string>
+    <string name="settings_proximity_away_delay_desc">Секунды до "далеко"</string>
+    
+    <!-- ==================== Diagnostic Info ==================== -->
+    <string name="settings_diagnostic_sensor">Диагностика</string>
+    <string name="settings_diagnostic_sensor_desc">Отправлять в HA</string>
+    <string name="settings_intent_launcher">Выполнение Intent</string>
+    <string name="settings_intent_launcher_desc">Удалённое выполнение Intent</string>
+    <string name="settings_intent_launcher_ha_display">Показать в Home Assistant</string>
+    <string name="settings_intent_launcher_ha_display_desc">Удалённое управление launch_intent</string>
+    <string name="settings_intent_launcher_usage_title">Инструкция</string>
+    <string name="settings_intent_launcher_usage_desc">Удалённое выполнение Android Intent через Home Assistant для открытия приложений или настроек.</string>
+    <string name="settings_intent_launcher_usage_call_title">Как вызвать</string>
+    <string name="settings_intent_launcher_usage_call_content">action: esphome.имя_устройства_launch_intent\ndata:\n  intent_uri: \"spotify://\"</string>
+    <string name="settings_intent_launcher_usage_format_title">Форматы</string>
+    <string name="settings_intent_launcher_usage_format_content">Открыть приложение:\n spotify://com.spotify.music\nСистемные настройки:\n  intent:#Intent;action=android.settings.SETTINGS;end</string>
+    <string name="settings_diagnostic_wifi">WiFi</string>
+    <string name="settings_diagnostic_wifi_desc">Сила сигнала</string>
+    <string name="settings_diagnostic_ip">IP</string>
+    <string name="settings_diagnostic_ip_desc">Сетевой адрес</string>
+    <string name="settings_diagnostic_storage">Память</string>
+    <string name="settings_diagnostic_storage_desc">Свободное место</string>
+    <string name="settings_diagnostic_memory">RAM</string>
+    <string name="settings_diagnostic_memory_desc">Занято</string>
+    <string name="settings_diagnostic_uptime">Аптайм</string>
+    <string name="settings_diagnostic_uptime_desc">Время работы</string>
+    <string name="settings_diagnostic_kill_app">Закрыть</string>
+    <string name="settings_diagnostic_kill_app_desc">Принудительно закрыть</string>
+    <string name="settings_diagnostic_reboot">Перезагрузка</string>
+    <string name="settings_diagnostic_reboot_desc">Перезагрузить устройство</string>
+    <string name="settings_diagnostic_battery_level">Заряд</string>
+    <string name="settings_diagnostic_battery_voltage">Напряжение</string>
+    <string name="settings_diagnostic_charging_status">Зарядка</string>
+    
+    <!-- ==================== Shizuku Permissions ==================== -->
+    <string name="settings_shizuku_title">Авторизация Shizuku</string>
+    <string name="settings_shizuku_desc">Права через Shizuku</string>
+    <string name="settings_shizuku_not_installed">Shizuku не установлен</string>
+    <string name="settings_shizuku_not_running">Shizuku не запущен</string>
+    <string name="settings_shizuku_authorized">Разрешено</string>
+    <string name="settings_shizuku_waiting">Ожидание</string>
+    <string name="settings_shizuku_install">Установить Shizuku</string>
+    <string name="settings_shizuku_start">Запустить Shizuku</string>
+    <string name="settings_shizuku_authorize">Авторизовать</string>
+    <string name="settings_shizuku_refresh">Обновить</string>
+    <string name="settings_shizuku_guide">Инструкция</string>
+    <string name="settings_shizuku_guide_text">Shizuku — инструмент управления правами.\n\nШаги:\n1. Установите Shizuku с GitHub\n2. Включите через отладку/ADB\n3. Вернитесь и нажмите Авторизовать</string>
+    <string name="settings_root_status">Статус Root</string>
+    <string name="settings_root_available">Root доступ есть</string>
+    <string name="settings_root_unavailable">Root недоступен</string>
+    
+    <!-- ==================== Camera Settings ==================== -->
+    <string name="settings_experimental">Эксперим.</string>
+    <string name="settings_camera_enabled">Удаленная камера</string>
+    <string name="settings_camera_enabled_desc">Управление камерой из HA</string>
+    <string name="settings_no_camera">Камера не найдена</string>
+    <string name="settings_camera_mode">Режим камеры</string>
+    <string name="settings_camera_mode_snapshot">Снимок</string>
+    <string name="settings_camera_mode_snapshot_desc">Сделать снимок</string>
+    <string name="settings_camera_mode_video">Видео</string>
+    <string name="settings_camera_mode_video_desc">Запись и поток</string>
+    <string name="settings_person_detection">Распознавание лиц</string>
+    <string name="settings_person_detection_desc">Обнаружение лиц в видео</string>
+    <string name="settings_face_box">Показать рамку</string>
+    <string name="settings_face_box_desc">Рамка вокруг лиц</string>
+    <string name="settings_video_fps">FPS</string>
+    <string name="settings_video_fps_desc">Ниже — стабильнее</string>
+    <string name="settings_video_fps_format">%d кадров/с</string>
+    <string name="settings_video_resolution">Разрешение</string>
+    <string name="settings_video_resolution_240">Плавно (320×240)</string>
+    <string name="settings_video_resolution_360">SD (480×360)</string>
+    <string name="settings_video_resolution_480">HD (640×480)</string>
+    <string name="settings_video_resolution_720">FHD (960×720)</string>
+    <string name="settings_camera_position">Камера</string>
+    <string name="settings_camera_back">Задняя</string>
+    <string name="settings_camera_front">Передняя</string>
+    <string name="settings_image_size">Размер</string>
+    <string name="settings_image_size_original">Оригинал</string>
+    <string name="settings_image_size_500">500px</string>
+    <string name="settings_image_size_720">720px</string>
+    <string name="settings_image_size_1080">1080px</string>
+    
+    <!-- ==================== Service Settings ==================== -->
+    <string name="settings_port_description">Сменить порт при конфликте</string>
+    <string name="settings_auto_restart">Автозапуск</string>
+    <string name="settings_auto_restart_desc">Запуск при старте</string>
+    <string name="microphone_muted_toast">Микрофон выкл.</string>
+    <string name="microphone_unmuted_toast">Микрофон вкл.</string>
+    
+    <!-- ==================== About Page ==================== -->
+    <string name="settings_about">О приложении</string>
+    <string name="settings_device_info">Инфо устройства</string>
+    <string name="settings_author">Автор</string>
+    <string name="settings_secondary_dev">Второй разработчик</string>
+    <string name="settings_project_url">Ссылка проекта</string>
+    <string name="github_project">Open Source</string>
+    <string name="ava_version">Ava %1$s (Stable)</string>
+    <string name="device_ip">IP: %1$s</string>
+    <string name="original_author">Автор: brownard</string>
+    <string name="secondary_dev">Разраб.: knoop7</string>
+    
+    <!-- ==================== Welcome Page ==================== -->
+    <string name="welcome_title">Добро пожаловать в Ava</string>
+    <string name="welcome_subtitle">Больше советов о умном доме</string>
+    <string name="qr_code_desc">QR-код</string>
+    <string name="wechat_account">Умный дом</string>
+    <string name="auto_close_countdown">Закрытие через 10 сек</string>
+    
+    <!-- ==================== Update Prompt ==================== -->
+    <string name="update_available">Доступно обновление</string>
+    <string name="update_changelog">Что нового</string>
+    <string name="update_later">Позже</string>
+    <string name="update_now">Обновить</string>
+    
+    <!-- ==================== Missing Translations ==================== -->
+    <string name="entity_screensaver_display">Отображение заставки</string>
+    <string name="settings_bluetooth_add_device">Добавить устройство</string>
+    <string name="settings_browser_tampermonkey">Tampermonkey</string>
+    <string name="settings_browser_tampermonkey_desc">Включить поддержку пользовательских скриптов</string>
+    <string name="settings_browser_useragent">Идентификатор браузера</string>
+    <string name="settings_browser_useragent_desc">Переключить идентификатор для доступа к разным версиям сайтов</string>
+    <string name="settings_ha_switch_overlay">Оверлей выключателя</string>
+    <string name="settings_ha_switch_overlay_desc">Показывать напоминание при управлении светом голосом</string>
+    <string name="settings_screensaver_ha_display">Показать в Home Assistant</string>
+    <string name="settings_screensaver_ha_display_desc">Показать управление заставкой в Home Assistant</string>
+    <string name="settings_screensaver_url_hint">Чтобы использовать Home Assistant как заставку, сначала включите отображение браузера, введите URL HA и войдите для синхронизации cookies.</string>
+    <string name="tampermonkey_add_script">Добавить скрипт</string>
+    <string name="tampermonkey_add_script_desc">Легкий менеджер скриптов на основе Android-WebMonkey. Спасибо warren-bank за открытый исходный код.\n\nМожет: GM_getValue/setValue, GM_addStyle, GM_xmlhttpRequest, GM_cookie, GM_notification и др.\n\nНе может: GM_download, GM_webRequest, unsafeWindow\n\nПроект: github.com/warren-bank/Android-WebMonkey</string>
+    <string name="tampermonkey_install_failed">Не удалось установить скрипт</string>
+    <string name="tampermonkey_install_script">Внешние скрипты</string>
+    <string name="tampermonkey_installing">Открытие сайта скрипта...</string>
+    <string name="tampermonkey_manage_scripts">Управление скриптами</string>
+    <string name="tampermonkey_no_scripts">Скрипты не установлены</string>
+    <string name="tampermonkey_script_installed">Скрипт установлен</string>
+    <string name="tampermonkey_scripts_installed">скриптов установлено</string>
+    <string name="entity_quick_entity_display">Панель быстрых сущностей</string>
+    <string name="entity_quick_entity_slot">Слот быстрой сущности %1$d</string>
+    <string name="settings_quick_entity_ha_slots">Конфигурация слотов HA</string>
+    <string name="settings_quick_entity_ha_slots_desc">Разрешить настройку слотов сущностей из Home Assistant</string>
+    <string name="quick_entity_hidden">Панель быстрых сущностей скрыта</string>
+    <string name="quick_entity_long_press_hint">Удерживайте 5 секунд, чтобы скрыть панель</string>
+    <string name="settings_quick_entity">Быстрое управление сущностями</string>
+    <string name="settings_quick_entity_clear_slot">Очистить этот слот</string>
+    <string name="settings_quick_entity_color">Цвет</string>
+    <string name="settings_quick_entity_color_auto">Автоцвет по типу иконки</string>
+    <string name="settings_quick_entity_color_custom">Пользовательский цвет</string>
+    <string name="settings_quick_entity_color_custom_hint">Введите HEX-код цвета, например #FF5733</string>
+    <string name="settings_quick_entity_configure">Настроить сущности</string>
+    <string name="settings_quick_entity_desc">Панель быстрого управления сущностями в стиле Stream Deck</string>
+    <string name="settings_quick_entity_empty">Не настроено</string>
+    <string name="settings_quick_entity_icon">Иконка</string>
+    <string name="settings_quick_entity_id">ID сущности</string>
+    <string name="settings_quick_entity_id_hint">Введите ID сущности из Home Assistant</string>
+    <string name="settings_quick_entity_save">Сохранить</string>
+    <string name="settings_quick_entity_slot">Слот сущности %1$d</string>
+    <string name="settings_quick_entity_supported_types">Поддерживает: switch, button, light, sensor, binary_sensor, cover, climate, fan, input_boolean, input_number, input_select, input_text, scene, script, vacuum, water_heater</string>
+    <string name="useragent_default">По умолчанию (Android)</string>
+    <string name="useragent_desktop">Десктоп (Windows)</string>
+    <string name="useragent_ios">iOS (iPhone)</string>
+    <string name="useragent_macos">macOS (Safari)</string>
+</resources>

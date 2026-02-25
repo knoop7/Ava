@@ -17,14 +17,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ava.R
+import com.example.ava.ui.prefs.rememberBooleanPreference
+import com.example.ava.ui.screens.home.KEY_DARK_MODE
+import com.example.ava.ui.screens.home.PREFS_NAME
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+
+private val DialogBackgroundLight = androidx.compose.ui.graphics.Color.White
+private val DialogBackgroundDark = androidx.compose.ui.graphics.Color(0xFF1F1F1F)
+private val TitleColorLight = androidx.compose.ui.graphics.Color(0xFF1E293B)
+private val TitleColorDark = androidx.compose.ui.graphics.Color(0xFFF1F5F9)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,10 +47,14 @@ fun DialogScope.ActionDialog(
     onConfirmRequest: () -> Unit = {},
     content: @Composable () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE) }
+    val isDarkMode by rememberBooleanPreference(prefs, KEY_DARK_MODE, false)
     
-    val accentColor = androidx.compose.ui.graphics.Color(0xFF4F46E5) 
-    val titleColor = androidx.compose.ui.graphics.Color(0xFF1E293B) 
-    val labelColor = androidx.compose.ui.graphics.Color(0xFF334155) 
+    val accentColor = if (isDarkMode) androidx.compose.ui.graphics.Color(0xFFA78B73) else androidx.compose.ui.graphics.Color(0xFF0417E0) 
+    val dialogBackground = if (isDarkMode) DialogBackgroundDark else DialogBackgroundLight
+    val titleColor = if (isDarkMode) TitleColorDark else TitleColorLight
+    val labelColor = if (isDarkMode) TitleColorDark else androidx.compose.ui.graphics.Color(0xFF334155)
     val subLabelColor = androidx.compose.ui.graphics.Color(0xFF94A3B8) 
     
     BasicAlertDialog(
@@ -50,7 +65,7 @@ fun DialogScope.ActionDialog(
                 .wrapContentWidth()
                 .wrapContentHeight(),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
-            color = androidx.compose.ui.graphics.Color.White,
+            color = dialogBackground,
             tonalElevation = AlertDialogDefaults.TonalElevation,
         ) {
             Column(modifier = Modifier.padding(20.dp)) {

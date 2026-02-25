@@ -40,14 +40,26 @@ class WifiWakeLock {
         )
     }
 
-    @SuppressLint("WakelockTimeout")
+    private val WAKELOCK_TIMEOUT_MS = 30 * 60 * 1000L
+    
     fun acquire() {
         check(::wakeLock.isInitialized && ::wifiLock.isInitialized) {
             "acquire called before create"
         }
-        wakeLock.acquire()
+        wakeLock.acquire(WAKELOCK_TIMEOUT_MS)
         wifiLock.acquire()
-        Log.d(TAG, "Acquired wake locks")
+        Log.d(TAG, "Acquired wake locks with ${WAKELOCK_TIMEOUT_MS}ms timeout")
+    }
+    
+    fun renewIfNeeded() {
+        if (!::wakeLock.isInitialized || !::wifiLock.isInitialized) return
+        if (!wakeLock.isHeld) {
+            wakeLock.acquire(WAKELOCK_TIMEOUT_MS)
+            if (!wifiLock.isHeld) {
+                wifiLock.acquire()
+            }
+            Log.d(TAG, "Renewed wake locks")
+        }
     }
 
     fun release() {

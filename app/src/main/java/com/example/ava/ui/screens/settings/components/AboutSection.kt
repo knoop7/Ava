@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,16 +24,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ava.R
+import com.example.ava.ui.prefs.rememberBooleanPreference
+import com.example.ava.ui.screens.home.KEY_DARK_MODE
+import com.example.ava.ui.screens.home.PREFS_NAME
 import java.net.NetworkInterface
+import com.example.ava.ui.theme.SlateText as SlateTextLight
+import com.example.ava.ui.theme.SlateTertiary as SlateSecondary
+import com.example.ava.ui.theme.SlateBorder as CardBorder
 
-private val SlateText = Color(0xFF1E293B)
-private val SlateSecondary = Color(0xFF94A3B8)
+private val SlateTextDark = Color(0xFFF1F5F9)
 private val SlateTertiary = Color(0xFFCBD5E1)
-private val CardBorder = Color(0xFFE2E8F0)
+private val CardBackgroundLight = Color.White
+private val CardBackgroundDark = Color(0xFF1F1F1F)
 
 @Composable
 fun AboutSection() {
     val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences(PREFS_NAME, android.content.Context.MODE_PRIVATE) }
+    val isDarkMode by rememberBooleanPreference(prefs, KEY_DARK_MODE, false)
+    val slateText = if (isDarkMode) SlateTextDark else SlateTextLight
+    val cardBackground = if (isDarkMode) CardBackgroundDark else CardBackgroundLight
     
     val versionName = remember {
         try {
@@ -64,8 +75,8 @@ fun AboutSection() {
         
         Surface(
             shape = RoundedCornerShape(50),
-            color = Color.White,
-            shadowElevation = 1.dp,
+            color = cardBackground,
+            shadowElevation = if (isDarkMode) 0.dp else 1.dp,
             modifier = Modifier.clickable {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/knoop7/Ava"))
                 context.startActivity(intent)
@@ -73,7 +84,7 @@ fun AboutSection() {
         ) {
             Row(
                 modifier = Modifier
-                    .border(1.dp, CardBorder, RoundedCornerShape(50))
+                    .border(1.dp, if (isDarkMode) Color(0xFF2D2D2D) else CardBorder, RoundedCornerShape(50))
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -81,12 +92,12 @@ fun AboutSection() {
                 Icon(
                     painter = painterResource(R.drawable.github_24px),
                     contentDescription = "GitHub",
-                    tint = SlateText,
+                    tint = slateText,
                     modifier = Modifier.size(14.dp)
                 )
                 Text(
                     text = stringResource(R.string.github_project),
-                    color = Color(0xFF475569),
+                    color = slateText,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold
                 )

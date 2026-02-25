@@ -846,6 +846,7 @@ message ListEntitiesServicesResponse {
   string name = 1;
   fixed32 key = 2;
   repeated ListEntitiesServicesArgument args = 3;
+  string description = 4;
 }
 message ExecuteServiceArgument {
   option (ifdef) = "USE_API_SERVICES";
@@ -1714,6 +1715,7 @@ message BluetoothScannerStateResponse {
 
   BluetoothScannerState state = 1;
   BluetoothScannerMode mode = 2;
+  BluetoothScannerMode configured_mode = 3;
 }
 
 message BluetoothScannerSetModeRequest {

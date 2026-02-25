@@ -19,16 +19,22 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.BATTERY_STATS" tools:ignore="ProtectedPermissions" />
 
     
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" tools:targetApi="s" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="com.android.permission.GET_INSTALLED_APPS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
 
     <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
@@ -105,7 +111,7 @@
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".services.ScreensaverService"
+            android:name=".services.QuickEntityOverlayService"
             android:enabled="true"
             android:exported="false" />
         <service
@@ -121,7 +127,11 @@
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".services.WakeAnimationService"
+            android:name=".services.WakeRippleService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".services.HaSwitchOverlayService"
             android:enabled="true"
             android:exported="false" />
         <activity
@@ -144,6 +154,21 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <receiver
+            android:name=".receivers.AvaControlReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:directBootAware="true">
+            <intent-filter android:priority="1000">
+                <action android:name="com.example.ava.ACTION_TOGGLE_MIC" />
+                <action android:name="com.example.ava.ACTION_MUTE_MIC" />
+                <action android:name="com.example.ava.ACTION_UNMUTE_MIC" />
+                <action android:name="com.example.ava.ACTION_WAKE" />
+                <action android:name="com.example.ava.ACTION_STOP" />
+                <action android:name="com.example.ava.ACTION_START_SERVICE" />
+                <action android:name="com.example.ava.ACTION_STOP_SERVICE" />
+            </intent-filter>
+        </receiver>
+        <receiver
             android:name=".receivers.BootReceiver"
             android:enabled="true"
             android:exported="true"
@@ -154,6 +179,10 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="com.samsung.android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="com.huawei.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.vivo.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.oppo.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.REBOOT" />
             </intent-filter>
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />

@@ -52,31 +52,40 @@
             background-repeat: no-repeat;
             z-index: 1;
             opacity: 0;
-            transform-style: preserve-3d;
-            transform: scale(1.2);
-            transition: opacity 1.5s ease-in-out;
+            transform: scale(1.15);
+            filter: blur(8px);
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out, filter 1.5s ease-in-out;
         }
 
         .wallpaper-layer.active {
             opacity: 1;
+            transform: scale(1.1);
+            filter: blur(0);
             animation: parallax3D 60s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+        
+        .wallpaper-layer.exiting {
+            opacity: 0;
+            transform: scale(1.05);
+            filter: blur(8px);
         }
         
         @keyframes parallax3D {
             0% {
-                transform: scale(1.2) translate3d(0, 0, 50px) rotateX(1deg) rotateY(-1deg);
+                transform: scale(1.1) translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
             }
             25% {
-                transform: scale(1.15) translate3d(-2%, -1%, 30px) rotateX(-0.5deg) rotateY(1deg);
+                transform: scale(1.08) translate3d(-1%, -0.5%, 10px) rotateX(0.5deg) rotateY(-0.5deg);
             }
             50% {
-                transform: scale(1.1) translate3d(1%, 2%, 0px) rotateX(0.5deg) rotateY(-0.5deg);
+                transform: scale(1.05) translate3d(0, -1%, 15px) rotateX(0deg) rotateY(0deg);
             }
             75% {
-                transform: scale(1.15) translate3d(2%, -1%, 30px) rotateX(-1deg) rotateY(0.5deg);
+                transform: scale(1.08) translate3d(1%, -0.5%, 10px) rotateX(-0.5deg) rotateY(0.5deg);
             }
             100% {
-                transform: scale(1.2) translate3d(0, 0, 50px) rotateX(1deg) rotateY(-1deg);
+                transform: scale(1.1) translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
             }
         }
 
@@ -118,7 +127,7 @@
         }
 
         .hour {
-            font-size: 11vw;
+            font-size: 10vw;
             font-weight: 800;
             letter-spacing: -0.3vw;
             position: relative;
@@ -126,18 +135,18 @@
         }
 
         .colon {
-            font-size: 8vw;
+            font-size: 7.5vw;
             font-weight: 600;
-            margin: 0 0.6vw;
+            margin: 0 0.5vw;
             animation: blink 2s infinite;
             opacity: 0.8;
             position: relative;
-            top: -1.8vw;
+            top: -1.6vw;
             z-index: 2;
         }
 
         .minute {
-            font-size: 11vw;
+            font-size: 10vw;
             font-weight: 800;
             letter-spacing: -0.3vw;
             opacity: 0.6;
@@ -146,9 +155,9 @@
         }
 
         .date-display {
-            margin-top: 2vh;
+            margin-top: 1vh;
             margin-left: 0.5vw;
-            font-size: 1.6vw;
+            font-size: 1.8vw;
             font-weight: 300;
             letter-spacing: 0.15vw;
             display: flex;
@@ -168,7 +177,7 @@
         }
 
         .poem-wrapper {
-            margin-top: 3vh;
+            margin-top: 1.5vh;
             margin-left: 0.5vw;
             padding-left: 2vw;
             border-left: 0.3vw solid rgba(255,255,255,0.8);
@@ -183,7 +192,7 @@
 
         .poem-content {
             font-family: 'Noto Serif SC', serif;
-            font-size: 1.8vw;
+            font-size: 1.6vw;
             font-weight: 700;
             line-height: 1.5;
             margin-bottom: 1vh;
@@ -192,7 +201,7 @@
 
         .poem-meta {
             font-family: 'Noto Serif SC', serif;
-            font-size: 1.2vw;
+            font-size: 1.1vw;
             font-weight: 400;
             opacity: 0.8;
             letter-spacing: 0.1vw;
@@ -289,9 +298,36 @@
 
     <script>
         const WALLPAPER_API = 'https://v2.xxapi.cn/api/wallpaper';
+        const CACHE_KEY_WALLPAPER = 'xiaomi_wallpaper_cache';
+        const CACHE_KEY_POETRY = 'xiaomi_poetry_cache';
 
         let currentBgIndex = 1;
         let isFetching = false;
+        
+        function getCachedWallpaper() {
+            try {
+                return localStorage.getItem(CACHE_KEY_WALLPAPER);
+            } catch (e) { return null; }
+        }
+        
+        function setCachedWallpaper(url) {
+            try {
+                localStorage.setItem(CACHE_KEY_WALLPAPER, url);
+            } catch (e) {}
+        }
+        
+        function getCachedPoetry() {
+            try {
+                const data = localStorage.getItem(CACHE_KEY_POETRY);
+                return data ? JSON.parse(data) : null;
+            } catch (e) { return null; }
+        }
+        
+        function setCachedPoetry(content, author, dynasty) {
+            try {
+                localStorage.setItem(CACHE_KEY_POETRY, JSON.stringify({ content, author, dynasty }));
+            } catch (e) {}
+        }
 
         function isChinese() {
             const lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
@@ -334,70 +370,103 @@
             const nextBgIndex = currentBgIndex === 1 ? 2 : 1;
             const nextBgEl = document.getElementById(`bg-${nextBgIndex}`);
             const currentBgEl = document.getElementById(`bg-${currentBgIndex}`);
+            
+            const showWallpaper = (url) => {
+                const img = new Image();
+                img.onload = () => {
+                    nextBgEl.style.backgroundImage = `url(${url})`;
+                    currentBgEl.classList.add('exiting');
+                    nextBgEl.classList.add('active');
+                    setTimeout(() => {
+                        currentBgEl.classList.remove('active');
+                        currentBgEl.classList.remove('exiting');
+                    }, 1500);
+                    currentBgIndex = nextBgIndex;
+                    isFetching = false;
+                    loader.classList.remove('active');
+                };
+                img.onerror = () => {
+                    isFetching = false;
+                    loader.classList.remove('active');
+                };
+                img.src = url;
+            };
 
             try {
-                const response = await fetch(WALLPAPER_API);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                const response = await fetch(WALLPAPER_API, { signal: controller.signal });
+                clearTimeout(timeoutId);
                 const data = await response.json();
                 
                 if (data.code === 200 && data.data) {
-                    const img = new Image();
-                    img.onload = () => {
-                        nextBgEl.style.backgroundImage = `url(${data.data})`;
-                        nextBgEl.classList.add('active');
-                        currentBgEl.classList.remove('active');
-                        currentBgIndex = nextBgIndex;
+                    setCachedWallpaper(data.data);
+                    showWallpaper(data.data);
+                } else {
+                    const cached = getCachedWallpaper();
+                    if (cached) {
+                        showWallpaper(cached);
+                    } else {
                         isFetching = false;
                         loader.classList.remove('active');
-                    };
-                    img.onerror = () => {
-                        isFetching = false;
-                        loader.classList.remove('active');
-                    };
-                    img.src = data.data;
+                    }
+                }
+            } catch (error) {
+                const cached = getCachedWallpaper();
+                if (cached) {
+                    showWallpaper(cached);
                 } else {
                     isFetching = false;
                     loader.classList.remove('active');
                 }
-            } catch (error) {
-                console.warn("API request failed:", error);
-                isFetching = false;
-                loader.classList.remove('active');
             }
         }
 
-        function fetchPoetry() {
+        async function fetchPoetry() {
             if (!isChinese()) {
                 document.querySelector('.poem-wrapper').style.display = 'none';
                 return;
             }
-            fetch('https://v2.jinrishici.com/one.json')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        let content = data.data.content;
-                        const author = data.data.origin.author;
-                        const dynasty = data.data.origin.dynasty;
-
-                        const contentEl = document.getElementById('poem-content');
-                        const authorEl = document.getElementById('poem-author');
-
-                        contentEl.style.opacity = 0;
-                        authorEl.style.opacity = 0;
-
-                        setTimeout(() => {
-                            contentEl.textContent = content;
-                            authorEl.textContent = `${dynasty} · ${author}`;
-                            
-                            contentEl.style.opacity = 1;
-                            authorEl.style.opacity = 1;
-                            contentEl.style.transition = 'opacity 1s';
-                            authorEl.style.transition = 'opacity 1s';
-                        }, 500);
+            
+            const showPoetry = (content, author, dynasty) => {
+                const contentEl = document.getElementById('poem-content');
+                const authorEl = document.getElementById('poem-author');
+                contentEl.style.opacity = 0;
+                authorEl.style.opacity = 0;
+                setTimeout(() => {
+                    contentEl.textContent = content;
+                    authorEl.textContent = `${dynasty} · ${author}`;
+                    contentEl.style.opacity = 1;
+                    authorEl.style.opacity = 1;
+                    contentEl.style.transition = 'opacity 1s';
+                    authorEl.style.transition = 'opacity 1s';
+                }, 500);
+            };
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                const response = await fetch('https://v2.jinrishici.com/one.json', { signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await response.json();
+                if (data.status === "success") {
+                    const content = data.data.content;
+                    const author = data.data.origin.author;
+                    const dynasty = data.data.origin.dynasty;
+                    setCachedPoetry(content, author, dynasty);
+                    showPoetry(content, author, dynasty);
+                } else {
+                    const cached = getCachedPoetry();
+                    if (cached) {
+                        showPoetry(cached.content, cached.author, cached.dynasty);
                     }
-                })
-                .catch(err => {
-                    document.querySelector('.poem-wrapper').style.display = 'none';
-                });
+                }
+            } catch (err) {
+                const cached = getCachedPoetry();
+                if (cached) {
+                    showPoetry(cached.content, cached.author, cached.dynasty);
+                }
+            }
         }
 
         function init() {

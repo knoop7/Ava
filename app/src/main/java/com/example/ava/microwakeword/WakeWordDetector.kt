@@ -13,7 +13,7 @@ private const val BYTES_PER_CHUNK = SAMPLES_PER_CHUNK * BYTES_PER_SAMPLE
 class WakeWordDetector(private val wakeWordProvider: WakeWordProvider) : AutoCloseable {
     private val frontend = MicroFrontend()
     private val buffer = ByteBuffer.allocateDirect(BYTES_PER_CHUNK)
-    private val wakeWords = wakeWordProvider.getWakeWords()
+    private val wakeWords by lazy { wakeWordProvider.getWakeWords() }
     private var activeWakeWords = listOf<MicroWakeWord>()
 
     data class DetectionResult(

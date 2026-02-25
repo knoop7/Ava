@@ -9,6 +9,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ScreensaverSettings(
     val enabled: Boolean = false,
+    val visible: Boolean = true,
+    val enableHaDisplay: Boolean = false,
     val screensaverUrl: String = "https://flipflow.neverup.cn/clock.html",
     val screensaverUrlVisible: Boolean = false,
     val xiaomiWallpaperEnabled: Boolean = false,
@@ -28,6 +30,10 @@ class ScreensaverSettingsStore(dataStore: DataStore<ScreensaverSettings>) :
     SettingsStoreImpl<ScreensaverSettings>(dataStore, ScreensaverSettings()) {
     val enabled =
         SettingState(getFlow().map { it.enabled }) { value -> update { it.copy(enabled = value) } }
+    val visible =
+        SettingState(getFlow().map { it.visible }) { value -> update { it.copy(visible = value) } }
+    val enableHaDisplay =
+        SettingState(getFlow().map { it.enableHaDisplay }) { value -> update { it.copy(enableHaDisplay = value) } }
     val screensaverUrl =
         SettingState(getFlow().map { it.screensaverUrl }) { value -> update { it.copy(screensaverUrl = value) } }
     val timeoutSeconds =

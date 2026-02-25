@@ -27,6 +27,8 @@ class ScreensaverWebViewService : Service() {
 
     companion object {
         private const val TAG = "ScreensaverWebView"
+        
+        private const val VIDEO_COMPAT_JS = """(function(){if(window.__avaVideoCompat)return;window.__avaVideoCompat=true;var origPlay=HTMLVideoElement.prototype.play;HTMLVideoElement.prototype.play=function(){var self=this;try{var p=origPlay.call(this);if(p&&p.then){return p.catch(function(e){if(e.name==='AbortError'||e.name==='NotAllowedError'){console.warn('[Ava] video.play() '+e.name+', recovering');return undefined}throw e})}return p}catch(e){return Promise.reject(e)}};document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'){document.querySelectorAll('video').forEach(function(v){if(v.paused&&!v.ended&&v.readyState>0){v.play()}})}})})();"""
 
         fun show(context: Context, url: String) {
             val intent = Intent(context, ScreensaverWebViewService::class.java).apply {
@@ -64,6 +66,13 @@ class ScreensaverWebViewService : Service() {
             }
             context.startService(intent)
         }
+        
+        fun bringToFront(context: Context) {
+            val intent = Intent(context, ScreensaverWebViewService::class.java).apply {
+                action = "ACTION_BRING_TO_FRONT"
+            }
+            context.startService(intent)
+        }
     }
 
     override fun onCreate() {
@@ -95,6 +104,9 @@ class ScreensaverWebViewService : Service() {
                 webView?.onResume()
                 Log.d(TAG, "WebView resumed")
             }
+            "ACTION_BRING_TO_FRONT" -> {
+                bringToFront()
+            }
         }
         return START_STICKY
     }
@@ -103,7 +115,7 @@ class ScreensaverWebViewService : Service() {
         currentUrl = url
         hasTriedHttpFallback = false
         if (containerView != null) {
-            updateUrlInternal(url)
+            webView?.reload()
             return
         }
         if (url.isBlank()) return
@@ -120,7 +132,8 @@ class ScreensaverWebViewService : Service() {
                     type = WindowManager.LayoutParams.TYPE_PHONE
                 }
                 @Suppress("DEPRECATION")
-                flags = WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN or
                     WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or
@@ -153,15 +166,31 @@ class ScreensaverWebViewService : Service() {
                     }
                     true
                 }
-                isFocusableInTouchMode = true
-                requestFocus()
             }
 
             containerView = container
+            containerParams = params
             windowManager?.addView(containerView, params)
             loadUrl(url)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to show screensaver WebView", e)
+        }
+    }
+    
+    private var containerParams: WindowManager.LayoutParams? = null
+    
+    private fun bringToFront() {
+        containerView?.let { view ->
+            containerParams?.let { params ->
+                try {
+                    if (view.isAttachedToWindow) {
+                        windowManager?.removeView(view)
+                        windowManager?.addView(view, params)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to bring screensaver webview to front", e)
+                }
+            }
         }
     }
 
@@ -175,6 +204,11 @@ class ScreensaverWebViewService : Service() {
             settings.allowContentAccess = false
             settings.mediaPlaybackRequiresUserGesture = false
             settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            @Suppress("DEPRECATION")
+            settings.allowUniversalAccessFromFileURLs = true
+            @Suppress("DEPRECATION")
+            settings.allowFileAccessFromFileURLs = true
+            settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
             wv.setBackgroundColor(Color.BLACK)
             wv.isVerticalScrollBarEnabled = false
             wv.isHorizontalScrollBarEnabled = false
@@ -188,6 +222,11 @@ class ScreensaverWebViewService : Service() {
                 wv.setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_IMPORTANT, false)
             }
             wv.webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    view?.evaluateJavascript(VIDEO_COMPAT_JS, null)
+                }
+                
                 override fun onReceivedSslError(
                     view: WebView?,
                     handler: android.webkit.SslErrorHandler?,
@@ -291,4 +330,5 @@ class ScreensaverWebViewService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
 }

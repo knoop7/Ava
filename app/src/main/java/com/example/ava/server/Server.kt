@@ -77,6 +77,10 @@ class Server(private val dispatcher: CoroutineDispatcher = Dispatchers.IO) : Aut
     suspend fun sendMessage(message: MessageLite) = withContext(dispatcher) {
         connection.value?.sendMessage(message)
     }
+    
+    fun getClientAddress(): String? {
+        return connection.value?.getRemoteAddress()
+    }
 
     override fun close() {
         connection.getAndUpdate { null }?.close()

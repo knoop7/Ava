@@ -6,6 +6,7 @@ import androidx.annotation.ColorInt
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import com.example.ava.utils.LocaleUtils
 
 
 data class NotificationScene(
@@ -232,6 +233,7 @@ object NotificationScenes {
     private var _customScenes: List<NotificationScene> = emptyList()
     private var isLoaded = false
     private var appContext: Context? = null
+    private var loadedLanguage: Boolean? = null
     
     
     sealed class SceneLoadState {
@@ -261,27 +263,22 @@ object NotificationScenes {
         get() = _scenes.map { it.id }
     
     
-    private fun isChinese(): Boolean {
-        val locale = java.util.Locale.getDefault()
-        val language = locale.language.lowercase()
-        val country = locale.country.uppercase()
-        val timezone = java.util.TimeZone.getDefault().id
-        return language.startsWith("zh") || 
-            country in listOf("CN", "TW", "HK", "MO") ||
-            timezone.startsWith("Asia/Shanghai") || 
-            timezone.startsWith("Asia/Chongqing") ||
-            timezone.startsWith("Asia/Hong_Kong") ||
-            timezone.startsWith("Asia/Taipei")
-    }
+    private fun isChinese(): Boolean = LocaleUtils.isChineseLocale()
     
     fun loadFromAssets(context: Context, onComplete: (() -> Unit)? = null) {
         appContext = context.applicationContext
-        if (isLoaded) {
+        val currentLanguage = isChinese()
+        if (isLoaded && loadedLanguage == currentLanguage) {
             onComplete?.invoke()
             return
         }
+        if (loadedLanguage != currentLanguage) {
+            isLoaded = false
+            _builtInScenes = emptyList()
+        }
         if (loadFromCache(context)) {
             isLoaded = true
+            loadedLanguage = currentLanguage
             loadState = SceneLoadState.Success
             onComplete?.invoke()
             loadFromNetwork(null)
@@ -318,31 +315,34 @@ object NotificationScenes {
     
     private fun loadFromNetwork(onComplete: (() -> Unit)? = null) {
         loadState = SceneLoadState.Loading
-        val url = if (isChinese()) SCENES_URL_ZH else SCENES_URL_EN
+        val currentLanguage = isChinese()
+        val url = if (currentLanguage) SCENES_URL_ZH else SCENES_URL_EN
         Thread {
+            var connection: java.net.HttpURLConnection? = null
             try {
-                val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
                 connection.connectTimeout = 10000
                 connection.readTimeout = 10000
                 connection.requestMethod = "GET"
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Android; Ava)")
                 
                 if (connection.responseCode == 200) {
-                    val jsonString = connection.inputStream.bufferedReader().readText()
+                    val jsonString = connection.inputStream.bufferedReader().use { it.readText() }
                     parseBuiltInJson(jsonString)
                     appContext?.let { saveToCache(it, jsonString) }
                     isLoaded = true
+                    loadedLanguage = currentLanguage
                     loadState = SceneLoadState.Success
-                    Log.d(TAG, "Loaded scenes from network: ${if (isChinese()) "ZH" else "EN"}")
+                    Log.d(TAG, "Loaded scenes from network: ${if (currentLanguage) "ZH" else "EN"}")
                 } else {
                     Log.e(TAG, "Failed to load scenes: HTTP ${connection.responseCode}")
                     loadState = SceneLoadState.Error(com.example.ava.R.string.error_json_parse_failed)
                 }
-                connection.disconnect()
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading scenes from network", e)
                 loadState = SceneLoadState.Error(com.example.ava.R.string.error_json_parse_failed, e.message)
             } finally {
+                connection?.disconnect()
                 onComplete?.invoke()
             }
         }.start()
@@ -384,15 +384,16 @@ object NotificationScenes {
         }
         
         Thread {
+            var connection: java.net.HttpURLConnection? = null
             try {
-                val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
                 connection.connectTimeout = 5000
                 connection.readTimeout = 5000
                 connection.requestMethod = "GET"
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Android; Ava)")
                 
                 if (connection.responseCode == 200) {
-                    val jsonString = connection.inputStream.bufferedReader().readText()
+                    val jsonString = connection.inputStream.bufferedReader().use { it.readText() }
                     val scenes = parseRemoteJson(jsonString)
                     if (scenes.isNotEmpty()) {
                         _customScenes = scenes
@@ -403,9 +404,10 @@ object NotificationScenes {
                 } else {
                     Log.e(TAG, "Failed to load custom scenes: HTTP ${connection.responseCode}")
                 }
-                connection.disconnect()
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading custom scenes from URL", e)
+            } finally {
+                connection?.disconnect()
             }
         }.start()
     }
@@ -515,4 +517,3 @@ object NotificationScenes {
     val customSceneCount: Int
         get() = _customScenes.size
 }
-

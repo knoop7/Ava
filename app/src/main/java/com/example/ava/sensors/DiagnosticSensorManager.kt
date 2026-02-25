@@ -11,6 +11,7 @@ import android.os.BatteryManager
 import android.os.Environment
 import android.os.StatFs
 import android.os.SystemClock
+import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +23,9 @@ class DiagnosticSensorManager(
     private val scope: CoroutineScope
 ) {
     companion object {
-        private const val UPDATE_INTERVAL_MS = 45_000L
+        private const val TAG = "DiagnosticSensorManager"
+        private const val UPDATE_INTERVAL_MS = 35_000L
+        private const val UPTIME_INTERVAL_MS = 300_000L
         private const val SMOOTHING_SAMPLES = 3
     }
     
@@ -51,65 +54,72 @@ class DiagnosticSensorManager(
     val chargingStatus: StateFlow<String> = _chargingStatus
     
     private var updateJob: Job? = null
-    private var chargingReceiver: android.content.BroadcastReceiver? = null
     private val wifiSamples = mutableListOf<Int>()
     private val memorySamples = mutableListOf<Float>()
     
+    private var uptimeJob: Job? = null
+    
     fun start() {
         updateJob?.cancel()
+        uptimeJob?.cancel()
         
+        Log.d(TAG, "start() scope.isActive=${scope.isActive}")
         updateAllSensors()
+        updateUptime()
+        Log.d(TAG, "initial: battery=${_batteryLevel.value}% voltage=${_batteryVoltage.value}V status=${_chargingStatus.value}")
+        
         updateJob = scope.launch {
+            Log.d(TAG, "updateJob launched")
             while (isActive) {
                 delay(UPDATE_INTERVAL_MS)
+                Log.d(TAG, "updateJob tick")
                 updateAllSensors()
             }
         }
         
-        registerChargingReceiver()
+        uptimeJob = scope.launch {
+            Log.d(TAG, "uptimeJob launched")
+            while (isActive) {
+                delay(UPTIME_INTERVAL_MS)
+                updateUptime()
+            }
+        }
     }
     
     fun stop() {
         updateJob?.cancel()
+        uptimeJob?.cancel()
         updateJob = null
-        unregisterChargingReceiver()
+        uptimeJob = null
     }
     
-    private fun registerChargingReceiver() {
-        if (chargingReceiver != null) return
-        chargingReceiver = object : android.content.BroadcastReceiver() {
-            override fun onReceive(ctx: android.content.Context?, intent: Intent?) {
-                updateChargingStatus(intent)
-            }
-        }
-        val filter = IntentFilter().apply {
-            addAction(Intent.ACTION_POWER_CONNECTED)
-            addAction(Intent.ACTION_POWER_DISCONNECTED)
-            addAction(Intent.ACTION_BATTERY_CHANGED)
-        }
-        context.registerReceiver(chargingReceiver, filter)
+    private fun updateAllSensors() {
+        updateWifiSignal()
+        updateDeviceIp()
+        updateStorageFree()
+        updateMemoryUsage()
+        updateBattery()
+    }
+    
+    private fun updateBattery() {
+        val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as? BatteryManager ?: return
         
-        val batteryStatus = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-        updateChargingStatus(batteryStatus)
-    }
-    
-    private fun unregisterChargingReceiver() {
-        chargingReceiver?.let {
-            try {
-                context.unregisterReceiver(it)
-            } catch (e: Exception) { }
+        val level = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        if (level >= 0) {
+            _batteryLevel.value = level
         }
-        chargingReceiver = null
-    }
-    
-    private fun updateChargingStatus(intent: Intent?) {
-        intent?.let {
+        
+        val batteryIntent = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        batteryIntent?.let {
+            val voltage = it.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1)
+            if (voltage > 0) {
+                _batteryVoltage.value = voltage / 1000f
+            }
+            
             val status = it.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
             val plugged = it.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
-            
-            val chargingStr = when {
-                status == BatteryManager.BATTERY_STATUS_CHARGING || 
-                status == BatteryManager.BATTERY_STATUS_FULL -> {
+            _chargingStatus.value = when {
+                status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL -> {
                     when (plugged) {
                         BatteryManager.BATTERY_PLUGGED_AC -> "AC"
                         BatteryManager.BATTERY_PLUGGED_USB -> "USB"
@@ -119,17 +129,7 @@ class DiagnosticSensorManager(
                 }
                 else -> "None"
             }
-            _chargingStatus.value = chargingStr
         }
-    }
-    
-    private fun updateAllSensors() {
-        updateWifiSignal()
-        updateDeviceIp()
-        updateStorageFree()
-        updateMemoryUsage()
-        updateUptime()
-        updateBattery()
     }
     
     private fun updateWifiSignal() {
@@ -236,26 +236,4 @@ class DiagnosticSensorManager(
         _uptime.value = String.format("%d:%02d:%02d", days, hours, minutes)
     }
     
-    private fun updateBattery() {
-        try {
-            val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-            val batteryStatus = context.registerReceiver(null, intentFilter)
-            
-            batteryStatus?.let {
-                val level = it.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-                val scale = it.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-                val voltage = it.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1)
-                
-                if (level >= 0 && scale > 0) {
-                    _batteryLevel.value = (level * 100) / scale
-                }
-                if (voltage > 0) {
-                    _batteryVoltage.value = voltage / 1000f
-                }
-            }
-        } catch (e: Exception) {
-            _batteryLevel.value = 0
-            _batteryVoltage.value = 0f
-        }
-    }
 }

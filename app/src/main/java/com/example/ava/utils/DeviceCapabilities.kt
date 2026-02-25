@@ -30,7 +30,19 @@ object DeviceCapabilities {
         
         _isA64Device = try {
             val cpuInfo = File("/proc/cpuinfo").readText()
-            cpuInfo.contains("A64") || 
+            val cpuInfoLower = cpuInfo.lowercase()
+            val modelLower = (Build.MODEL ?: "").lowercase()
+            val boardLower = (Build.BOARD ?: "").lowercase()
+            val hardwareLower = (Build.HARDWARE ?: "").lowercase()
+            cpuInfoLower.contains("a64") ||
+            cpuInfoLower.contains("sun50i") ||
+            cpuInfoLower.contains("allwinner") ||
+            modelLower.contains("a64") ||
+            modelLower.contains("ococci") ||
+            boardLower.contains("a64") ||
+            boardLower.contains("sun50i") ||
+            hardwareLower.contains("a64") ||
+            hardwareLower.contains("sun50i") ||
             (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O)
         } catch (e: Exception) {
             Log.w(TAG, "Failed to read cpuinfo", e)

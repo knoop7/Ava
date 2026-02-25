@@ -21,6 +21,7 @@ class ServiceEntity(
     val key: Int,
     val name: String,
     val args: List<ServiceArg> = emptyList(),
+    val description: String = "",
     val onExecute: suspend (Map<String, Any>) -> Unit
 ) : Entity {
     override fun handleMessage(message: MessageLite) = flow {
@@ -37,6 +38,7 @@ class ServiceEntity(
                             .setType(arg.type)
                             .build()
                     })
+                    .setDescription(description)
                     .build())
             }
 

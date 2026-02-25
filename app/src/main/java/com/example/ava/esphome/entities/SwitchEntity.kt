@@ -1,6 +1,7 @@
 package com.example.ava.esphome.entities
 
 import android.util.Log
+import com.example.esphomeproto.api.EntityCategory
 import com.example.esphomeproto.api.ListEntitiesRequest
 import com.example.esphomeproto.api.SwitchCommandRequest
 import com.example.esphomeproto.api.listEntitiesSwitchResponse
@@ -16,6 +17,7 @@ class SwitchEntity(
     val objectId: String,
     val icon: String = "",
     val getState: Flow<Boolean>,
+    val entityCategory: EntityCategory = EntityCategory.ENTITY_CATEGORY_NONE,
     val setState: suspend (Boolean) -> Unit
 ) : Entity {
     override fun handleMessage(message: MessageLite) = flow {
@@ -27,6 +29,7 @@ class SwitchEntity(
                 if (this@SwitchEntity.icon.isNotEmpty()) {
                     icon = this@SwitchEntity.icon
                 }
+                entityCategory = this@SwitchEntity.entityCategory
             })
 
             is SwitchCommandRequest -> {

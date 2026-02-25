@@ -20,17 +20,23 @@ import com.example.ava.settings.playerSettingsStore
 import com.example.ava.settings.screensaverSettingsStore
 import com.example.ava.settings.voiceSatelliteSettingsStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import androidx.lifecycle.viewModelScope
+import com.example.ava.settings.NotificationSettings
 
 @Immutable
 data class UIState(
     val serverName: String,
-    val serverPort: Int
+    val serverPort: Int,
+    val haMediaPlayerEntity: String = ""
 )
 
 @Immutable
 data class MicrophoneState(
     val wakeWord: WakeWordWithId,
+    val wakeWord2: WakeWordWithId?,
     val wakeWords: List<WakeWordWithId>
 )
 
@@ -50,15 +56,20 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     val satelliteSettingsState = satelliteSettingsStore.getFlow().map {
         UIState(
             serverName = it.name,
-            serverPort = it.serverPort
+            serverPort = it.serverPort,
+            haMediaPlayerEntity = it.haMediaPlayerEntity
         )
     }
 
     val microphoneSettingsState = microphoneSettingsStore.getFlow().map {
+        val savedWakeWords = it.wakeWords
         MicrophoneState(
             wakeWord = wakeWords.firstOrNull { wakeWord ->
                 wakeWord.id == it.wakeWord
             } ?: wakeWords.first(),
+            wakeWord2 = if (savedWakeWords.size > 1) {
+                wakeWords.firstOrNull { wakeWord -> wakeWord.id == savedWakeWords.getOrNull(1) }
+            } else null,
             wakeWords = wakeWords
         )
     }
@@ -66,6 +77,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     val playerSettingsState = playerSettingsStore.getFlow()
     
     val notificationSettingsState = notificationSettingsStore.getFlow()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, NotificationSettings())
     
     val experimentalSettingsState = experimentalSettingsStore.getFlow()
 
@@ -95,13 +107,43 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     suspend fun saveWakeWord(wakeWordId: String) {
         if (validateWakeWord(wakeWordId).isNullOrBlank()) {
             microphoneSettingsStore.wakeWord.set(wakeWordId)
+
+            val currentWakeWords = microphoneSettingsStore.get().wakeWords
+            val newWakeWords = if (currentWakeWords.size > 1) {
+                listOf(wakeWordId, currentWakeWords[1])
+            } else {
+                listOf(wakeWordId)
+            }
+            microphoneSettingsStore.wakeWords.set(newWakeWords)
         } else {
             Log.w(TAG, "Cannot save invalid wake word: $wakeWordId")
         }
     }
 
+    suspend fun saveWakeWord2(wakeWordId: String?) {
+        val currentSettings = microphoneSettingsStore.get()
+        val wakeWord1 = currentSettings.wakeWord
+        val newWakeWords = if (wakeWordId.isNullOrBlank()) {
+            listOf(wakeWord1)
+        } else if (validateWakeWord(wakeWordId).isNullOrBlank()) {
+            listOf(wakeWord1, wakeWordId)
+        } else {
+            Log.w(TAG, "Cannot save invalid wake word 2: $wakeWordId")
+            return
+        }
+        microphoneSettingsStore.wakeWords.set(newWakeWords)
+    }
+
     suspend fun saveEnableWakeSound(enableWakeSound: Boolean) {
         playerSettingsStore.enableWakeSound.set(enableWakeSound)
+    }
+    
+    suspend fun saveWakeSoundUri(uri: String) {
+        playerSettingsStore.wakeSound.set(uri)
+    }
+    
+    suspend fun saveWakeSound2Uri(uri: String) {
+        playerSettingsStore.wakeSound2.set(uri)
     }
 
     suspend fun saveContinuousConversation(enabled: Boolean) {
@@ -116,20 +158,42 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         playerSettingsStore.enableVinylCover.set(enabled)
     }
     
-    suspend fun saveDreamClock(enabled: Boolean) {
-        playerSettingsStore.enableDreamClock.set(enabled)
+    suspend fun saveHaMediaPlayerEntity(entity: String) {
+        satelliteSettingsStore.saveHaMediaPlayerEntity(entity)
     }
     
-    suspend fun saveWeatherCity(city: String) {
-        playerSettingsStore.weatherCity.set(city)
+    suspend fun saveDreamClock(enabled: Boolean) {
+        playerSettingsStore.enableDreamClock.set(enabled)
+        if (enabled) {
+            playerSettingsStore.enableDreamClockVisible.set(true)
+        }
+    }
+    
+    suspend fun saveHaWeatherEntity(entity: String) {
+        playerSettingsStore.haWeatherEntity.set(entity)
     }
     
     suspend fun saveWeatherOverlay(enabled: Boolean) {
         playerSettingsStore.enableWeatherOverlay.set(enabled)
+        if (enabled) {
+            playerSettingsStore.enableWeatherOverlayVisible.set(true)
+        }
+    }
+    
+    suspend fun saveWeatherOverlayDisplay(enabled: Boolean) {
+        playerSettingsStore.enableWeatherOverlayDisplay.set(enabled)
+    }
+    
+    suspend fun saveDreamClockDisplay(enabled: Boolean) {
+        playerSettingsStore.enableDreamClockDisplay.set(enabled)
     }
     
     suspend fun saveAutoRestart(enabled: Boolean) {
         playerSettingsStore.enableAutoRestart.set(enabled)
+    }
+    
+    suspend fun saveHaSwitchOverlay(enabled: Boolean) {
+        playerSettingsStore.enableHaSwitchOverlay.set(enabled)
     }
     
     suspend fun saveSceneDisplayDuration(duration: Int) {
@@ -176,40 +240,62 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         screensaverSettingsStore.screensaverUrlVisible.set(visible)
     }
     
+    suspend fun saveScreensaverHaDisplay(enabled: Boolean) {
+        screensaverSettingsStore.enableHaDisplay.set(enabled)
+    }
+    
     suspend fun saveXiaomiWallpaperEnabled(enabled: Boolean) {
         screensaverSettingsStore.xiaomiWallpaperEnabled.set(enabled)
     }
     
     suspend fun saveCameraEnabled(enabled: Boolean) {
         experimentalSettingsStore.setCameraEnabled(enabled)
+        kotlinx.coroutines.delay(100)
         com.example.ava.services.VoiceSatelliteService.getInstance()?.restartVoiceSatellite()
     }
     
     suspend fun saveCameraMode(mode: com.example.ava.settings.CameraMode) {
         experimentalSettingsStore.setCameraMode(mode)
+        if (mode == com.example.ava.settings.CameraMode.SNAPSHOT) {
+            com.example.ava.esphome.voicesatellite.VoiceSatelliteCamera.clearSavedRecordingState(application)
+        }
+        kotlinx.coroutines.delay(100)
         com.example.ava.services.VoiceSatelliteService.getInstance()?.restartVoiceSatellite()
     }
     
     suspend fun saveCameraPosition(position: com.example.ava.settings.CameraPosition) {
         experimentalSettingsStore.setCameraPosition(position)
+        kotlinx.coroutines.delay(100)
         com.example.ava.services.VoiceSatelliteService.getInstance()?.restartVoiceSatellite()
     }
     
     suspend fun saveImageSize(size: Int) {
         experimentalSettingsStore.setImageSize(size)
+        kotlinx.coroutines.delay(100)
         com.example.ava.services.VoiceSatelliteService.getInstance()?.restartVoiceSatellite()
     }
     
     suspend fun saveVideoFps(fps: Int) {
         experimentalSettingsStore.setVideoFps(fps)
+        kotlinx.coroutines.delay(100)
         com.example.ava.services.VoiceSatelliteService.getInstance()?.restartVoiceSatellite()
     }
     
     suspend fun saveVideoResolution(resolution: Int) {
         experimentalSettingsStore.setVideoResolution(resolution)
+        kotlinx.coroutines.delay(100)
         com.example.ava.services.VoiceSatelliteService.getInstance()?.restartVoiceSatellite()
     }
     
+    suspend fun savePersonDetectionEnabled(enabled: Boolean) {
+        experimentalSettingsStore.setPersonDetectionEnabled(enabled)
+        kotlinx.coroutines.delay(100)
+        com.example.ava.services.VoiceSatelliteService.getInstance()?.restartVoiceSatellite()
+    }
+    
+    suspend fun saveFaceBoxEnabled(enabled: Boolean) {
+        experimentalSettingsStore.setFaceBoxEnabled(enabled)
+    }
     
     suspend fun saveEnvironmentSensorEnabled(enabled: Boolean) {
         experimentalSettingsStore.setEnvironmentSensorEnabled(enabled)
@@ -306,6 +392,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     
     suspend fun saveDiagnosticChargingStatusEnabled(enabled: Boolean) {
         experimentalSettingsStore.setDiagnosticChargingStatusEnabled(enabled)
+    }
+    
+    suspend fun saveIntentLauncherEnabled(enabled: Boolean) {
+        experimentalSettingsStore.setIntentLauncherEnabled(enabled)
+    }
+    
+    suspend fun saveIntentLauncherHaDisplayEnabled(enabled: Boolean) {
+        experimentalSettingsStore.setIntentLauncherHaDisplayEnabled(enabled)
     }
     
     fun validateName(name: String): String? =

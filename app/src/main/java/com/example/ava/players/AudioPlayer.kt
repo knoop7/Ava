@@ -43,6 +43,7 @@ class AudioPlayer(
     
     
     val currentPosition: Long get() = try { _player?.currentPosition ?: 0L } catch (e: Exception) { 0L }
+    val duration: Long get() = try { _player?.duration?.let { if (it > 0 && it != Long.MIN_VALUE + 1) it else 0L } ?: 0L } catch (e: Exception) { 0L }
     
     
     fun seekTo(positionMs: Long) {
@@ -59,7 +60,19 @@ class AudioPlayer(
 
     fun init() {
         if (isClosed.get()) return
-        close()
+        
+        val oldPlayer = _player
+        _player = null
+        oldPlayer?.let { player ->
+            try {
+                player.stop()
+                player.clearMediaItems()
+            } catch (e: Exception) { }
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                try { player.release() } catch (e: Exception) { }
+            }
+        }
+        
         try {
             _player = playerBuilder().apply {
                 volume = _volume
@@ -150,6 +163,7 @@ class AudioPlayer(
     var onDurationChanged: ((Long) -> Unit)? = null
     var onMediaMetadataChanged: ((artworkUri: String?) -> Unit)? = null
     var onPlaybackEnded: (() -> Unit)? = null
+    var onPlaybackStarted: (() -> Unit)? = null
     
     private fun getPlayerListener(onCompletion: () -> Unit) = object : Player.Listener {
         private val completionCalled = AtomicBoolean(false)
@@ -195,15 +209,20 @@ class AudioPlayer(
         }
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
+            Log.d(TAG, "onIsPlayingChanged: isPlaying=$isPlaying")
             try {
-                if (isPlaying)
+                if (isPlaying) {
                     _state.value = AudioPlayerState.PLAYING
-                else if (isPaused)
+                    try {
+                        Log.d(TAG, "Invoking onPlaybackStarted callback")
+                        onPlaybackStarted?.invoke()
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error invoking onPlaybackStarted", e)
+                    }
+                } else if (isPaused)
                     _state.value = AudioPlayerState.PAUSED
                 else
                     _state.value = AudioPlayerState.IDLE
-                
-                
                 
                 if (!isPlaying && _state.value == AudioPlayerState.IDLE) {
                     try {
@@ -242,22 +261,28 @@ class AudioPlayer(
 
     override fun close() {
         isPlayerInit = false
-        try {
-            currentListener?.let { listener ->
-                try { _player?.removeListener(listener) } catch (e: Exception) { }
+        val playerToRelease = _player
+        _player = null
+        currentListener = null
+        _state.value = AudioPlayerState.IDLE
+        
+        if (playerToRelease != null) {
+            try {
+                playerToRelease.stop()
+                playerToRelease.clearMediaItems()
+            } catch (e: Exception) {
+                Log.w(TAG, "Error stopping player", e)
             }
-            currentListener = null
-            _player?.stop()
-            _player?.clearMediaItems()
-            _player?.release()
             
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                try {
+                    playerToRelease.release()
+                } catch (e: Exception) {
+                    Log.w(TAG, "Error releasing player", e)
+                }
+            }
             
             GpioAecController.activateBeamforming()
-        } catch (e: Exception) {
-            Log.w(TAG, "Error during close", e)
-        } finally {
-            _player = null
-            _state.value = AudioPlayerState.IDLE
         }
     }
     
