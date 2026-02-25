@@ -1,40 +1,40 @@
-# Ava 用户脚本开发指南
+# Ava Userscript Development Guide
 
-轻量级用户脚本管理器，基于 Android-WebMonkey 项目开发。
+Lightweight userscript manager, based on the Android-WebMonkey project.
 
-## 支持的 Greasemonkey API
+## Supported Greasemonkey APIs
 
-### 数据存储
+### Data Storage
 ```javascript
-// 存储数据
+// Store data
 GM_setValue('key', 'value');
 GM_setValue('count', 123);
 GM_setValue('config', {a: 1, b: 2});
 
-// 读取数据
+// Read data
 var value = GM_getValue('key', 'default');
 
-// 删除数据
+// Delete data
 GM_deleteValue('key');
 
-// 列出所有键
+// List all keys
 var keys = GM_listValues();
 ```
 
-### 页面样式
+### Page Styling
 ```javascript
-// 添加 CSS 样式
+// Add CSS styles
 GM_addStyle('body { background: #000 !important; }');
 GM_addStyle('.ad { display: none !important; }');
 
-// 添加 DOM 元素
+// Add DOM elements
 GM_addElement('script', { src: 'https://example.com/lib.js' });
 GM_addElement('link', { rel: 'stylesheet', href: 'https://example.com/style.css' });
 ```
 
-### 网络请求
+### Network Requests
 ```javascript
-// 发送 HTTP 请求
+// Send HTTP request
 GM_xmlhttpRequest({
     method: 'GET',
     url: 'https://api.example.com/data',
@@ -44,35 +44,35 @@ GM_xmlhttpRequest({
         var data = JSON.parse(response.responseText);
     },
     onerror: function(error) {
-        console.error('请求失败', error);
+        console.error('Request failed', error);
     }
 });
 
-// POST 请求
+// POST request
 GM_xmlhttpRequest({
     method: 'POST',
     url: 'https://api.example.com/submit',
     data: JSON.stringify({ name: 'test' }),
     headers: { 'Content-Type': 'application/json' },
     onload: function(response) {
-        console.log('提交成功');
+        console.log('Submit successful');
     }
 });
 
-// 使用 fetch 风格 API
+// Using fetch-style API
 GM_fetch('https://api.example.com/data')
     .then(response => response.json())
     .then(data => console.log(data));
 ```
 
-### Cookie 管理
+### Cookie Management
 ```javascript
-// 获取 Cookie 列表
+// Get cookie list
 GM_cookie.list({}).then(cookies => {
     console.log(cookies);
 });
 
-// 设置 Cookie
+// Set cookie
 GM_cookie.set({
     name: 'token',
     value: 'abc123',
@@ -80,71 +80,71 @@ GM_cookie.set({
     path: '/'
 });
 
-// 删除 Cookie
+// Delete cookie
 GM_cookie.delete({ name: 'token' });
 
-// 删除所有 Cookie
+// Delete all cookies
 GM_removeAllCookies();
 ```
 
-### 通知和日志
+### Notifications and Logging
 ```javascript
-// 显示 Toast 通知
-GM_notification('操作成功');
-GM_toastShort('短提示');
-GM_toastLong('长提示');
+// Show Toast notification
+GM_notification('Operation successful');
+GM_toastShort('Short message');
+GM_toastLong('Long message');
 
-// 输出日志
-GM_log('调试信息');
+// Output log
+GM_log('Debug info');
 ```
 
-### 页面控制
+### Page Control
 ```javascript
-// 获取当前 URL
+// Get current URL
 var url = GM_getUrl();
 
-// 加载新页面
+// Load new page
 GM_loadUrl('https://example.com');
 GM_loadUrl('https://example.com', { 'Referer': 'https://google.com' });
 
-// 加载 iframe
+// Load iframe
 GM_loadFrame('https://example.com/frame.html', 'https://example.com');
 
-// 解析相对 URL
+// Resolve relative URL
 var fullUrl = GM_resolveUrl('/path/to/page', 'https://example.com');
 
-// 退出/关闭
+// Exit/close
 GM_exit();
 ```
 
 ### User-Agent
 ```javascript
-// 获取当前 UA
+// Get current UA
 var ua = GM_getUserAgent();
 
-// 设置自定义 UA
+// Set custom UA
 GM_setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/100.0.0.0');
 ```
 
-### 其他功能
+### Other Features
 ```javascript
-// 在新标签页打开
+// Open in new tab
 GM_openInTab('https://example.com');
 
-// 复制到剪贴板
-GM_setClipboard('要复制的文本');
+// Copy to clipboard
+GM_setClipboard('Text to copy');
 
-// 启动 Android Intent
+// Launch Android Intent
 GM_startIntent('android.intent.action.VIEW', 'https://example.com', null, null);
 
-// 注册菜单命令（仅日志记录）
-GM_registerMenuCommand('设置', function() {
-    console.log('点击了设置');
+// Register menu command (logging only)
+GM_registerMenuCommand('Settings', function() {
+    console.log('Settings clicked');
 });
 ```
 
-### GM 4 Promise 风格 API
-所有 API 都支持 Promise 风格调用：
+### GM 4 Promise-style API
+All APIs support Promise-style calls:
 ```javascript
 await GM.getValue('key');
 await GM.setValue('key', 'value');
@@ -152,14 +152,14 @@ await GM.addStyle('body { color: red; }');
 await GM.cookie.list({});
 ```
 
-## 脚本模板
+## Script Template
 
 ```javascript
 // ==UserScript==
-// @name         我的脚本
+// @name         My Script
 // @namespace    https://example.com
 // @version      1.0
-// @description  脚本描述
+// @description  Script description
 // @match        https://example.com/*
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -170,35 +170,35 @@ await GM.cookie.list({});
 (function() {
     'use strict';
     
-    // 你的代码写在这里
-    console.log('脚本已加载');
+    // Your code here
+    console.log('Script loaded');
     
-    // 示例：隐藏广告
+    // Example: Hide ads
     GM_addStyle('.ad, .advertisement { display: none !important; }');
     
-    // 示例：修改页面内容
+    // Example: Modify page content
     document.querySelectorAll('h1').forEach(el => {
         el.style.color = 'red';
     });
 })();
 ```
 
-## 不支持的功能
+## Unsupported Features
 
-- `GM_download` - 文件下载
-- `GM_webRequest` - 请求拦截
-- `unsafeWindow` - 直接访问页面 window 对象
-- `GM_getTab` / `GM_saveTab` - 标签页数据
-- `@require` - 外部脚本依赖
-- `@resource` - 外部资源（部分支持）
+- `GM_download` - File download
+- `GM_webRequest` - Request interception
+- `unsafeWindow` - Direct access to page window object
+- `GM_getTab` / `GM_saveTab` - Tab data
+- `@require` - External script dependencies
+- `@resource` - External resources (partial support)
 
-## 注意事项
+## Notes
 
-1. 脚本在页面加载完成后执行
-2. 跨域请求受浏览器安全策略限制
-3. 部分网站可能检测并阻止脚本运行
-4. 建议使用 try-catch 包裹代码防止错误
+1. Scripts execute after page load completes
+2. Cross-origin requests are subject to browser security policies
+3. Some websites may detect and block script execution
+4. Recommend using try-catch to wrap code to prevent errors
 
-## 项目地址
+## Project Repository
 
 https://github.com/warren-bank/Android-WebMonkey
