@@ -1,6 +1,6 @@
 {
-  "versionCode": 31,
-  "versionName": "0.3.1",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.3.1/Ava-0.3.1-release.apk",
-  "changelog": "HOTFIX: critical crash resolved, app now runs normally. Overlay permission check added—static methods verify canDrawOverlays before service start. Fixed floating window flash on init. WakeWordArbiter port binding fixed with reuseAddress. ClientConnection resources close cleanly. Floating status labels rebuilt inside EsperSphereView, auto-follow sphere. Text cards hug bottom, max 20% height, nav-bar aware. Removed card header status, wave icons, redundant BLE logs. General optimizations throughout. Thanks @ohjables, @zaiahgaming."
+  "versionCode": 32,
+  "versionName": "0.3.2",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.3.2/Ava-0.3.2-release.apk ",
+  "changelog": "New！ Timer Quick Entity—real-time HA timer display with second-level countdown, tap to pause/resume, smart state sync. Single-card recommended, supports up to 6. Add timer.xxx IDs in Quick Entity Panel. Auto-formats MM:SS or H:MM:SS, 30-sec calibration for 5min+ timers, custom MDI icons. Voice control ready. Screensaver fully rebuilt—3-hour debug fixed race condition. Floating subtitle layout fixed, error boundaries patched. Low-end device optimizations, aggressive APK compression. Thanks @zxjrm, @lenne0815, @ohjables."
 }
