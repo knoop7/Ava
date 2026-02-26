@@ -1,4 +1,6 @@
 # Ava - Turn Any Android Device into a Smart Home Control Panel
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/knoop7/Ava)
+
 
 For more practical guides, visit the [Wiki](https://github.com/knoop7/Ava/wiki). Images and detailed explanations will be added gradually.
 
