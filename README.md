@@ -1,8 +1,12 @@
 # Ava - Turn Any Android Device into a Smart Home Control Panel
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/knoop7/Ava)
+[![Let's Build Together](https://img.shields.io/badge/Let's_Build_Together-Join_Discord-5865F2?style=flat&logo=discord)](https://discord.com/channels/1476913345687720039/)
+
 
 
 For more practical guides, visit the [Wiki](https://github.com/knoop7/Ava/wiki). Images and detailed explanations will be added gradually.
+
+
 
 Share a project I've been working on: **Ava**, an Android voice assistant app that turns old tablets and phones into powerful smart home control panels.
 
