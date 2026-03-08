@@ -118,7 +118,7 @@ dependencies {
     implementation("dev.rikka.shizuku:provider:13.1.5")
     
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    
+    implementation(files("libs/yxapi.jar"))
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

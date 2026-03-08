@@ -72,7 +72,17 @@ data class ExperimentalSettings(
     val intentLauncherHaDisplayEnabled: Boolean = false,
     
     val microphoneVolume: Float = 1.0f,
-    val multiDeviceArbiterEnabled: Boolean = true
+    val multiDeviceArbiterEnabled: Boolean = true,
+
+    // YX M5612 硬件支持
+    val yxHardwareEnabled: Boolean = false,
+    val yxMotionSensorEnabled: Boolean = true,
+    val yxLedControlEnabled: Boolean = true,
+    
+    // YX 人体感应屏幕控制
+    val yxMotionScreenControlEnabled: Boolean = false,  // 是否启用感应屏幕控制
+    val yxMotionScreenOnDelay: Int = 0,                 // 感应到有人后延迟打开屏幕（秒）
+    val yxMotionScreenOffDelay: Int = 30                // 无人后延迟关闭屏幕（秒）
 ) {
     companion object {
         val DEFAULT = ExperimentalSettings()
@@ -330,5 +340,39 @@ class ExperimentalSettingsStore(context: Context) : SettingsStoreImpl<Experiment
     
     suspend fun setMultiDeviceArbiterEnabled(enabled: Boolean) {
         update { it.copy(multiDeviceArbiterEnabled = enabled) }
+    }
+
+    // YX M5612 硬件支持
+    val yxHardwareEnabled: Flow<Boolean> = getFlow().map { it.yxHardwareEnabled }
+    val yxMotionSensorEnabled: Flow<Boolean> = getFlow().map { it.yxMotionSensorEnabled }
+    val yxLedControlEnabled: Flow<Boolean> = getFlow().map { it.yxLedControlEnabled }
+
+    suspend fun setYxHardwareEnabled(enabled: Boolean) {
+        update { it.copy(yxHardwareEnabled = enabled) }
+    }
+
+    suspend fun setYxMotionSensorEnabled(enabled: Boolean) {
+        update { it.copy(yxMotionSensorEnabled = enabled) }
+    }
+
+    suspend fun setYxLedControlEnabled(enabled: Boolean) {
+        update { it.copy(yxLedControlEnabled = enabled) }
+    }
+
+    // YX 人体感应屏幕控制
+    val yxMotionScreenControlEnabled: Flow<Boolean> = getFlow().map { it.yxMotionScreenControlEnabled }
+    val yxMotionScreenOnDelay: Flow<Int> = getFlow().map { it.yxMotionScreenOnDelay }
+    val yxMotionScreenOffDelay: Flow<Int> = getFlow().map { it.yxMotionScreenOffDelay }
+
+    suspend fun setYxMotionScreenControlEnabled(enabled: Boolean) {
+        update { it.copy(yxMotionScreenControlEnabled = enabled) }
+    }
+
+    suspend fun setYxMotionScreenOnDelay(delay: Int) {
+        update { it.copy(yxMotionScreenOnDelay = delay.coerceIn(0, 60)) }
+    }
+
+    suspend fun setYxMotionScreenOffDelay(delay: Int) {
+        update { it.copy(yxMotionScreenOffDelay = delay.coerceIn(5, 300)) }
     }
 }
