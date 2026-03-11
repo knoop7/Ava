@@ -1,6 +1,6 @@
 # Ava - Turn Any Android Device into a Smart Home Control Panel
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/knoop7/Ava)
-[![Let's Build Together](https://img.shields.io/badge/Let's_Build_Together-Join_Discord-5865F2?style=flat&logo=discord)](https://discord.com/channels/1476913345687720039/)
+[![Let's Build Together](https://img.shields.io/badge/Let's_Build_Together-Join_Discord-5865F2?style=flat&logo=discord)](https://discord.gg/Znd68HA8)
 
 
 
