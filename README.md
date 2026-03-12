@@ -5,7 +5,7 @@
 
 For more practical guides, visit the [Wiki](https://deepwiki.com/knoop7/Ava).
 
-Share a project I've been working on: **Ava**, an Android voice assistant app that turns old tablets and phones into powerful smart home control panels.
+Share a project I've been working on: **Ava**, an Android voice assistant app that turns old tablets, phones, **car head units, smart mirrors, and Android-powered appliances** into powerful smart home control panels. **Compatible with the full range of Android ecosystems.**
 
 ## Background
 
