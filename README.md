@@ -2,6 +2,8 @@
 
 [![DeepWiki](https://img.shields.io/badge/DeepWiki-AI_Docs-0D1117?style=for-the-badge&labelColor=21262d&logoColor=white)](https://deepwiki.com/knoop7/Ava)
 [![Discord](https://img.shields.io/badge/Discord-Join-0D1117?style=for-the-badge&labelColor=21262d&logo=discord&logoColor=white)](https://discord.gg/Znd68HA8)
+![GitHub Downloads](https://img.shields.io/github/downloads/knoop7/ava/total?style=for-the-badge&logo=github&color=0D1117&labelColor=21262d&logoColor=white&label=DOWNLOADS)
+
 
 For more practical guides, visit the [Wiki](https://deepwiki.com/knoop7/Ava).
 
