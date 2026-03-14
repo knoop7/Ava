@@ -1,6 +1,6 @@
 {
-  "versionCode": 34,
-  "versionName": "0.3.4",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.3.4/Ava-0.3.4-release.apk",
-  "changelog": "New! Mod Store launched—open plugin system for GPIO, LED, GPS, flashlight, custom HA sensors without bloating main app. Submit or install mods on-demand. Path: Settings → Advanced → Mod Store. Thanks @slovebj for YX LED controller PR. SendSpin optimized: ms latency tuning, low-end playback mode, optional fullscreen popup disabled, clock sync fixed, UI adapted. Fixed: SP popup disable (#42), MA video-no-audio (#44), SP volume sync (#43), BT proxy control (#36). Thanks @danwig, @Coolguy1211, @bambam247."
+  "versionCode": 35,
+  "versionName": "0.3.5",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.3.5/Ava-0.3.5-release.apk",
+  "changelog": " Sendspin Protocol fully refactored—standard type+payload format, legacy compatible. Fixed passive mode deadlock, HTTP handshake frame consumption, added onStreamConfig/clear callbacks, dual connection monitoring, auto-reconnect, URL normalization. Audio frame parsing supports 4/5-byte variants. Fixed Android ≤9 audio crashes, timeline corruption, auto-brightness accidents. Added screen orientation for camera-less devices. Unified audio buffer sizing reduces latency on low-end hardware. WebSocket race conditions fixed, background keep-alive enhanced for domestic ROMs, NPEs patched, exception logging improved, dependencies secured. Thanks @danwi for architecture guidance, @笨笨的蘑菇, @乘凉, @yaro24."
 }
