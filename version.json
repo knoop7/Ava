@@ -1,6 +1,6 @@
 {
-  "versionCode": 35,
-  "versionName": "0.3.5",
-  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.3.5/Ava-0.3.5-release.apk",
-  "changelog": " Sendspin Protocol fully refactored—standard type+payload format, legacy compatible. Fixed passive mode deadlock, HTTP handshake frame consumption, added onStreamConfig/clear callbacks, dual connection monitoring, auto-reconnect, URL normalization. Audio frame parsing supports 4/5-byte variants. Fixed Android ≤9 audio crashes, timeline corruption, auto-brightness accidents. Added screen orientation for camera-less devices. Unified audio buffer sizing reduces latency on low-end hardware. WebSocket race conditions fixed, background keep-alive enhanced for domestic ROMs, NPEs patched, exception logging improved, dependencies secured. Thanks @danwi for architecture guidance, @笨笨的蘑菇, @乘凉, @yaro24."
+  "versionCode": 36,
+  "versionName": "0.3.6",
+  "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.3.6/Ava-0.3.6-release.apk",
+  "changelog": "New！ Webpage zoom from HA—real-time scaling via automation, rotary encoder ready. Distance-triggered: 2m zoom-out for overview, 4m zoom-in for alerts. Repurpose old tablets as context-aware dashboards. Fixed Bluetooth capability descriptions with info cards (#49 @KeyRie). Protocol music sync stabilized—enable Low Memory Mode and adjust audio offset (~-200ms) if drift occurs. Display adaptation improved. Added transparent settings button—hide top-right corner for cleaner UI, access remains via corner tap. Screens that sense you."
 }
