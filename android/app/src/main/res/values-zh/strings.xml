@@ -72,6 +72,7 @@
     <string name="entity_camera_snapshot">设备快照</string>
     <string name="entity_video_recording">开始录像</string>
     <string name="entity_camera_video">设备录制</string>
+    <string name="entity_torch">手电筒</string>
     <string name="entity_person_detected">检测到人脸</string>
     <string name="entity_male_count">男性数量</string>
     <string name="entity_female_count">女性数量</string>

@@ -196,6 +196,33 @@ Ava auto-detects camera availability. If no camera is present, camera entities a
 | `camera.your_device_name_video_camera` | Video stream camera | Video |
 | `button.your_device_name_take_snapshot` | Trigger snapshot | Snapshot |
 | `switch.your_device_name_video_recording` | Toggle video recording | Video |
+| `switch.your_device_name_torch` | Flashlight | Both |
+
+### Flashlight
+
+The flashlight is controlled through `CameraManager.setTorchMode()`, so it does not need a camera
+session: it works with the camera closed, in either camera mode, and does not compete with
+snapshots or the video stream for the camera.
+
+Its state is reported from the system's torch callback rather than from the last command sent, so
+it stays correct when something else switches the torch off — which happens when another app opens
+that camera, or when the device gets too hot. Devices with no flash unit get no entity at all.
+
+Use it as a light for night snapshots:
+
+```yaml
+actions:
+  - action: switch.turn_on
+    target:
+      entity_id: switch.your_device_name_torch
+  - delay: "00:00:01"
+  - action: button.press
+    target:
+      entity_id: button.your_device_name_take_snapshot
+  - action: switch.turn_off
+    target:
+      entity_id: switch.your_device_name_torch
+```
 
 ### Face Detection Entities
 

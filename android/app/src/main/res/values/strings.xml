@@ -74,6 +74,7 @@
     <string name="entity_camera_snapshot">Device Snapshot</string>
     <string name="entity_video_recording">Start Recording</string>
     <string name="entity_camera_video">Device Recording</string>
+    <string name="entity_torch">Flashlight</string>
     <string name="entity_person_detected">Face Detected</string>
     <string name="entity_male_count">Male Count</string>
     <string name="entity_female_count">Female Count</string>

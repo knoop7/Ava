@@ -32,6 +32,8 @@ class VoiceSatelliteCamera(
     private var videoCapture: com.example.ava.camera.VideoCapture? = null
     private var videoCameraEntity: CameraEntity? = null
     private var isRecording = false
+    private var torchController: com.example.ava.camera.TorchController? = null
+    private var torchEntity: SwitchEntity? = null
     private var detectionEnabled = false
     private var personDetectedState = MutableStateFlow(false)
     private var personDetectedEntity: BinarySensorEntity? = null
@@ -89,6 +91,43 @@ class VoiceSatelliteCamera(
                 entity.sendImage(com.example.ava.camera.VideoCapture.createPlaceholderFromAsset(context, "camera_off.png", 320, 240))
             }
         }
+
+        initTorch()
+    }
+
+    /**
+     * Exposes the device flashlight as a switch.
+     *
+     * The torch does not need a camera session (see [com.example.ava.camera.TorchController]), so it
+     * works in either camera mode and while nothing is streaming. It is registered from both
+     * [initSnapshot] and [initVideo] — whichever the configured mode happens to call — and is
+     * idempotent, so it can equally be called on its own if the flashlight should be gated by
+     * something other than the camera being enabled.
+     *
+     * Devices with no flash unit get no entity at all, rather than a switch that does nothing.
+     */
+    fun initTorch() {
+        if (torchEntity != null) return
+
+        val controller = com.example.ava.camera.TorchController(context)
+        if (!controller.isAvailable()) {
+            Log.d(TAG, "No camera on this device reports a flash unit; skipping the flashlight entity")
+            return
+        }
+        controller.start()
+        torchController = controller
+
+        val entity = SwitchEntity(
+            key = 14,
+            name = context.getString(R.string.entity_torch),
+            objectId = "torch",
+            icon = "mdi:flashlight",
+            getState = controller.state,
+            entityCategory = EntityCategory.ENTITY_CATEGORY_NONE,
+            setState = { enabled -> controller.setEnabled(enabled) }
+        )
+        torchEntity = entity
+        device.addEntity(entity)
     }
 
     private suspend fun takeSnapshot() {
@@ -156,8 +195,10 @@ class VoiceSatelliteCamera(
                 }
             }
         }
+
+        initTorch()
     }
-    
+
     private suspend fun startVideoRecording() {
         if (isRecording) return
         val capture = videoCapture ?: return
@@ -276,6 +317,12 @@ class VoiceSatelliteCamera(
     fun close() {
         stopVideoRecording()
         closeDetection()
+        // Turns the torch off as well, so shutting the service down cannot leave the light on with
+        // nothing left to switch it off from.
+        torchController?.close()
+        torchEntity?.let { device.removeEntity(it) }
+        torchController = null
+        torchEntity = null
         cameraCapture = null
         videoCapture = null
     }
