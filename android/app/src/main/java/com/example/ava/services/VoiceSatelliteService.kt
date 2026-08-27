@@ -90,9 +90,12 @@ class VoiceSatelliteService() : LifecycleService() {
         com.example.ava.settings.BrowserSettingsStore(applicationContext)
     }
     private var hideVinylJob: kotlinx.coroutines.Job? = null
+    private var settingsWatcherJob: kotlinx.coroutines.Job? = null
+    private var wakeLockRenewalRunnable: Runnable? = null
     private var voiceSatelliteNsd = AtomicReference<NsdRegistration?>(null)
     internal val _voiceSatellite = MutableStateFlow<VoiceSatellite?>(null)
     private val initializing = java.util.concurrent.atomic.AtomicBoolean(false)
+    private val restarting = java.util.concurrent.atomic.AtomicBoolean(false)
     
     
     private var cachedVinylCoverEnabled = false
@@ -260,6 +263,10 @@ class VoiceSatelliteService() : LifecycleService() {
             .putBoolean("service_user_stopped", true)
             .apply()
         
+        settingsWatcherJob?.cancel()
+        settingsWatcherJob = null
+        stopWakeLockRenewal()
+
         val satellite = _voiceSatellite.getAndUpdate { null }
         if (satellite != null) {
             satellite.close()
@@ -274,12 +281,16 @@ class VoiceSatelliteService() : LifecycleService() {
     
     fun restartVoiceSatellite() {
         
-        if (_voiceSatellite.value == null) return
+        if (_voiceSatellite.value == null || !restarting.compareAndSet(false, true)) return
         
         lifecycleScope.launch {
-            stopVoiceSatellite()
-            kotlinx.coroutines.delay(500) 
-            startVoiceSatellite()
+            try {
+                stopVoiceSatellite()
+                kotlinx.coroutines.delay(500)
+                startVoiceSatellite()
+            } finally {
+                restarting.set(false)
+            }
         }
     }
     
@@ -506,7 +517,8 @@ class VoiceSatelliteService() : LifecycleService() {
     }
 
     private fun startSettingsWatcher() {
-        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+        settingsWatcherJob?.cancel()
+        settingsWatcherJob = lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             _voiceSatellite.flatMapLatest { satellite ->
                 if (satellite == null) emptyFlow()
                 else merge(
@@ -987,6 +999,9 @@ class VoiceSatelliteService() : LifecycleService() {
     
     override fun onDestroy() {
         instance = null
+        settingsWatcherJob?.cancel()
+        settingsWatcherJob = null
+        stopWakeLockRenewal()
         _voiceSatellite.getAndUpdate { null }?.close()
         voiceSatelliteNsd.getAndSet(null)?.unregister(this)
         wifiWakeLock.release()
@@ -1013,6 +1028,7 @@ class VoiceSatelliteService() : LifecycleService() {
         
         RootHelper.removeBootScript()
         initializing.set(false)
+        restarting.set(false)
         super.onDestroy()
     }
     
@@ -1022,7 +1038,8 @@ class VoiceSatelliteService() : LifecycleService() {
     private val WAKELOCK_RENEWAL_INTERVAL = 25 * 60 * 1000L
     
     private fun startWakeLockRenewal() {
-        updateCheckHandler.postDelayed(object : Runnable {
+        stopWakeLockRenewal()
+        val runnable = object : Runnable {
             override fun run() {
                 if (_voiceSatellite.value != null) {
                     wifiWakeLock.renewIfNeeded()
@@ -1030,7 +1047,14 @@ class VoiceSatelliteService() : LifecycleService() {
                     updateCheckHandler.postDelayed(this, WAKELOCK_RENEWAL_INTERVAL)
                 }
             }
-        }, WAKELOCK_RENEWAL_INTERVAL)
+        }
+        wakeLockRenewalRunnable = runnable
+        updateCheckHandler.postDelayed(runnable, WAKELOCK_RENEWAL_INTERVAL)
+    }
+
+    private fun stopWakeLockRenewal() {
+        wakeLockRenewalRunnable?.let(updateCheckHandler::removeCallbacks)
+        wakeLockRenewalRunnable = null
     }
     
     private fun startAutoUpdateChecker() {

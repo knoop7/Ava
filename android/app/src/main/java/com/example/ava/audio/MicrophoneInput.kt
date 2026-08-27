@@ -46,8 +46,11 @@ class MicrophoneInput(
         val audioRecord = this.audioRecord ?: error("Microphone not started")
         buffer.clear()
         val read = audioRecord.read(buffer, bufferSize)
+        if (read == AudioRecord.ERROR_DEAD_OBJECT) {
+            throw AudioRecordDeadObjectException()
+        }
         check(read >= 0) {
-            "error reading audio, read: $read"
+            "Error reading audio, read: $read"
         }
         buffer.limit(read)
         return buffer
@@ -97,20 +100,41 @@ class MicrophoneInput(
     }
 
     override fun close() {
-        
-        aec?.release()
+        try {
+            aec?.release()
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to release acoustic echo canceler", e)
+        }
         aec = null
-        agc?.release()
+        try {
+            agc?.release()
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to release automatic gain control", e)
+        }
         agc = null
-        ns?.release()
+        try {
+            ns?.release()
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to release noise suppressor", e)
+        }
         ns = null
-        
-        audioRecord?.let {
-            if (isRecording) {
-                it.stop()
+
+        val record = audioRecord
+        audioRecord = null
+        record?.let {
+            try {
+                if (it.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
+                    it.stop()
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to stop AudioRecord", e)
+            } finally {
+                try {
+                    it.release()
+                } catch (e: Exception) {
+                    Log.w(TAG, "Failed to release AudioRecord", e)
+                }
             }
-            it.release()
-            audioRecord = null
         }
     }
 
@@ -122,3 +146,7 @@ class MicrophoneInput(
         const val DEFAULT_AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
     }
 }
+
+class AudioRecordDeadObjectException : IllegalStateException(
+    "AudioRecord is no longer valid because the audio server died"
+)

@@ -1,17 +1,22 @@
 package com.example.ava.esphome.voicesatellite
 
 import android.Manifest
+import android.util.Log
 import androidx.annotation.RequiresPermission
+import com.example.ava.audio.AudioRecordDeadObjectException
 import com.example.ava.audio.MicrophoneInput
 import com.example.ava.microwakeword.WakeWordDetector
 import com.example.ava.microwakeword.WakeWordProvider
 import com.google.protobuf.ByteString
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.yield
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -71,7 +76,9 @@ class VoiceSatelliteAudioInput(
         
         if (it) emptyFlow()
         else flow {
-            val microphoneInput = MicrophoneInput()
+            var microphoneInput: MicrophoneInput? = null
+            var recoveringFromAudioServerDeath = false
+            var retryDelayMs = AUDIO_SERVER_RETRY_INITIAL_DELAY_MS
             var wakeWords = activeWakeWords.value
             var stopWords = activeStopWords.value
 
@@ -83,8 +90,31 @@ class VoiceSatelliteAudioInput(
                 setActiveWakeWords(stopWords)
             }
             try {
-                microphoneInput.start()
-                while (true) {
+                while (currentCoroutineContext().isActive) {
+                    if (microphoneInput == null) {
+                        var candidate: MicrophoneInput? = null
+                        try {
+                            val newMicrophone = MicrophoneInput()
+                            candidate = newMicrophone
+                            newMicrophone.start()
+                            microphoneInput = newMicrophone
+                        } catch (e: Exception) {
+                            candidate?.close()
+                            if (!recoveringFromAudioServerDeath) throw e
+
+                            Log.w(
+                                TAG,
+                                "Audio server is not ready; retrying microphone in ${retryDelayMs}ms",
+                                e
+                            )
+                            delay(retryDelayMs)
+                            retryDelayMs = (retryDelayMs * 2).coerceAtMost(
+                                AUDIO_SERVER_RETRY_MAX_DELAY_MS
+                            )
+                            continue
+                        }
+                    }
+
                     if (wakeWords != activeWakeWords.value) {
                         wakeWords = activeWakeWords.value
                         wakeWordDetector.setActiveWakeWords(wakeWords)
@@ -95,7 +125,32 @@ class VoiceSatelliteAudioInput(
                         stopWordDetector.setActiveWakeWords(stopWords)
                     }
 
-                    val audio = microphoneInput.read()
+                    val audio = try {
+                        checkNotNull(microphoneInput).read()
+                    } catch (e: AudioRecordDeadObjectException) {
+                        Log.w(
+                            TAG,
+                            "Audio server died; closing the invalid microphone before retrying",
+                            e
+                        )
+                        recoveringFromAudioServerDeath = true
+                        microphoneInput?.close()
+                        microphoneInput = null
+                        delay(retryDelayMs)
+                        retryDelayMs = (retryDelayMs * 2).coerceAtMost(
+                            AUDIO_SERVER_RETRY_MAX_DELAY_MS
+                        )
+                        continue
+                    }
+
+                    if (recoveringFromAudioServerDeath) {
+                        Log.i(TAG, "Microphone recovered after audio server restart")
+                        recoveringFromAudioServerDeath = false
+                        retryDelayMs = AUDIO_SERVER_RETRY_INITIAL_DELAY_MS
+                        wakeWordDetector.reset()
+                        stopWordDetector.reset()
+                    }
+
                     if (isStreaming) {
                         val volume = _microphoneVolume.value
                         if (volume != 1.0f) {
@@ -138,10 +193,16 @@ class VoiceSatelliteAudioInput(
                     yield()
                 }
             } finally {
-                microphoneInput.close()
+                microphoneInput?.close()
                 wakeWordDetector.close()
                 stopWordDetector.close()
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "VoiceSatelliteAudioInput"
+        private const val AUDIO_SERVER_RETRY_INITIAL_DELAY_MS = 250L
+        private const val AUDIO_SERVER_RETRY_MAX_DELAY_MS = 5_000L
     }
 }
