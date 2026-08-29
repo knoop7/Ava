@@ -2,6 +2,6 @@
   "versionCode": 74,
   "versionName": "0.7.4",
   "downloadUrl": "https://github.com/knoop7/Ava/releases/download/0.7.4/Ava-0.7.4-release.apk",
-  "sha256": "3ca3e4f35c6cdb26e7ad8663bf615aeebf6a811911a510554cd380fbbb9240e3",
+  "sha256": "ed3efa23d2f98b61b46e30029b7a0ec32ced308cbc48965d6b47aee0ca495567",
   "changelog": "2018 Hardware Runs 2026 Designs.\n\nSystem WebView default path: compatibility layer for old engines, missing APIs polyfilled, 32-bit memory exhaustion self-heals. Reaches Chromium 69. Modern CSS no longer breaks, popup cards stay in viewport, calendar cards stop flashing. Browser sidebar page zoom bidirectional with HA. Off-screen cards pause layout, WebSocket steps down under screensaver, CSS/media pause when hidden. Lower CPU/GPU than 0.7.3, better touch response. Path: Settings → Display & Browser.\n\nExperimental: Stop-word echo handling with playback reference subtraction. Bayesian occupancy fusion: face, motion, touch, vibration, proximity, voiceprint into single probability. Path: Settings → Advanced → Experimental.\n\nFloating window all Android versions: 7-9 system freeform, 10+ scrcpy virtual display mirror.\n\nFixes: update popup reappearing, sidebar handle sizing, screensaver WebView inherits font/dark mode, brightness fallback, service widget states, music widget artist/progress, sensor widget history backfill, corner icon preference. Sendspin bidirectional progress: seek syncs both sides, track change reseats timeline, metadata clears on unpair. Fleet: HA device page Visit button opens console. Thanks @ds2000 #204."
 }
