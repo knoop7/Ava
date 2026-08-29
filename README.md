@@ -18,11 +18,11 @@ native Android platform built specifically for Home Assistant. A single, lightwe
 
 ### Features
 
-* **It won't dominate your screen:** Ava Pro runs as a background service. Voice feedback, clock, weather, media controls, and quick switches appear as floating overlays above any app you're currently using. They're disposable, and you retain control of your device.
+* **dominate screen:** Ava Pro runs as a background service. Voice feedback, clock, weather, media controls, and quick switches appear as floating overlays above any app you're currently using. They're disposable, and you retain control of your device.
 
-* **It won't overheat your device:** The core engine is written in native C++, not wrapped in a browser container. Even on a wall-mounted tablet, idle CPU usage is near zero. Multiple devices that have been running on the wall for years have shown no overheating issues.
+* **overheat device:** The core engine is written in native C++, not wrapped in a browser container. Even on a wall-mounted tablet, idle CPU usage is near zero. Multiple devices that have been running on the wall for years have shown no overheating issues.
 
-* **It's compatible with virtually any device:** Supports Android 5.0 to 16. It runs on old Fire tablets, retired phones, car infotainment systems, smart mirrors, and single-board computers. The complete APK size is under 20 MB because all external dependencies that could be replaced with native code have been rewritten natively.
+* **compatible with virtually any device:** Supports Android 5.0 to 16. It runs on old Fire tablets, retired phones, car infotainment systems, smart mirrors, and single-board computers.
 
 * **All functions can be disabled:** Device's Bluetooth chip too weak? Simply disable the Bluetooth proxy. Don't need intercom? One-click deactivation. Just want a pure voice satellite? Cut it down to voice only. Each module is completely decoupled, enabling only the functions your device can handle.
 
